@@ -1,8 +1,8 @@
 body {
-  max-width: 100ch; /* Limit content width */
-  margin-inline: auto; /* Center content horizontally */
-  padding: 0 1rem; /* Add padding for small screens */
-  font: 100%/1.5 system-ui; /* Font and line height */
-  background-color: #fff; /* Clean white background */
-  color: #333; /* Standard text color */
-}
+    /* Set line height to 1.5 times the font size
+         and use the OS’s UI font as the website font
+       */
+    font: 100%/1.5 system-ui;
+  }
+
+  
