@@ -4,33 +4,33 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Contact</title>
-    <link rel="stylesheet" href="../style.css"> <!-- Corrected path to style.css -->
+    <link rel="stylesheet" href="../style.css">
 </head>
 <body>
     <nav>
         <a href="../index.html">Home</a>
         <a href="../projects/index.html">Projects</a>
-        <a href="../contact/index.html">Contact</a>
-        <a href="../CV/index.html">CV</a> 
-        <a href="../https://github.com/chguerra15" target="_blank">GitHub</a> 
+        <a href="index.html" class="current">Contact</a>
+        <a href="../CV/index.html">CV</a>
+        <a href="https://github.com/chguerra15" target="_blank">GitHub</a>
     </nav>
 
-    <h1>Contact</h1>
+    <main class="contact-section">
+        <h1>Contact</h1>
+        <p>Feel free to reach out for collaboration, inquiries, or just to say hi!</p>
 
-    <form action="mailto:christianguerra030@gmail.com" method="POST" enctype="text/plain">
-        <label for="email">Your Email:</label>
-        <input type="email" id="email" name="email" required>
-        <br><br>
+        <form action="mailto:christianguerra030@gmail.com" method="POST" enctype="text/plain" class="contact-form">
+            <label for="email">Your Email:</label>
+            <input type="email" id="email" name="email" placeholder="Enter your email" required>
 
-        <label for="subject">Subject:</label>
-        <input type="text" id="subject" name="subject" required>
-        <br><br>
+            <label for="subject">Subject:</label>
+            <input type="text" id="subject" name="subject" placeholder="Enter the subject" required>
 
-        <label for="body">Message:</label>
-        <textarea id="body" name="body" rows="5" cols="30" required></textarea>
-        <br><br>
+            <label for="body">Message:</label>
+            <textarea id="body" name="body" rows="5" placeholder="Type your message here..." required></textarea>
 
-        <button type="submit">Send</button>
-    </form>
+            <button type="submit">Send</button>
+        </form>
+    </main>
 </body>
 </html>
