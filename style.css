@@ -1,12 +1,80 @@
+/* General styles */
 body {
-  /* Set line height to 1.5 times the font size
-     and use the OS’s UI font as the website font
-  */
-  font: 100%/1.5 system-ui;
-  
-  /* New additions */
-  max-width: 100ch; 
-  margin: 0 auto; 
-  padding: 0 1rem; 
-  background-color: #f9f9f9; 
+  font: 100%/1.6 system-ui, sans-serif;
+  margin: 0;
+  padding: 0;
+  color: #333;
+  background-color: #f9f9f9;
+}
+
+/* Hero section */
+.hero {
+  text-align: center;
+  padding: 2rem;
+  background-color: #007bff;
+  color: #fff;
+}
+.hero-image {
+  width: 150px; /* Reduce image size */
+  height: auto; /* Maintain aspect ratio */
+  border-radius: 50%;
+  margin-bottom: 1rem;
+}
+.hero-title {
+  font-size: 2rem;
+  margin: 0.5rem 0;
+}
+.hero-subtitle {
+  font-size: 1.2rem;
+  font-weight: 300;
+}
+
+/* Navigation menu */
+.main-nav {
+  margin-bottom: 1rem;
+  border-bottom: 1px solid oklch(80% 3% 200); /* Cool gray border */
+  text-align: center;
+  padding-bottom: 0.5rem;
+}
+.main-nav ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+}
+.main-nav li {
+  margin: 0 1rem;
+}
+.main-nav a {
+  text-decoration: none; /* Remove underline */
+  color: inherit; /* Inherit text color */
+  padding: 0.5em;
+  text-align: center;
+}
+.main-nav a:hover {
+  border-bottom: 0.2em solid oklch(80% 3% 200); /* Highlight on hover */
+}
+.main-nav a.current {
+  border-bottom: 0.4em solid oklch(90% 3% 200); /* Thicker border for current page */
+  padding-bottom: 0.3em; /* Reduce padding to counter increased height */
+}
+
+/* About section */
+.about {
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 1rem;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Footer */
+footer {
+  text-align: center;
+  padding: 1rem;
+  background-color: #333;
+  color: #fff;
+  font-size: 0.9rem;
 }
