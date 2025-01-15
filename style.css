@@ -1,8 +1,77 @@
+/* General styles */
 body {
-    /* Set line height to 1.5 times the font size
-         and use the OS’s UI font as the website font
-       */
-    font: 100%/1.5 system-ui;
-  }
+  max-width: 100ch; /* Prevent content from getting too wide */
+  margin-inline: auto; /* Center content horizontally */
+  padding: 0 1rem; /* Add horizontal padding */
+  font: 100%/1.5 system-ui; /* Font size, line height, and system UI font */
+  background-color: #fff; /* Clean white background */
+  color: #333; /* Standard text color */
+}
 
-  
+/* Navigation bar styles */
+nav {
+  margin-bottom: 1rem; /* Add space below navigation bar */
+  border-bottom: 1px solid oklch(80% 3% 200); /* Subtle gray bottom border */
+}
+nav ul {
+  list-style: none; /* Remove bullet points */
+  margin: 0; /* Remove default margin */
+  padding: 0; /* Remove default padding */
+  display: flex; /* Align items in a row */
+  justify-content: center; /* Center links */
+  gap: 2rem; /* Add spacing between links */
+}
+nav a {
+  text-decoration: none; /* Remove underline from links */
+  color: inherit; /* Use the same text color as the parent */
+  padding: 0.5em; /* Add padding for clickable area */
+  text-align: center; /* Center-align text */
+}
+nav a.current {
+  border-bottom: 0.4em solid oklch(80% 3% 200); /* Highlight current page link */
+  padding-bottom: calc(0.5em - 0.4em); /* Adjust padding to compensate for border */
+}
+nav a:hover {
+  color: oklch(60% 0.1 200); /* Change color on hover */
+}
+
+/* Hero section styles */
+.hero {
+  text-align: center; /* Center-align hero content */
+  padding: 2rem 0; /* Add vertical spacing */
+}
+.hero img {
+  width: 200px; /* Set image width */
+  height: auto; /* Maintain aspect ratio */
+  border-radius: 50%; /* Circular image */
+  margin-bottom: 1rem; /* Add space below the image */
+}
+.hero h1 {
+  font-size: 2.5rem; /* Set font size for the title */
+  margin: 0.5rem 0; /* Add spacing around title */
+  font-weight: bold; /* Bold font for the title */
+}
+.hero p {
+  font-size: 1.2rem; /* Adjust font size for subtitle */
+  font-weight: 300; /* Use lighter font weight */
+  margin: 0; /* Remove default margin */
+}
+
+/* About section styles */
+.about {
+  max-width: 800px; /* Limit content width */
+  margin: 0 auto; /* Center the about section */
+  padding: 1rem; /* Add padding inside the section */
+  text-align: center; /* Center-align text */
+  font-size: 1rem; /* Adjust font size for body text */
+  line-height: 1.6; /* Improve readability */
+}
+
+/* Footer styles */
+footer {
+  text-align: center; /* Center-align footer content */
+  padding: 1rem; /* Add padding inside the footer */
+  font-size: 0.9rem; /* Adjust font size for footer text */
+  color: #666; /* Subtle gray text color */
+  background-color: #f9f9f9; /* Light gray background */
+}
