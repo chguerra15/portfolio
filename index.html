@@ -3,20 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Christian Guerra: Personal site and portfolio</title>
+    <meta name="description" content="Christian Guerra's personal site and portfolio showcasing projects in machine learning, web development, and data science.">
+    <title>Christian Guerra: Personal Portfolio</title>
+    <link rel="stylesheet" href="styles.css"> <!-- Link to your external CSS file -->
 </head>
 <body>
-    <h1>Christian Guerra</h1>
-    <p>I am a third-year Data Science major at UCSD with a passion for machine learning and web development. Welcome to my portfolio!</p>
-    <img src="images/IMG_3582.jpg" alt="Christian Guerra's portrait photo" width="300">
-    <nav>
-        <a href="index.html">Home</a>
-        <a href="projects/index.html">Projects</a>
-        <a href="contact/index.html">Contact</a>
-    </nav>
-    
-
-
-    
+    <header>
+        <div class="hero">
+            <img src="images/IMG_3582.jpg" alt="Christian Guerra's portrait photo" class="hero-image">
+            <h1 class="hero-title">Christian Guerra</h1>
+            <p class="hero-subtitle">Data Scientist | Machine Learning Enthusiast | Web Developer</p>
+        </div>
+        <nav class="main-nav">
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="projects/index.html">Projects</a></li>
+                <li><a href="contact/index.html">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <section class="about">
+            <h2>About Me</h2>
+            <p>
+                I am a third-year Data Science major at UCSD with a passion for machine learning and web development. 
+                I specialize in creating innovative solutions for complex problems and am eager to contribute to the field with my skills.
+            </p>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2025 Christian Guerra. All rights reserved.</p>
+    </footer>
 </body>
 </html>
