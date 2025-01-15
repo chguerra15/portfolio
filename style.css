@@ -148,3 +148,48 @@ footer {
   background-color: #005bb5;
 }
 
+/* Projects Page Styling */
+.projects {
+  display: grid; /* Enable grid layout */
+  grid-template-columns: repeat(auto-fill, minmax(15em, 1fr)); /* Responsive grid */
+  gap: 1em; /* Space between grid items */
+  padding: 1em; /* Add padding around the grid */
+}
+
+.projects > article {
+  background-color: #fff; /* White background for articles */
+  border: 1px solid #ddd; /* Subtle border */
+  border-radius: 10px; /* Rounded corners */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Soft shadow */
+  padding: 1em; /* Inner padding */
+  display: grid;
+  grid-template-rows: subgrid; /* Align content across articles */
+  grid-row: span 3; /* Ensure articles span 3 rows */
+}
+
+.projects > article h2 {
+  margin: 0; /* Remove default margins */
+  font-size: 1.2em; /* Adjust heading size */
+  line-height: 1.1; /* Smaller leading for headings */
+  text-wrap: balance; /* Prevent uneven wrapping */
+}
+
+.projects > article img {
+  width: 100%; /* Responsive image */
+  height: auto; /* Maintain aspect ratio */
+  border-radius: 5px; /* Rounded corners */
+}
+
+.projects > article p {
+  font-size: 0.9em; /* Slightly smaller text */
+  color: #666; /* Subtle text color */
+}
+
+/* Heading Hierarchy */
+h1 {
+  font-size: 4em; /* Significantly larger for contrast */
+  line-height: 1.1; /* Adjusted leading */
+  margin-bottom: 1em; /* Space below heading */
+}
+
+
