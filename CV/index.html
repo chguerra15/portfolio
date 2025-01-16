@@ -3,93 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Christian Guerra - Professional Portfolio</title>
+    <title>Christian Guerra - CV</title>
     <link rel="stylesheet" href="../style.css">
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f9;
-            color: #333;
-        }
-
-        nav {
-            background-color: #2c3e50;
-            padding: 10px 20px;
-        }
-
-        nav ul {
-            list-style: none;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: space-around;
-        }
-
-        nav ul li {
-            display: inline;
-        }
-
-        nav ul li a {
-            color: white;
-            text-decoration: none;
-            font-weight: bold;
-        }
-
-        nav ul li a:hover {
-            text-decoration: underline;
-        }
-
-        header {
-            text-align: center;
-            padding: 50px 20px;
-            background-color: #34495e;
-            color: white;
-        }
-
-        header img {
-            border-radius: 50%;
-            width: 150px;
-            height: 150px;
-        }
-
-        header h1 {
-            margin: 20px 0 10px;
-            font-size: 2.5em;
-        }
-
-        header p {
-            margin: 5px 0;
-            font-size: 1.2em;
-        }
-
-        main {
-            padding: 20px;
-            max-width: 900px;
-            margin: 0 auto;
-        }
-
-        section {
-            margin-bottom: 40px;
-        }
-
-        section h2 {
-            border-bottom: 2px solid #2c3e50;
-            padding-bottom: 10px;
-            margin-bottom: 20px;
-        }
-
-        footer {
-            text-align: center;
-            padding: 20px;
-            background-color: #2c3e50;
-            color: white;
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-        }
-    </style>
 </head>
 <body>
     <nav>
@@ -97,13 +12,13 @@
             <li><a href="../index.html">Home</a></li>
             <li><a href="../projects/index.html">Projects</a></li>
             <li><a href="../contact/index.html">Contact</a></li>
-            <li><a href="../CV/index.html">CV</a></li>
+            <li><a href="../CV/index.html" class="current">CV</a></li>
             <li><a href="https://github.com/chguerra15" target="_blank">GitHub</a></li>
         </ul>
     </nav>
 
-    <header>
-        <img src="/mnt/data/profile.png" alt="Christian Guerra Profile Picture">
+    <header class="hero">
+        <img src="/images/profile.png" alt="Christian Guerra Profile Picture" class="circle">
         <h1>Christian Guerra</h1>
         <p>
             <a href="mailto:chguerra@ucsd.edu">chguerra@ucsd.edu</a> &bull;
@@ -116,7 +31,7 @@
         <section>
             <h2>About Me</h2>
             <p>
-                I am a dedicated Data Science student at the University of California, San Diego, with a minor in Cognitive Science specializing in Machine Learning. Passionate about analyzing data, building predictive models, and designing efficient systems to solve real-world problems.
+                I am a Data Science student at the University of California, San Diego, with a minor in Cognitive Science specializing in Machine Learning. Passionate about solving problems through data analysis, predictive modeling, and designing efficient systems.
             </p>
         </section>
 
@@ -127,9 +42,9 @@
                 <h3>Student Mentor</h3>
                 <p>University of California, San Diego | September 2023 - June 2024</p>
                 <ul>
-                    <li>Mentored 12 undergraduate students on academic and personal growth, focusing on study techniques and time management.</li>
-                    <li>Connected mentees to academic and mental health resources, improving their university experience.</li>
-                    <li>Achieved measurable improvements in mentees' GPA and overall academic standing.</li>
+                    <li>Guided 12 undergraduate students in academics and personal growth, emphasizing study techniques and time management.</li>
+                    <li>Facilitated access to academic and mental health resources, enhancing the overall university experience.</li>
+                    <li>Improved mentees' GPA and academic standing through tailored mentoring strategies.</li>
                 </ul>
             </article>
 
@@ -137,42 +52,44 @@
                 <h3>Data Science Intern</h3>
                 <p>Puebla Express, Ventura | March 2023 - May 2024</p>
                 <ul>
-                    <li>Processed data for over 500 daily shipments, maintaining data accuracy and system efficiency.</li>
-                    <li>Reduced data entry errors by 10% through teamwork and workflow optimization.</li>
-                    <li>Supported logistical processes, contributing to customer satisfaction and company growth.</li>
+                    <li>Processed data for over 500 daily shipments, ensuring accuracy and optimizing system efficiency.</li>
+                    <li>Reduced data entry errors by 10% through workflow improvements and collaboration.</li>
+                    <li>Supported logistical operations, contributing to enhanced customer satisfaction and company growth.</li>
                 </ul>
             </article>
         </section>
 
         <section>
-            <h2>Featured Projects</h2>
+            <h2>Projects</h2>
+            <div class="projects">
 
-            <article>
-                <h3>Puebla Express Website Development</h3>
-                <p><strong>Technologies:</strong> HTML, CSS, JavaScript</p>
-                <ul>
-                    <li>Collaborated on a fully responsive website design to improve user experience and functionality.</li>
-                    <li>Implemented features for parcel tracking and delivery updates, enhancing customer engagement.</li>
-                </ul>
-            </article>
+                <article>
+                    <h2>Puebla Express Website Development</h2>
+                    <p><strong>Technologies:</strong> HTML, CSS, JavaScript</p>
+                    <ul>
+                        <li>Designed a responsive website to improve user experience and functionality.</li>
+                        <li>Integrated parcel tracking features, enhancing customer engagement.</li>
+                    </ul>
+                </article>
 
-            <article>
-                <h3>DNA Transcription and Translation Tool</h3>
-                <p><strong>Technologies:</strong> Java</p>
-                <ul>
-                    <li>Developed a tool to transcribe DNA into mRNA and translate it into protein sequences for research and education.</li>
-                    <li>Designed an intuitive interface for ease of use by biologists and students.</li>
-                </ul>
-            </article>
+                <article>
+                    <h2>DNA Transcription and Translation Tool</h2>
+                    <p><strong>Technologies:</strong> Java</p>
+                    <ul>
+                        <li>Developed a tool to transcribe DNA into mRNA and translate it into protein sequences.</li>
+                        <li>Built an intuitive interface for researchers and students.</li>
+                    </ul>
+                </article>
 
-            <article>
-                <h3>Classification Model for Dinosaur Species</h3>
-                <p><strong>Technologies:</strong> Python, Pandas, Scikit-Learn</p>
-                <ul>
-                    <li>Built a machine learning model with 85% accuracy during the UCSD Hackathon.</li>
-                    <li>Executed data preprocessing, feature engineering, and hyperparameter tuning.</li>
-                </ul>
-            </article>
+                <article>
+                    <h2>Classification Model for Dinosaur Species</h2>
+                    <p><strong>Technologies:</strong> Python, Pandas, Scikit-Learn</p>
+                    <ul>
+                        <li>Developed a machine learning model with 85% accuracy for UCSD Hackathon.</li>
+                        <li>Performed data preprocessing, feature engineering, and hyperparameter optimization.</li>
+                    </ul>
+                </article>
+            </div>
         </section>
 
         <section>
