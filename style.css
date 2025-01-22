@@ -212,5 +212,14 @@ a:hover {
   color: activetext;
 }
 
+border-bottom-color: oklch(50% 10% 200 / 40%);
+nav {
+  --border-color: oklch(50% 10% 200 / 40%);
+  /* Other styles for nav */
+  border-bottom: 1px solid var(--border-color);
+}
+border-bottom-color: var(--border-color);
+
+
 
 
