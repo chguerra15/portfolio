@@ -192,6 +192,10 @@ h1 {
   margin-bottom: 1em; /* Space below heading */
 }
 
+:root {
+  color-scheme: light dark;
+}
+
 
 
 
