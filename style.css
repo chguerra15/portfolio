@@ -357,6 +357,43 @@ section, article {
   }
 }
 
+/* Default (light mode) styles for project cells */
+section.project {
+  background-color: #f9f9f9; /* Light background for projects */
+  color: #000; /* Dark text */
+  padding: 15px;
+  margin: 20px 0;
+  border-radius: 8px;
+  border: 1px solid #ddd; /* Subtle border */
+  transition: background-color 0.3s, color 0.3s;
+}
+
+section.project h2, section.project h3 {
+  color: #000; /* Dark text for titles */
+  margin-bottom: 10px;
+}
+
+section.project p, section.project ul li {
+  color: #333; /* Slightly lighter dark text for descriptions */
+}
+
+/* Dark mode specific styles for project cells */
+@media (prefers-color-scheme: dark) {
+  section.project {
+      background-color: #1e1e1e; /* Dark background */
+      color: #e0e0e0; /* Light text */
+      border: 1px solid #444; /* Subtle border in dark mode */
+  }
+
+  section.project h2, section.project h3 {
+      color: #ffffff; /* White titles for contrast */
+  }
+
+  section.project p, section.project ul li {
+      color: #d1d1d1; /* Softer light text for descriptions */
+  }
+}
+
 
 
 
