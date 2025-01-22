@@ -1,7 +1,7 @@
 console.log('IT’S ALIVE!');
 
 function $$(selector, context = document) {
-  return Array.from(context.querySelectorAll(selector));
+    return Array.from(context.querySelectorAll(selector));
 }
 
 let pages = [
@@ -12,6 +12,7 @@ let pages = [
     { url: 'https://github.com/chguerra15', title: 'GitHub' },
 ];
 
+// Create and inject the navigation menu
 let nav = document.createElement('nav');
 document.body.prepend(nav);
 
@@ -40,30 +41,41 @@ for (let p of pages) {
     nav.append(a);
 }
 
+// Add theme selector dropdown to the page
+document.body.insertAdjacentHTML(
+    'afterbegin',
+    `
+      <label class="color-scheme">
+          Theme:
+          <select id="theme-select">
+              <option value="auto">Automatic</option>
+              <option value="light">Light</option>
+              <option value="dark">Dark</option>
+          </select>
+      </label>
+    `
+);
+
 const select = document.querySelector('#theme-select');
 const root = document.documentElement;
 
+// Function to set and save the color scheme
 function setColorScheme(scheme) {
-    root.style.setProperty('color-scheme', scheme === 'auto' ? '' : scheme);
-    localStorage.colorScheme = scheme;
-
-    select.value = scheme;
+    root.style.setProperty('color-scheme', scheme === 'auto' ? '' : scheme); // Apply theme
+    localStorage.colorScheme = scheme; // Save user preference
+    select.value = scheme; // Update dropdown value
 }
 
-select.addEventListener('input', (event) => {
+// Event listener for theme selection
+select.addEventListener('input', function (event) {
     const scheme = event.target.value;
     console.log('Color scheme changed to:', scheme);
     setColorScheme(scheme);
 });
 
+// Load saved theme or default to auto
 if ('colorScheme' in localStorage) {
     setColorScheme(localStorage.colorScheme);
 } else {
     setColorScheme('auto');
 }
-
-function setColorScheme(scheme) {
-    document.documentElement.style.setProperty('color-scheme', scheme === 'auto' ? '' : scheme);
-    localStorage.colorScheme = scheme; // Save user preference
-}
-
