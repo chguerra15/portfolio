@@ -394,6 +394,60 @@ section.project p, section.project ul li {
   }
 }
 
+/* Define color-scheme to enable browser support for automatic themes */
+:root {
+  color-scheme: light dark; /* Supports light and dark based on user/system preferences */
+}
+
+/* Default styles (light mode) */
+body {
+  background-color: #ffffff;
+  color: #000000;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+nav {
+  background-color: #f0f0f0;
+  color: #000;
+  border-bottom: 1px solid #ccc;
+}
+
+nav a {
+  color: #007bff;
+  text-decoration: none;
+  padding: 10px 15px;
+  display: inline-block;
+}
+
+nav a.current {
+  background-color: #0056b3;
+  color: #fff;
+  border-radius: 5px;
+}
+
+/* Dark mode */
+@media (prefers-color-scheme: dark) {
+  body {
+      background-color: #121212;
+      color: #e0e0e0;
+  }
+
+  nav {
+      background-color: #1e1e1e;
+      color: #e0e0e0;
+      border-bottom: 1px solid #444;
+  }
+
+  nav a {
+      color: #3b82f6;
+  }
+
+  nav a.current {
+      background-color: #2563eb;
+      color: #ffffff;
+  }
+}
+
 
 
 
