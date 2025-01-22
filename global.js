@@ -62,3 +62,8 @@ if ('colorScheme' in localStorage) {
     setColorScheme('auto');
 }
 
+function setColorScheme(scheme) {
+    document.documentElement.style.setProperty('color-scheme', scheme === 'auto' ? '' : scheme);
+    localStorage.colorScheme = scheme; // Save user preference
+}
+
