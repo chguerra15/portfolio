@@ -192,11 +192,25 @@ h1 {
   margin-bottom: 1em; /* Space below heading */
 }
 
+/* Enable automatic light and dark mode */
 :root {
   color-scheme: light dark;
 }
 
+/* Optional: Use system colors for better dark mode appearance */
+body {
+  background-color: canvas;
+  color: canvastext;
+}
 
+/* Style adjustments for dark mode */
+a {
+  color: linktext;
+}
+
+a:hover {
+  color: activetext;
+}
 
 
 
