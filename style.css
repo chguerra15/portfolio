@@ -214,12 +214,10 @@ a:hover {
 
 nav {
   --border-color: oklch(50% 10% 200 / 40%);
-  /* Other styles for nav */
   border-bottom: 1px solid var(--border-color);
 }
 
 
-/* General styles for tabs */
 nav a {
   text-decoration: none;
   padding: 10px 20px;
@@ -296,7 +294,6 @@ body.dark .contact-section {
   color: var(--text-color-dark);
 }
 
-/* Project articles */
 .projects > article {
   background-color: var(--nav-bg-light);
   color: var(--text-color-light);
@@ -307,22 +304,21 @@ body.dark .projects > article {
   color: var(--text-color-dark);
 }
 
-/* Light mode: Input and textarea fields */
 .contact-form input,
 .contact-form textarea {
-  background-color: var(--bg-color-light); /* Cream background */
-  color: var(--text-color-light); /* Dark text */
-  border: 1px solid #ccc; /* Subtle border */
+  background-color: var(--bg-color-light); 
+  color: var(--text-color-light); 
+  border: 1px solid #ccc;
   padding: 0.8rem;
   font-size: 1rem;
   border-radius: 5px;
   outline: none;
-  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05); /* Subtle inner shadow */
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05); 
   transition: background-color 0.3s, color 0.3s, border-color 0.3s;
 }
 
 .contact-form input:focus,
 .contact-form textarea:focus {
-  border-color: #0078d4; /* Focus border for light mode */
+  border-color: #0078d4; 
   box-shadow: 0 0 4px rgba(0, 120, 212, 0.4);
 }
