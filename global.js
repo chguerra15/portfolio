@@ -105,3 +105,30 @@ console.log(`Loaded saved theme: "${savedScheme}"`);
 setColorScheme(savedScheme);
 
 console.log('Theme system initialized.');
+
+// Get a reference to the form
+const form = document.querySelector('#contact-form');
+
+// Add an event listener for form submission
+form?.addEventListener('submit', (event) => {
+    // Prevent default form submission
+    event.preventDefault();
+
+    // Create a FormData object to collect form values
+    const data = new FormData(form);
+
+    // Initialize an object to hold encoded form data
+    const params = {};
+
+    // Iterate over the form data and encode each value
+    for (const [key, value] of data.entries()) {
+        params[key] = encodeURIComponent(value);
+    }
+
+    // Construct the mailto link with encoded data
+    const mailtoLink = `mailto:christianguerra030@gmail.com?subject=${params.subject}&body=${params.body}%0A%0AFrom: ${params.email}`;
+
+    // Open the mailto link in the user's email client
+    window.location.href = mailtoLink;
+});
+
