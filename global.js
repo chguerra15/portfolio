@@ -1,10 +1,12 @@
 console.log('IT’S ALIVE!');
 
+// Utility function to query elements
 function $$(selector, context = document) {
-    console.log(`Querying elements with selector: ${selector}`);
+    console.log(`Querying elements with selector: "${selector}"`);
     return Array.from(context.querySelectorAll(selector));
 }
 
+// Pages array for navigation links
 let pages = [
     { url: '', title: 'Home' },
     { url: 'projects/', title: 'Projects' },
@@ -23,25 +25,27 @@ for (let p of pages) {
     let title = p.title;
 
     const ARE_WE_HOME = document.documentElement.classList.contains('home');
-    console.log(`Processing page: ${title}, ARE_WE_HOME: ${ARE_WE_HOME}`);
+    console.log(`Processing page: "${title}", ARE_WE_HOME: ${ARE_WE_HOME}`);
 
     if (!ARE_WE_HOME && !url.startsWith('http')) {
         url = '../' + url;
-        console.log(`Updated relative URL for ${title}: ${url}`);
+        console.log(`Updated relative URL for "${title}": ${url}`);
     }
 
     let a = document.createElement('a');
     a.href = url;
     a.textContent = title;
 
+    // Highlight current page
     a.classList.toggle(
         'current',
         a.host === location.host && a.pathname === location.pathname
     );
 
+    // Open external links in a new tab
     if (a.host !== location.host) {
         a.target = '_blank';
-        console.log(`Set target="_blank" for external link: ${title}`);
+        console.log(`Set target="_blank" for external link: "${title}"`);
     }
 
     nav.append(a);
@@ -66,31 +70,38 @@ document.body.insertAdjacentHTML(
 );
 
 const select = document.querySelector('#theme-select');
-const root = document.documentElement;
 
-// Function to set and save the color scheme
+// Function to apply and save the selected color scheme
 function setColorScheme(scheme) {
-    console.log(`Applying color scheme: ${scheme}`);
-    root.style.setProperty('color-scheme', scheme === 'auto' ? '' : scheme); // Apply theme
-    localStorage.colorScheme = scheme; // Save user preference
+    console.log(`Applying color scheme: "${scheme}"`);
+
+    // Remove any existing theme classes
+    document.body.classList.remove('light', 'dark');
+
+    // Apply theme-specific class
+    if (scheme === 'light') {
+        document.body.classList.add('light');
+    } else if (scheme === 'dark') {
+        document.body.classList.add('dark');
+    }
+
+    // Save the user's preference to localStorage
+    localStorage.setItem('colorScheme', scheme);
     select.value = scheme; // Update dropdown value
-    console.log(`Color scheme set to ${scheme} and saved to localStorage.`);
+
+    console.log(`Color scheme "${scheme}" applied and saved to localStorage.`);
 }
 
 // Event listener for theme selection
-select.addEventListener('input', function (event) {
+select.addEventListener('input', (event) => {
     const scheme = event.target.value;
-    console.log('Theme selector changed:', scheme);
+    console.log(`Theme selector changed to: "${scheme}"`);
     setColorScheme(scheme);
 });
 
-// Load saved theme or default to auto
-if ('colorScheme' in localStorage) {
-    console.log(`Found saved theme in localStorage: ${localStorage.colorScheme}`);
-    setColorScheme(localStorage.colorScheme);
-} else {
-    console.log('No saved theme found in localStorage, defaulting to auto.');
-    setColorScheme('auto');
-}
+// Load the saved theme or default to automatic
+const savedScheme = localStorage.getItem('colorScheme') || 'auto';
+console.log(`Loaded saved theme: "${savedScheme}"`);
+setColorScheme(savedScheme);
 
 console.log('Theme system initialized.');

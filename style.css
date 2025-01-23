@@ -1,455 +1,78 @@
-/* General styles */
-body {
-  max-width: 100ch;
-  margin-inline: auto;
-  padding: 0 1rem;
-  font: 100%/1.5 system-ui;
-  background-color: #f8f0da;
-  color: #333;
-  margin-top: 4rem; /* Space for the fixed navigation bar */
-}
-
-/* Navigation bar styles */
-nav {
-  position: fixed; /* Keep navigation at the top */
-  top: 0; /* Align to the top of the viewport */
-  left: 0;
-  right: 0;
-  background-color: #fff; /* Background color for the navigation bar */
-  border-bottom: 1px solid oklch(80% 3% 200); /* Subtle border at the bottom */
-  padding: 0.5rem 1rem; /* Padding inside the navigation bar */
-  z-index: 1000; /* Ensure it stays above other content */
-}
-nav ul {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  justify-content: center;
-  gap: 2rem;
-}
-nav a {
-  text-decoration: none;
-  color: inherit;
-  font-weight: bold;
-  padding: 0.5em;
-}
-nav a.current {
-  border-bottom: 0.3em solid oklch(80% 3% 200); /* Highlight for the current page */
-}
-nav a:hover {
-  color: oklch(60% 0.1 200); /* Change color on hover */
-}
-
-/* Hero Section */
-.hero {
-  text-align: center;
-  padding: 4rem 0; /* Adjust padding to account for fixed navbar */
-}
-.hero img {
-  width: 200px;
-  height: auto;
-  border-radius: 50%;
-  margin-bottom: 1rem;
-}
-.hero h1 {
-  font-size: 2.5rem;
-  margin: 0.5rem 0;
-  font-weight: bold;
-}
-.hero p {
-  font-size: 1.2rem;
-  font-weight: 300;
-  margin: 0;
-}
-
-/* Footer styles */
-footer {
-  text-align: center;
-  padding: 1rem;
-  font-size: 0.9rem;
-  color: #666;
-  background-color: #f9f9f9;
-}
-
-.circle {
-  width: 300px;
-  height: 300px;
-  border-radius: 50%; /* Makes the image circular */
-  object-fit: cover; /* Ensures the image fills the circular area */
-  border: 4px solid #fff; /* Optional: Adds a white border */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Optional: Adds a subtle shadow */
-}
-
-/* General Contact Page Styles */
-.contact-section {
-  max-width: 600px;
-  margin: 3rem auto;
-  padding: 2rem;
-  background-color: #fff;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  text-align: center;
-}
-
-.contact-section h1 {
-  font-size: 2rem;
-  margin-bottom: 1rem;
-}
-
-.contact-section p {
-  font-size: 1.1rem;
-  color: #555;
-  margin-bottom: 2rem;
-}
-
-/* Contact Form Styles */
-.contact-form {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-}
-
-.contact-form label {
-  font-size: 1rem;
-  font-weight: bold;
-  text-align: left;
-}
-
-.contact-form input,
-.contact-form textarea {
-  width: 100%;
-  padding: 0.8rem;
-  font-size: 1rem;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  outline: none;
-  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
-}
-
-.contact-form input:focus,
-.contact-form textarea:focus {
-  border-color: #0078d4;
-  box-shadow: 0 0 4px rgba(0, 120, 212, 0.4);
-}
-
-.contact-form button {
-  padding: 0.8rem;
-  font-size: 1rem;
-  color: #fff;
-  background-color: #0078d4;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.contact-form button:hover {
-  background-color: #005bb5;
-}
-
-/* Projects Page Styling */
-.projects {
-  display: grid; /* Enable grid layout */
-  grid-template-columns: repeat(auto-fill, minmax(15em, 1fr)); /* Responsive grid */
-  gap: 1em; /* Space between grid items */
-  padding: 1em; /* Add padding around the grid */
-}
-
-.projects > article {
-  background-color: #fff; /* White background for articles */
-  border: 1px solid #ddd; /* Subtle border */
-  border-radius: 10px; /* Rounded corners */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Soft shadow */
-  padding: 1em; /* Inner padding */
-  display: grid;
-  grid-template-rows: subgrid; /* Align content across articles */
-  grid-row: span 3; /* Ensure articles span 3 rows */
-}
-
-.projects > article h2 {
-  margin: 0; /* Remove default margins */
-  font-size: 1.2em; /* Adjust heading size */
-  line-height: 1.1; /* Smaller leading for headings */
-  text-wrap: balance; /* Prevent uneven wrapping */
-}
-
-.projects > article img {
-  width: 100%; /* Responsive image */
-  height: auto; /* Maintain aspect ratio */
-  border-radius: 5px; /* Rounded corners */
-}
-
-.projects > article p {
-  font-size: 0.9em; /* Slightly smaller text */
-  color: #666; /* Subtle text color */
-}
-
-/* Heading Hierarchy */
-h1 {
-  font-size: 4em; /* Significantly larger for contrast */
-  line-height: 1.1; /* Adjusted leading */
-  margin-bottom: 1em; /* Space below heading */
-}
-
-/* Enable automatic light and dark mode */
 :root {
-  color-scheme: light dark;
-}
+  --bg-color-light: #f8f0da; /* Cream background for light mode */
+  --text-color-light: #333; /* Dark text for light mode */
+  --bg-color-dark: #121212; /* Dark background for dark mode */
+  --text-color-dark: #e0e0e0; /* Light text for dark mode */
 
-/* Optional: Use system colors for better dark mode appearance */
+  --nav-bg-light: #fff; /* Navbar background for light mode */
+  --nav-bg-dark: #1e1e1e; /* Navbar background for dark mode */
+  --nav-border-light: #ccc; /* Navbar border for light mode */
+  --nav-border-dark: #444; /* Navbar border for dark mode */
+  --link-color-light: #007bff; /* Links in light mode */
+  --link-color-dark: #3b82f6; /* Links in dark mode */
+}
 body {
-  background-color: canvas;
-  color: canvastext;
-}
-
-/* Style adjustments for dark mode */
-a {
-  color: linktext;
-}
-
-a:hover {
-  color: activetext;
-}
-
-nav {
-  --border-color: oklch(50% 10% 200 / 40%);
-  /* Other styles for nav */
-  border-bottom: 1px solid var(--border-color);
-}
-
-
-/* General styles for tabs */
-nav a {
-  text-decoration: none;
-  padding: 10px 20px;
-  display: inline-block;
-  border-radius: 5px;
-  transition: background-color 0.3s, color 0.3s;
-}
-
-/* Default (light mode) tab colors */
-nav a {
-  background-color: #f0f0f0;
-  color: #000;
-}
-
-nav a.current {
-  background-color: #007bff;
-  color: #fff;
-}
-
-/* Hover effect for both modes */
-nav a:hover {
-  background-color: #0056b3;
-  color: #fff;
-}
-
-/* Dark mode specific styles */
-@media (prefers-color-scheme: dark) {
-  nav {
-      background-color: #121212; /* Dark background for nav */
-  }
-
-  nav a {
-      background-color: #1e1e1e; /* Darker tabs */
-      color: #e0e0e0; /* Light text */
-  }
-
-  nav a.current {
-      background-color: #3b82f6; /* Highlight current tab */
-      color: #fff; /* White text for contrast */
-  }
-
-  nav a:hover {
-      background-color: #2563eb; /* Slightly brighter hover effect */
-      color: #fff;
-  }
-}
-
-/* General styles for project descriptions */
-section, article {
-  background-color: #f9f9f9; /* Light mode background */
-  color: #000; /* Light mode text */
-  padding: 15px;
-  border-radius: 8px;
-  transition: background-color 0.3s, color 0.3s;
-}
-
-/* Dark mode specific styles */
-@media (prefers-color-scheme: dark) {
-  section, article {
-      background-color: #1e1e1e; /* Dark background */
-      color: #e0e0e0; /* Light text for readability */
-  }
-
-  h2, h3 {
-      color: #ffffff; /* Ensure headers are visible in dark mode */
-  }
-
-  p, ul li {
-      color: #d1d1d1; /* Softer light text for paragraphs and list items */
-  }
-
-  a {
-      color: #3b82f6; /* Link color in dark mode */
-  }
-
-  a:hover {
-      color: #2563eb; /* Link hover effect in dark mode */
-  }
-}
-/* Default styles for the contact form */
-.contact-section {
-  background-color: #f9f9f9; /* Light background for the form */
-  color: #000; /* Dark text for labels and headings */
-  padding: 20px;
-  border-radius: 8px;
-  transition: background-color 0.3s, color 0.3s;
-}
-
-.contact-form input,
-.contact-form textarea,
-.contact-form button {
-  background-color: #ffffff; /* Light background for inputs */
-  color: #000; /* Dark text for inputs */
-  border: 1px solid #ccc; /* Subtle border */
-  padding: 10px;
-  border-radius: 5px;
-  width: 100%;
-  margin-bottom: 15px;
-  font-size: 1rem;
-  transition: background-color 0.3s, color 0.3s;
-}
-
-.contact-form button {
-  background-color: #007bff; /* Blue button */
-  color: #fff; /* White text */
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-
-.contact-form button:hover {
-  background-color: #0056b3; /* Darker blue on hover */
-}
-
-/* Dark mode specific styles */
-@media (prefers-color-scheme: dark) {
-  .contact-section {
-      background-color: #1e1e1e; /* Dark background for the form */
-      color: #e0e0e0; /* Light text for labels and headings */
-  }
-
-  .contact-form input,
-  .contact-form textarea {
-      background-color: #2c2c2c; /* Darker input background */
-      color: #e0e0e0; /* Light text for inputs */
-      border: 1px solid #444; /* Subtle border for inputs */
-  }
-
-  .contact-form button {
-      background-color: #3b82f6; /* Bright blue button */
-      color: #fff; /* White text */
-  }
-
-  .contact-form button:hover {
-      background-color: #2563eb; /* Brighter blue on hover */
-  }
-}
-
-/* Default (light mode) styles for project cells */
-section.project {
-  background-color: #f9f9f9; /* Light background for projects */
-  color: #000; /* Dark text */
-  padding: 15px;
-  margin: 20px 0;
-  border-radius: 8px;
-  border: 1px solid #ddd; /* Subtle border */
-  transition: background-color 0.3s, color 0.3s;
-}
-
-section.project h2, section.project h3 {
-  color: #000; /* Dark text for titles */
-  margin-bottom: 10px;
-}
-
-section.project p, section.project ul li {
-  color: #333; /* Slightly lighter dark text for descriptions */
-}
-
-/* Dark mode specific styles for project cells */
-@media (prefers-color-scheme: dark) {
-  section.project {
-      background-color: #1e1e1e; /* Dark background */
-      color: #e0e0e0; /* Light text */
-      border: 1px solid #444; /* Subtle border in dark mode */
-  }
-
-  section.project h2, section.project h3 {
-      color: #ffffff; /* White titles for contrast */
-  }
-
-  section.project p, section.project ul li {
-      color: #d1d1d1; /* Softer light text for descriptions */
-  }
-}
-
-/* Define color-scheme to enable browser support for automatic themes */
-:root {
-  color-scheme: light dark; /* Supports light and dark based on user/system preferences */
-}
-
-/* Default styles (light mode) */
-body {
-  background-color: #ffffff;
-  color: #000000;
+  background-color: var(--bg-color-light);
+  color: var(--text-color-light);
   transition: background-color 0.3s, color 0.3s;
 }
 
 nav {
-  background-color: #f0f0f0;
-  color: #000;
-  border-bottom: 1px solid #ccc;
+  background-color: var(--nav-bg-light);
+  color: var(--text-color-light);
+  border-bottom: 1px solid var(--nav-border-light);
 }
 
 nav a {
-  color: #007bff;
+  color: var(--link-color-light);
   text-decoration: none;
   padding: 10px 15px;
   display: inline-block;
 }
 
 nav a.current {
-  background-color: #0056b3;
+  background-color: var(--link-color-light);
   color: #fff;
   border-radius: 5px;
 }
-
-/* Dark mode */
-@media (prefers-color-scheme: dark) {
-  body {
-      background-color: #121212;
-      color: #e0e0e0;
-  }
-
-  nav {
-      background-color: #1e1e1e;
-      color: #e0e0e0;
-      border-bottom: 1px solid #444;
-  }
-
-  nav a {
-      color: #3b82f6;
-  }
-
-  nav a.current {
-      background-color: #2563eb;
-      color: #ffffff;
-  }
+body.dark {
+  background-color: var(--bg-color-dark);
+  color: var(--text-color-dark);
 }
 
+body.dark nav {
+  background-color: var(--nav-bg-dark);
+  color: var(--text-color-dark);
+  border-bottom: 1px solid var(--nav-border-dark);
+}
 
+body.dark nav a {
+  color: var(--link-color-dark);
+}
 
+body.dark nav a.current {
+  background-color: var(--link-color-dark);
+  color: #fff;
+}
 
+/* Form and contact section */
+.contact-section {
+  background-color: var(--nav-bg-light);
+  color: var(--text-color-light);
+}
 
+body.dark .contact-section {
+  background-color: var(--nav-bg-dark);
+  color: var(--text-color-dark);
+}
 
+/* Project articles */
+.projects > article {
+  background-color: var(--nav-bg-light);
+  color: var(--text-color-light);
+}
+
+body.dark .projects > article {
+  background-color: var(--nav-bg-dark);
+  color: var(--text-color-dark);
+}
