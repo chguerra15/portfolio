@@ -1,4 +1,4 @@
-console.log('IT’S ALIVE!');
+console.log('IT’S ALIVE!'); 
 
 function $$(selector, context = document) {
     console.log(`Querying elements with selector: "${selector}"`);
@@ -114,15 +114,17 @@ form?.addEventListener('submit', (event) => {
 
 export async function fetchJSON(url) {
     try {
+        console.log(`Fetching JSON from URL: "${url}"`); 
         const response = await fetch(url);
 
-        // Check if the request was successful
         if (!response.ok) {
+            console.error(`Failed to fetch projects: ${response.statusText}`);
             throw new Error(`Failed to fetch projects: ${response.statusText}`);
         }
 
-        // Convert response to JSON
+        console.log(`Successfully fetched JSON from URL: "${url}"`); 
         const data = await response.json();
+        console.log('Fetched Data:', data); 
         return data;
     } catch (error) {
         console.error('Error fetching or parsing JSON data:', error);
@@ -135,6 +137,7 @@ export function renderProjects(project, containerElement) {
         return;
     }
 
+    console.log(`Rendering project: "${project.title}"`); 
     const article = document.createElement("article");
 
     const img = document.createElement("img");
@@ -152,13 +155,17 @@ export function renderProjects(project, containerElement) {
     article.appendChild(p);
 
     containerElement.appendChild(article);
+    console.log(`Project "${project.title}" rendered successfully.`);
 }
 
-
+console.log('Fetching and rendering projects...');
 fetchJSON('../lib/projects.json').then(projects => {
     const container = document.querySelector('.projects');
     if (container) {
+        console.log('Rendering projects into the container...');
         projects.forEach(project => renderProjects(project, container));
+        console.log('All projects rendered successfully.');
+    } else {
+        console.error('Projects container not found.');
     }
 });
-
