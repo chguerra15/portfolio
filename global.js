@@ -129,3 +129,35 @@ export async function fetchJSON(url) {
     }
 }
 
+export function renderProjects(project, containerElement) {
+    if (!containerElement) {
+        console.error("Container element is invalid.");
+        return;
+    }
+
+    const article = document.createElement("article");
+
+    const img = document.createElement("img");
+    img.src = project.image;
+    img.alt = project.title;
+
+    const h2 = document.createElement("h2");
+    h2.textContent = project.title;
+
+    const p = document.createElement("p");
+    p.textContent = project.description;
+
+    article.appendChild(img);
+    article.appendChild(h2);
+    article.appendChild(p);
+
+    containerElement.appendChild(article);
+}
+
+fetchJSON('../lib/projects.json').then(projects => {
+    const container = document.querySelector('.projects');
+    if (container) {
+        projects.forEach(project => renderProjects(project, container));
+    }
+});
+
