@@ -123,3 +123,7 @@ export async function fetchJSON(url) {
     }
 }
 
+if (!response.ok) {
+    throw new Error(`Failed to fetch projects: ${response.statusText}`);
+}
+
