@@ -169,3 +169,17 @@ fetchJSON('../lib/projects.json').then(projects => {
         console.error('Projects container not found.');
     }
 });
+
+export async function fetchGitHubData(username) {
+    console.log(`Fetching GitHub data for user: ${username}`);
+
+    try {
+        const data = await fetchJSON(`https://api.github.com/users/${username}`);
+        console.log('GitHub Data Fetched:', data);
+        return data;
+    } catch (error) {
+        console.error('Error fetching GitHub data:', error);
+        return null;
+    }
+}
+
