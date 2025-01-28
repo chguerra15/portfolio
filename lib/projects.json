@@ -1,0 +1,62 @@
+[
+    {
+        "title": "Power Outages Analysis",
+        "image": "../images/electricity.jpg",
+        "description": "Analyzed patterns and causes of major power outages across the U.S. Developed visualizations and predictive models to improve outage response planning."
+    },
+    {
+        "title": "DNA Transcription and Translation Tool",
+        "image": "../images/dna.jpg.webp",
+        "description": "Created a Java tool to transcribe DNA sequences into mRNA and translate them into proteins. Enhanced functionality for biologists and educators with an easy-to-use interface."
+    },
+    {
+        "title": "Dinosaur Species Classification Model",
+        "image": "../images/dinosaur.jpg.webp",
+        "description": "Implemented a machine learning model with 85% accuracy during the UCSD Hackathon. Performed data preprocessing, feature engineering, and model optimization."
+    },
+    {
+        "title": "Custom Web Browser Development",
+        "image": "../images/website.jpeg",
+        "description": "Built a functional web browser using Python libraries. Implemented page rendering, navigation, and basic browser functionality."
+    },
+    {
+        "title": "Vehicle Simulation Project",
+        "image": "../images/class.png",
+        "description": "Simulated vehicle behaviors using object-oriented programming principles. Explored inheritance and polymorphism for efficient code design."
+    },
+    {
+        "title": "Image Processing Tool",
+        "image": "../images/image.png",
+        "description": "Developed a Python-based tool to apply image filters and transformations. Utilized libraries like OpenCV for advanced image processing."
+    },
+    {
+        "title": "Sorting Algorithms in Java",
+        "image": "../images/sorting.png",
+        "description": "Implemented popular algorithms like QuickSort and MergeSort. Optimized algorithms for efficient data processing tasks."
+    },
+    {
+        "title": "Tic-Tac-Toe AI",
+        "image": "../images/t.webp",
+        "description": "Developed an AI-powered Tic-Tac-Toe game using the Minimax algorithm. Created a user-friendly interface to play against the computer."
+    },
+    {
+        "title": "Weather App",
+        "image": "../images/weather.webp",
+        "description": "Created a real-time weather app using Python and APIs. Displayed weather conditions with a clean, user-friendly interface."
+    },
+    {
+        "title": "Flask Blog Application",
+        "image": "../images/flask-blog-thumbnail.jpg",
+        "description": "Designed a full-stack blog application using Flask and SQLAlchemy. Implemented user authentication and CRUD functionality."
+    },
+    {
+        "title": "Personal Portfolio Website",
+        "image": "../images/portfolio-thumbnail.jpg",
+        "description": "Developed a personal portfolio website hosted on GitHub Pages. Showcased academic projects, achievements, and skills."
+    },
+    {
+        "title": "Sudoku Solver",
+        "image": "../images/sudoku-solver-thumbnail.jpg",
+        "description": "Created a Python program to solve Sudoku puzzles using backtracking. Integrated a simple graphical interface for user input and visualization."
+    }
+]
