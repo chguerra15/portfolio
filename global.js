@@ -138,8 +138,8 @@ export function renderProjects(project, containerElement) {
     const article = document.createElement("article");
 
     const img = document.createElement("img");
-    img.src = project.image;
-    img.alt = project.title;
+    img.src = project.image && project.image !== "" ? project.image : "../images/coming-soon.jpg";
+    img.alt = project.title || "Image coming soon";
 
     const h2 = document.createElement("h2");
     h2.textContent = project.title;
@@ -153,6 +153,7 @@ export function renderProjects(project, containerElement) {
 
     containerElement.appendChild(article);
 }
+
 
 fetchJSON('../lib/projects.json').then(projects => {
     const container = document.querySelector('.projects');
