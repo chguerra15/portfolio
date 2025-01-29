@@ -114,7 +114,7 @@ form?.addEventListener('submit', (event) => {
 
 export async function fetchJSON(url) {
     try {
-        console.log(`Fetching JSON from URL: "${url}"`); 
+        console.log(`Fetching JSON from URL: "${url}"`);
         const response = await fetch(url);
 
         if (!response.ok) {
@@ -122,14 +122,16 @@ export async function fetchJSON(url) {
             throw new Error(`Failed to fetch projects: ${response.statusText}`);
         }
 
-        console.log(`Successfully fetched JSON from URL: "${url}"`); 
+        console.log(`Successfully fetched JSON from URL: "${url}"`);
         const data = await response.json();
-        console.log('Fetched Data:', data); 
+        console.log('Fetched Data:', data);
         return data;
     } catch (error) {
         console.error('Error fetching or parsing JSON data:', error);
+        return []; 
     }
 }
+
 
 export function renderProjects(project, containerElement) {
     if (!containerElement) {
@@ -158,17 +160,25 @@ export function renderProjects(project, containerElement) {
     console.log(`Project "${project.title}" rendered successfully.`);
 }
 
-console.log('Fetching and rendering projects...');
 fetchJSON('../lib/projects.json').then(projects => {
     const container = document.querySelector('.projects');
-    if (container) {
-        console.log('Rendering projects into the container...');
-        projects.forEach(project => renderProjects(project, container));
-        console.log('All projects rendered successfully.');
-    } else {
+    
+    if (!container) {
         console.error('Projects container not found.');
+        return;
     }
+
+    if (!projects || projects.length === 0) {
+        console.warn('No projects found in JSON file.');
+        container.innerHTML = "<p>No projects available.</p>";
+        return;
+    }
+
+    console.log('Rendering projects into the container...');
+    projects.forEach(project => renderProjects(project, container));
+    console.log('All projects rendered successfully.');
 });
+
 
 export async function fetchGitHubData(username) {
     console.log(`Fetching GitHub data for user: ${username}`);
