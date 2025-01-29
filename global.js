@@ -117,20 +117,22 @@ export async function fetchJSON(url) {
         console.log(`Fetching JSON from URL: "${url}"`);
         const response = await fetch(url);
 
+        console.log('Fetch response:', response);
+
         if (!response.ok) {
             console.error(`Failed to fetch projects: ${response.statusText}`);
             throw new Error(`Failed to fetch projects: ${response.statusText}`);
         }
 
-        console.log(`Successfully fetched JSON from URL: "${url}"`);
         const data = await response.json();
-        console.log('Fetched Data:', data);
+        console.log('Fetched Data:', data); // ✅ Debug log
         return data;
     } catch (error) {
         console.error('Error fetching or parsing JSON data:', error);
-        return []; 
+        return [];
     }
 }
+
 
 
 export function renderProjects(project, containerElement) {
@@ -139,7 +141,13 @@ export function renderProjects(project, containerElement) {
         return;
     }
 
-    console.log(`Rendering project: "${project.title}"`); 
+    if (!project || !project.title) {
+        console.error("Invalid project data:", project);
+        return;
+    }
+
+    console.log(`Rendering project: "${project.title}"`);
+
     const article = document.createElement("article");
 
     const img = document.createElement("img");
@@ -160,9 +168,11 @@ export function renderProjects(project, containerElement) {
     console.log(`Project "${project.title}" rendered successfully.`);
 }
 
+
 fetchJSON('../lib/projects.json').then(projects => {
+    console.log('Projects received for rendering:', projects); // ✅ Debug log
+
     const container = document.querySelector('.projects');
-    
     if (!container) {
         console.error('Projects container not found.');
         return;
@@ -178,6 +188,7 @@ fetchJSON('../lib/projects.json').then(projects => {
     projects.forEach(project => renderProjects(project, container));
     console.log('All projects rendered successfully.');
 });
+
 
 
 export async function fetchGitHubData(username) {

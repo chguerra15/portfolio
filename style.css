@@ -323,35 +323,4 @@ body.dark .projects > article {
   box-shadow: 0 0 4px rgba(0, 120, 212, 0.4);
 }
 
-#profile-stats {
-  padding: 20px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  background-color: #f9f9f9;
-  max-width: 400px;
-  margin: 20px auto;
-  font-family: Arial, sans-serif;
-  text-align: center;
-}
-
-#profile-stats h2 {
-  margin-bottom: 10px;
-  font-size: 20px;
-  color: #333;
-}
-
-#profile-stats dl {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-}
-
-#profile-stats dt {
-  font-weight: bold;
-}
-
-#profile-stats dd {
-  margin: 0;
-  color: #555;
-}
 
