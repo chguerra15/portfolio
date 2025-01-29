@@ -188,6 +188,8 @@ export async function fetchGitHubData(username) {
     try {
         const response = await fetch(`https://api.github.com/users/${username}`);
 
+        console.log('GitHub API Response:', response);
+
         if (!response.ok) {
             throw new Error(`GitHub API request failed: ${response.statusText}`);
         }
@@ -197,6 +199,7 @@ export async function fetchGitHubData(username) {
         return data;
     } catch (error) {
         console.error('Error fetching GitHub data:', error);
-        return null; // Return null on failure
+        return null;
     }
 }
+

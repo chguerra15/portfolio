@@ -27,7 +27,7 @@ async function loadProjects() {
 
 async function loadGitHubProfile() {
     console.log('Fetching GitHub profile...');
-    
+
     const profileStats = document.querySelector('#profile-stats');
 
     if (!profileStats) {
@@ -37,10 +37,10 @@ async function loadGitHubProfile() {
 
     profileStats.innerHTML = "<p>Loading GitHub data...</p>";
 
-    const githubData = await fetchGitHubData('chguerra15'); // Your GitHub username
+    const githubData = await fetchGitHubData('chguerra15');
 
-    if (!githubData) {
-        console.error('Failed to fetch GitHub data.');
+    if (!githubData || Object.keys(githubData).length === 0) {
+        console.error('GitHub data is missing or empty.');
         profileStats.innerHTML = "<p>GitHub data unavailable.</p>";
         return;
     }
@@ -57,6 +57,9 @@ async function loadGitHubProfile() {
         </dl>
     `;
 }
+
+loadGitHubProfile();
+
 
 // Run both functions
 (async function initialize() {
