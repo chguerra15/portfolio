@@ -120,8 +120,8 @@ export async function fetchJSON(url) {
         console.log('Fetch response:', response);
 
         if (!response.ok) {
-            console.error(`Failed to fetch projects: ${response.statusText}`);
-            throw new Error(`Failed to fetch projects: ${response.statusText}`);
+            console.error(`Failed to fetch JSON: ${response.statusText}`);
+            throw new Error(`Failed to fetch JSON: ${response.statusText}`);
         }
 
         const data = await response.json();
@@ -129,11 +129,9 @@ export async function fetchJSON(url) {
         return data;
     } catch (error) {
         console.error('Error fetching or parsing JSON data:', error);
-        return [];
+        return null; // Return null instead of an empty array
     }
 }
-
-
 
 export function renderProjects(project, containerElement) {
     if (!containerElement) {
@@ -168,39 +166,37 @@ export function renderProjects(project, containerElement) {
     console.log(`Project "${project.title}" rendered successfully.`);
 }
 
-
-fetchJSON('../lib/projects.json').then(projects => {
-    console.log('Projects received for rendering:', projects); // ✅ Debug log
-
-    const container = document.querySelector('.projects');
-    if (!container) {
-        console.error('Projects container not found.');
-        return;
-    }
+(async function loadProjects() {
+    console.log('Fetching projects...');
+    const projects = await fetchJSON('../lib/projects.json');
 
     if (!projects || projects.length === 0) {
         console.warn('No projects found in JSON file.');
-        container.innerHTML = "<p>No projects available.</p>";
+        document.querySelector('.projects').innerHTML = "<p>No projects available.</p>";
         return;
     }
 
-    console.log('Rendering projects into the container...');
+    console.log('Rendering projects...');
+    const container = document.querySelector('.projects');
     projects.forEach(project => renderProjects(project, container));
     console.log('All projects rendered successfully.');
-});
-
-
+})();
 
 export async function fetchGitHubData(username) {
     console.log(`Fetching GitHub data for user: ${username}`);
 
     try {
-        const data = await fetchJSON(`https://api.github.com/users/${username}`);
+        const response = await fetch(`https://api.github.com/users/${username}`);
+
+        if (!response.ok) {
+            throw new Error(`GitHub API request failed: ${response.statusText}`);
+        }
+
+        const data = await response.json();
         console.log('GitHub Data Fetched:', data);
         return data;
     } catch (error) {
         console.error('Error fetching GitHub data:', error);
-        return null;
+        return null; // Return null on failure
     }
 }
-
