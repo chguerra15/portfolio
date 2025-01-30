@@ -1,22 +1,4 @@
-import { fetchJSON } from './global.js';
-
-async function fetchLatestRepos(username, count = 3) {
-    try {
-        console.log(`Fetching latest ${count} repos for ${username}...`);
-        const response = await fetch(`https://api.github.com/users/${username}/repos?sort=created&per_page=${count}`);
-
-        if (!response.ok) {
-            throw new Error(`GitHub API request failed: ${response.statusText}`);
-        }
-
-        const repos = await response.json();
-        console.log('Fetched GitHub Repos:', repos);
-        return repos.slice(0, count); // Ensure we only take the last 'count' repos
-    } catch (error) {
-        console.error('Error fetching GitHub repositories:', error);
-        return [];
-    }
-}
+import { fetchJSON, fetchLatestRepos } from './global.js';
 
 async function loadProjects() {
     const projectsContainer = document.querySelector('.projects');
@@ -42,10 +24,8 @@ async function loadProjects() {
 
     projectsContainer.innerHTML = '';
 
-    // ✅ Ensure only 3 projects are rendered
-    const latestProjects = projects.slice(0, 3);
-
-    latestProjects.forEach(project => {
+    // ✅ Render only the latest 3 projects
+    projects.slice(0, 3).forEach(project => {
         const article = document.createElement('article');
         article.innerHTML = `
             <h2>${project.title ?? project.name}</h2>
@@ -68,31 +48,40 @@ async function loadGitHubProfile() {
         return;
     }
 
-    // ✅ Prevent multiple calls
     if (profileStats.dataset.loaded) {
         console.warn('GitHub stats already loaded, skipping duplicate fetch.');
         return;
     }
-    profileStats.dataset.loaded = "true";
 
+    profileStats.dataset.loaded = "true";
     profileStats.innerHTML = "<p>Loading GitHub data...</p>";
 
-    const githubData = await fetchJSON('https://api.github.com/users/chguerra15');
+    try {
+        const githubData = await fetchJSON('https://api.github.com/users/chguerra15');
 
-    if (!githubData || Object.keys(githubData).length === 0) {
-        console.error('GitHub data is missing or empty.');
+        if (!githubData || Object.keys(githubData).length === 0) {
+            throw new Error('GitHub data is missing or empty.');
+        }
+
+        profileStats.innerHTML = `
+            <h2>GitHub Profile Stats</h2>
+            <div class="github-stat-container">
+                <div class="github-stat"><dt>Followers</dt><dd>${githubData.followers ?? 0}</dd></div>
+                <div class="github-stat"><dt>Following</dt><dd>${githubData.following ?? 0}</dd></div>
+                <div class="github-stat"><dt>Public Repos</dt><dd>${githubData.public_repos ?? 0}</dd></div>
+                <div class="github-stat"><dt>Public Gists</dt><dd>${githubData.public_gists ?? 0}</dd></div>
+            </div>
+        `;
+
+        console.log('GitHub profile stats loaded successfully.');
+    } catch (error) {
+        console.error('Failed to fetch GitHub data:', error);
         profileStats.innerHTML = "<p>GitHub data unavailable.</p>";
-        return;
     }
-
-    console.log('GitHub data loaded successfully:', githubData);
-
 }
 
-// ✅ Ensure GitHub stats load only **once**
+// ✅ Ensure both functions load correctly
 (async function initialize() {
     await loadProjects();
-    if (!document.querySelector('#profile-stats').dataset.loaded) {
-        await loadGitHubProfile();
-    }
+    await loadGitHubProfile();
 })();
