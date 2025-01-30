@@ -1,10 +1,11 @@
-console.log('IT’S ALIVE!'); 
+console.log('IT’S ALIVE!');
 
 function $$(selector, context = document) {
     console.log(`Querying elements with selector: "${selector}"`);
     return Array.from(context.querySelectorAll(selector));
 }
 
+// NAVIGATION MENU
 let pages = [
     { url: '', title: 'Home' },
     { url: 'projects/', title: 'Projects' },
@@ -22,33 +23,24 @@ for (let p of pages) {
     let title = p.title;
 
     const ARE_WE_HOME = document.documentElement.classList.contains('home');
-    console.log(`Processing page: "${title}", ARE_WE_HOME: ${ARE_WE_HOME}`);
-
     if (!ARE_WE_HOME && !url.startsWith('http')) {
         url = '../' + url;
-        console.log(`Updated relative URL for "${title}": ${url}`);
     }
 
     let a = document.createElement('a');
     a.href = url;
     a.textContent = title;
-
-    a.classList.toggle(
-        'current',
-        a.host === location.host && a.pathname === location.pathname
-    );
+    a.classList.toggle('current', a.host === location.host && a.pathname === location.pathname);
 
     if (a.host !== location.host) {
         a.target = '_blank';
-        console.log(`Set target="_blank" for external link: "${title}"`);
     }
 
     nav.append(a);
 }
+console.log('Navigation menu created.');
 
-console.log('Navigation menu created and injected.');
-
-console.log('Adding theme selector dropdown...');
+// THEME SELECTOR
 document.body.insertAdjacentHTML(
     'afterbegin',
     `
@@ -66,130 +58,109 @@ document.body.insertAdjacentHTML(
 const select = document.querySelector('#theme-select');
 
 function setColorScheme(scheme) {
-    console.log(`Applying color scheme: "${scheme}"`);
-
     document.body.classList.remove('light', 'dark');
-
-    if (scheme === 'light') {
-        document.body.classList.add('light');
-    } else if (scheme === 'dark') {
-        document.body.classList.add('dark');
-    }
-
+    if (scheme === 'light') document.body.classList.add('light');
+    if (scheme === 'dark') document.body.classList.add('dark');
     localStorage.setItem('colorScheme', scheme);
-    select.value = scheme; 
-
-    console.log(`Color scheme "${scheme}" applied and saved to localStorage.`);
+    select.value = scheme;
 }
 
 select.addEventListener('input', (event) => {
-    const scheme = event.target.value;
-    console.log(`Theme selector changed to: "${scheme}"`);
-    setColorScheme(scheme);
+    setColorScheme(event.target.value);
 });
 
-const savedScheme = localStorage.getItem('colorScheme') || 'auto';
-console.log(`Loaded saved theme: "${savedScheme}"`);
-setColorScheme(savedScheme);
+setColorScheme(localStorage.getItem('colorScheme') || 'auto');
 
-console.log('Theme system initialized.');
-
+// FORM HANDLING
 const form = document.querySelector('#contact-form');
-
 form?.addEventListener('submit', (event) => {
     event.preventDefault();
-
     const data = new FormData(form);
-
-    const params = {};
-
-    for (const [key, value] of data.entries()) {
-        params[key] = encodeURIComponent(value);
-    }
-
-    const mailtoLink = `mailto:christianguerra030@gmail.com?subject=${params.subject}&body=${params.body}%0A%0AFrom: ${params.email}`;
-
+    const params = Object.fromEntries(data.entries());
+    const mailtoLink = `mailto:christianguerra030@gmail.com?subject=${encodeURIComponent(params.subject)}&body=${encodeURIComponent(params.body)}%0A%0AFrom: ${encodeURIComponent(params.email)}`;
     window.location.href = mailtoLink;
 });
 
+// FETCH JSON FUNCTION
 export async function fetchJSON(url) {
     try {
         console.log(`Fetching JSON from URL: "${url}"`);
         const response = await fetch(url);
 
-        console.log('Fetch response:', response);
-
         if (!response.ok) {
-            console.error(`Failed to fetch JSON: ${response.statusText}`);
             throw new Error(`Failed to fetch JSON: ${response.statusText}`);
         }
 
         const data = await response.json();
-        console.log('Fetched Data:', data); // ✅ Debug log
+        console.log('Fetched Data:', data);
         return data;
     } catch (error) {
         console.error('Error fetching or parsing JSON data:', error);
-        return null; // Return null instead of an empty array
+        return null; // Return null to handle errors properly
     }
 }
 
-export function renderProjects(project, containerElement) {
+// RENDER PROJECTS FUNCTION
+export function renderProjects(projects, containerElement) {
     if (!containerElement) {
         console.error("Container element is invalid.");
         return;
     }
 
-    if (!project || !project.title) {
-        console.error("Invalid project data:", project);
-        return;
-    }
-
-    console.log(`Rendering project: "${project.title}"`);
-
-    const article = document.createElement("article");
-
-    const img = document.createElement("img");
-    img.src = project.image && project.image !== "" ? project.image : "../images/coming-soon.jpg";
-    img.alt = project.title || "Image coming soon";
-
-    const h2 = document.createElement("h2");
-    h2.textContent = project.title;
-
-    const p = document.createElement("p");
-    p.textContent = project.description;
-
-    article.appendChild(img);
-    article.appendChild(h2);
-    article.appendChild(p);
-
-    containerElement.appendChild(article);
-    console.log(`Project "${project.title}" rendered successfully.`);
-}
-
-(async function loadProjects() {
-    console.log('Fetching projects...');
-    const projects = await fetchJSON('../lib/projects.json');
+    containerElement.innerHTML = ''; // Clear previous content
 
     if (!projects || projects.length === 0) {
         console.warn('No projects found in JSON file.');
-        document.querySelector('.projects').innerHTML = "<p>No projects available.</p>";
+        containerElement.innerHTML = "<p>No projects available.</p>";
         return;
     }
 
     console.log('Rendering projects...');
+    projects.forEach(project => {
+        if (!project.title) {
+            console.warn("Skipping invalid project:", project);
+            return;
+        }
+
+        const article = document.createElement("article");
+
+        const img = document.createElement("img");
+        img.src = project.image && project.image !== "" ? project.image : "../images/coming-soon.jpg";
+        img.alt = project.title || "Image coming soon";
+
+        const h2 = document.createElement("h2");
+        h2.textContent = project.title;
+
+        const p = document.createElement("p");
+        p.textContent = project.description;
+
+        article.appendChild(img);
+        article.appendChild(h2);
+        article.appendChild(p);
+        containerElement.appendChild(article);
+    });
+}
+
+// LOAD PROJECTS
+(async function loadProjects() {
+    console.log('Fetching projects...');
+    const projects = await fetchJSON('../lib/projects.json');
+
     const container = document.querySelector('.projects');
-    projects.forEach(project => renderProjects(project, container));
-    console.log('All projects rendered successfully.');
+    if (!container) {
+        console.error('Projects container not found.');
+        return;
+    }
+
+    renderProjects(projects, container);
 })();
 
+// FETCH GITHUB DATA FUNCTION
 export async function fetchGitHubData(username) {
     console.log(`Fetching GitHub data for user: ${username}`);
 
     try {
         const response = await fetch(`https://api.github.com/users/${username}`);
-
-        console.log('GitHub API Response:', response);
-
         if (!response.ok) {
             throw new Error(`GitHub API request failed: ${response.statusText}`);
         }
@@ -202,4 +173,32 @@ export async function fetchGitHubData(username) {
         return null;
     }
 }
+
+// LOAD GITHUB PROFILE
+(async function loadGitHubProfile() {
+    const profileStats = document.querySelector('#profile-stats');
+    if (!profileStats) {
+        console.error('GitHub profile container not found.');
+        return;
+    }
+
+    profileStats.innerHTML = "Loading GitHub data...";
+
+    const githubData = await fetchGitHubData('chguerra15');
+
+    if (!githubData) {
+        profileStats.innerHTML = "<p>Failed to load GitHub data.</p>";
+        return;
+    }
+
+    profileStats.innerHTML = `
+        <h2>GitHub Profile Stats</h2>
+        <dl>
+          <dt>Public Repos:</dt><dd>${githubData.public_repos ?? 'N/A'}</dd>
+          <dt>Public Gists:</dt><dd>${githubData.public_gists ?? 'N/A'}</dd>
+          <dt>Followers:</dt><dd>${githubData.followers ?? 'N/A'}</dd>
+          <dt>Following:</dt><dd>${githubData.following ?? 'N/A'}</dd>
+        </dl>
+    `;
+})();
 
