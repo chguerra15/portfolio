@@ -214,3 +214,18 @@ export async function fetchGitHubData(username) {
         </div>
     `;
 })();
+
+
+
+async function fetchLatestRepos(username, count) {
+    try {
+        const response = await fetch(`https://api.github.com/users/${username}/repos?sort=updated&per_page=${count}`);
+        if (!response.ok) {
+            throw new Error(`GitHub API error: ${response.statusText}`);
+        }
+        return await response.json();
+    } catch (error) {
+        console.error('Failed to fetch GitHub repositories:', error);
+        return [];
+    }
+}

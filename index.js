@@ -87,6 +87,7 @@ async function loadGitHubProfile() {
 
     console.log('GitHub data loaded successfully:', githubData);
 
+}
 
 // ✅ Ensure GitHub stats load only **once**
 (async function initialize() {
