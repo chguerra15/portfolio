@@ -84,148 +84,36 @@ form?.addEventListener('submit', (event) => {
 // FETCH JSON FUNCTION
 export async function fetchJSON(url) {
     try {
-        console.log(`Fetching JSON from: ${url}`);
         const response = await fetch(url);
-
         if (!response.ok) {
-            throw new Error(`Failed to fetch JSON: ${response.statusText}`);
-        }
-
-        const data = await response.json();
-        console.log('Fetched JSON:', data);
-        return data;
-    } catch (error) {
-        console.error('Error fetching or parsing JSON data:', error);
-        return null;
-    }
-}
-
-
-
-// RENDER PROJECTS FUNCTION
-export function renderProjects(projects, containerElement) {
-    if (!containerElement) {
-        console.error("Container element is invalid.");
-        return;
-    }
-
-    containerElement.innerHTML = ''; // Clear previous content
-
-    if (!projects || projects.length === 0) {
-        console.warn('No projects found in JSON file.');
-        containerElement.innerHTML = "<p>No projects available.</p>";
-        return;
-    }
-
-    console.log('Rendering projects...');
-    projects.forEach(project => {
-        if (!project.title) {
-            console.warn("Skipping invalid project:", project);
-            return;
-        }
-
-        const article = document.createElement("article");
-
-        const img = document.createElement("img");
-        img.src = project.image && project.image !== "" ? project.image : "../images/coming-soon.jpg";
-        img.alt = project.title || "Image coming soon";
-
-        const h2 = document.createElement("h2");
-        h2.textContent = project.title;
-
-        const p = document.createElement("p");
-        p.textContent = project.description;
-
-        article.appendChild(img);
-        article.appendChild(h2);
-        article.appendChild(p);
-        containerElement.appendChild(article);
-    });
-}
-
-// LOAD PROJECTS
-(async function loadProjects() {
-    console.log('Fetching projects...');
-    const projects = await fetchJSON('../lib/projects.json');
-
-    const container = document.querySelector('.projects');
-    if (!container) {
-        console.error('Projects container not found.');
-        return;
-    }
-
-    renderProjects(projects, container);
-})();
-
-// FETCH GITHUB DATA FUNCTION
-export async function fetchGitHubData(username) {
-    console.log(`Fetching GitHub data for user: ${username}`);
-
-    try {
-        const response = await fetch(`https://api.github.com/users/${username}`);
-        if (!response.ok) {
-            throw new Error(`GitHub API request failed: ${response.statusText}`);
-        }
-
-        const data = await response.json();
-        console.log('GitHub Data Fetched:', data);
-        return data;
-    } catch (error) {
-        console.error('Error fetching GitHub data:', error);
-        return null;
-    }
-}
-
-// LOAD GITHUB PROFILE
-(async function loadGitHubProfile() {
-    const profileStats = document.querySelector('#profile-stats');
-    if (!profileStats) {
-        console.error('GitHub profile container not found.');
-        return;
-    }
-
-    profileStats.innerHTML = "<h2>My GitHub Stats</h2>";
-
-    const githubData = await fetchGitHubData('chguerra15');
-
-    if (!githubData) {
-        profileStats.innerHTML += "<p>Failed to load GitHub data.</p>";
-        return;
-    }
-
-    profileStats.innerHTML += `
-        <div class="github-stat-container">
-            <dl class="github-stat">
-                <dt>Followers</dt>
-                <dd>${githubData.followers ?? 'N/A'}</dd>
-            </dl>
-            <dl class="github-stat">
-                <dt>Following</dt>
-                <dd>${githubData.following ?? 'N/A'}</dd>
-            </dl>
-            <dl class="github-stat">
-                <dt>Public Repos</dt>
-                <dd>${githubData.public_repos ?? 'N/A'}</dd>
-            </dl>
-            <dl class="github-stat">
-                <dt>Public Gists</dt>
-                <dd>${githubData.public_gists ?? 'N/A'}</dd>
-            </dl>
-        </div>
-    `;
-})();
-
-
-
-async function fetchLatestRepos(username, count) {
-    try {
-        const response = await fetch(`https://api.github.com/users/${username}/repos?sort=updated&per_page=${count}`);
-        if (!response.ok) {
-            throw new Error(`GitHub API error: ${response.statusText}`);
+            throw new Error(`Failed to fetch: ${response.statusText}`);
         }
         return await response.json();
     } catch (error) {
-        console.error('Failed to fetch GitHub repositories:', error);
+        console.error('Error fetching JSON:', error);
         return [];
     }
+}
+
+export async function fetchGitHubData(username) {
+    return fetchJSON(`https://api.github.com/users/${username}`);
+}
+
+export function renderProjects(projects, containerElement, headingLevel = 'h2') {
+    if (!containerElement) {
+        console.error('Invalid container element');
+        return;
+    }
+    
+    containerElement.innerHTML = '';
+    
+    projects.forEach(project => {
+        const article = document.createElement('article');
+        article.innerHTML = `
+            <${headingLevel}>${project.title}</${headingLevel}>
+            <img src="${project.image}" alt="${project.title}">
+            <p>${project.description}</p>
+        `;
+        containerElement.appendChild(article);
+    });
 }
