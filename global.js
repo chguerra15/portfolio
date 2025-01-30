@@ -182,23 +182,33 @@ export async function fetchGitHubData(username) {
         return;
     }
 
-    profileStats.innerHTML = "Loading GitHub data...";
+    profileStats.innerHTML = "<h2>My GitHub Stats</h2>";
 
     const githubData = await fetchGitHubData('chguerra15');
 
     if (!githubData) {
-        profileStats.innerHTML = "<p>Failed to load GitHub data.</p>";
+        profileStats.innerHTML += "<p>Failed to load GitHub data.</p>";
         return;
     }
 
-    profileStats.innerHTML = `
-        <h2>GitHub Profile Stats</h2>
-        <dl>
-          <dt>Public Repos:</dt><dd>${githubData.public_repos ?? 'N/A'}</dd>
-          <dt>Public Gists:</dt><dd>${githubData.public_gists ?? 'N/A'}</dd>
-          <dt>Followers:</dt><dd>${githubData.followers ?? 'N/A'}</dd>
-          <dt>Following:</dt><dd>${githubData.following ?? 'N/A'}</dd>
-        </dl>
+    profileStats.innerHTML += `
+        <div class="github-stat-container">
+            <dl class="github-stat">
+                <dt>Followers</dt>
+                <dd>${githubData.followers ?? 'N/A'}</dd>
+            </dl>
+            <dl class="github-stat">
+                <dt>Following</dt>
+                <dd>${githubData.following ?? 'N/A'}</dd>
+            </dl>
+            <dl class="github-stat">
+                <dt>Public Repos</dt>
+                <dd>${githubData.public_repos ?? 'N/A'}</dd>
+            </dl>
+            <dl class="github-stat">
+                <dt>Public Gists</dt>
+                <dd>${githubData.public_gists ?? 'N/A'}</dd>
+            </dl>
+        </div>
     `;
 })();
-
