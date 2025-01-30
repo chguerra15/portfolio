@@ -5,6 +5,7 @@ function $$(selector, context = document) {
     return Array.from(context.querySelectorAll(selector));
 }
 
+// NAVIGATION MENU
 let pages = [
     { url: '', title: 'Home' },
     { url: 'projects/', title: 'Projects' },
@@ -22,33 +23,24 @@ for (let p of pages) {
     let title = p.title;
 
     const ARE_WE_HOME = document.documentElement.classList.contains('home');
-    console.log(`Processing page: "${title}", ARE_WE_HOME: ${ARE_WE_HOME}`);
-
     if (!ARE_WE_HOME && !url.startsWith('http')) {
         url = '../' + url;
-        console.log(`Updated relative URL for "${title}": ${url}`);
     }
 
     let a = document.createElement('a');
     a.href = url;
     a.textContent = title;
-
-    a.classList.toggle(
-        'current',
-        a.host === location.host && a.pathname === location.pathname
-    );
+    a.classList.toggle('current', a.host === location.host && a.pathname === location.pathname);
 
     if (a.host !== location.host) {
         a.target = '_blank';
-        console.log(`Set target="_blank" for external link: "${title}"`);
     }
 
     nav.append(a);
 }
+console.log('Navigation menu created.');
 
-console.log('Navigation menu created and injected.');
-
-console.log('Adding theme selector dropdown...');
+// THEME SELECTOR
 document.body.insertAdjacentHTML(
     'afterbegin',
     `
@@ -66,51 +58,18 @@ document.body.insertAdjacentHTML(
 const select = document.querySelector('#theme-select');
 
 function setColorScheme(scheme) {
-    console.log(`Applying color scheme: "${scheme}"`);
-
     document.body.classList.remove('light', 'dark');
-
-    if (scheme === 'light') {
-        document.body.classList.add('light');
-    } else if (scheme === 'dark') {
-        document.body.classList.add('dark');
-    }
-
+    if (scheme === 'light') document.body.classList.add('light');
+    if (scheme === 'dark') document.body.classList.add('dark');
     localStorage.setItem('colorScheme', scheme);
-    select.value = scheme; 
-
-    console.log(`Color scheme "${scheme}" applied and saved to localStorage.`);
+    select.value = scheme;
 }
 
 select.addEventListener('input', (event) => {
-    const scheme = event.target.value;
-    console.log(`Theme selector changed to: "${scheme}"`);
-    setColorScheme(scheme);
+    setColorScheme(event.target.value);
 });
 
-const savedScheme = localStorage.getItem('colorScheme') || 'auto';
-console.log(`Loaded saved theme: "${savedScheme}"`);
-setColorScheme(savedScheme);
-
-console.log('Theme system initialized.');
-
-const form = document.querySelector('#contact-form');
-
-form?.addEventListener('submit', (event) => {
-    event.preventDefault();
-
-    const data = new FormData(form);
-
-    const params = {};
-
-    for (const [key, value] of data.entries()) {
-        params[key] = encodeURIComponent(value);
-    }
-
-    const mailtoLink = `mailto:christianguerra030@gmail.com?subject=${params.subject}&body=${params.body}%0A%0AFrom: ${params.email}`;
-
-    window.location.href = mailtoLink;
-});
+setColorScheme(localStorage.getItem('colorScheme') || 'auto');
 
 // FETCH JSON FUNCTION
 export async function fetchJSON(url) {
@@ -175,7 +134,7 @@ export function renderProjects(projects, containerElement, headingLevel = 'h2') 
 // LOAD PROJECTS
 (async function loadProjects() {
     console.log('Fetching projects...');
-    const projects = await fetchJSON('./lib/projects.json');
+    const projects = await fetchJSON('../lib/projects.json');
 
     const container = document.querySelector('.projects');
     if (!container) {
@@ -183,11 +142,5 @@ export function renderProjects(projects, containerElement, headingLevel = 'h2') 
         return;
     }
 
-    if (window.location.pathname.includes('projects')) {
-        renderProjects(projects, container);
-    } else {
-        renderProjects(projects.slice(0, 3), container);
-    }
+    renderProjects(projects, container);
 })();
-
-
