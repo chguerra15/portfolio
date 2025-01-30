@@ -59,6 +59,8 @@ async function loadProjects() {
 }
 
 async function loadGitHubProfile() {
+    console.log('Fetching GitHub profile...');
+
     const profileStats = document.querySelector('#profile-stats');
 
     if (!profileStats) {
@@ -66,7 +68,7 @@ async function loadGitHubProfile() {
         return;
     }
 
-    // Prevent duplicate rendering
+    // ✅ Prevent multiple calls
     if (profileStats.dataset.loaded) {
         console.warn('GitHub stats already loaded, skipping duplicate fetch.');
         return;
@@ -85,6 +87,7 @@ async function loadGitHubProfile() {
 
     console.log('GitHub data loaded successfully:', githubData);
 
+    // ✅ Clear existing content before adding new stats
     profileStats.innerHTML = `
         <div class="github-card">
             <h2>My GitHub Stats</h2>
@@ -98,7 +101,7 @@ async function loadGitHubProfile() {
     `;
 }
 
-// Run both functions, ensuring GitHub stats only load once
+// ✅ Ensure GitHub stats load only **once**
 (async function initialize() {
     await loadProjects();
     if (!document.querySelector('#profile-stats').dataset.loaded) {
