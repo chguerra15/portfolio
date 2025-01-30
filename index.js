@@ -1,10 +1,19 @@
 import { fetchJSON, renderProjects, fetchGitHubData, renderGitHubStats } from './global.js';
 
-async function loadProjects() {
+async function loadHomepageProjects() {
     const projectsContainer = document.querySelector('.projects');
-    if (!projectsContainer) return;
-    
+
+    if (!projectsContainer) {
+        console.error("Homepage projects container not found.");
+        return;
+    }
+
     const projects = await fetchJSON('./lib/projects.json');
+    if (!projects || projects.length === 0) {
+        projectsContainer.innerHTML = "<p>No recent projects available.</p>";
+        return;
+    }
+
     renderProjects(projects.slice(0, 3), projectsContainer, 'h2');
 }
 
@@ -16,20 +25,10 @@ async function loadGitHubProfile() {
     renderGitHubStats(githubData, profileStats);
 }
 
-(async function initialize() {
-    await loadProjects();
-    await loadGitHubProfile();
-})();
-
-// projects.js
-import { fetchJSON, renderProjects } from '../global.js';
-
-async function loadAllProjects() {
-    const projectsContainer = document.querySelector('.projects');
-    if (!projectsContainer) return;
-    
-    const projects = await fetchJSON('../lib/projects.json');
-    renderProjects(projects, projectsContainer, 'h2');
+// ✅ Ensure scripts only run on the correct pages
+if (document.documentElement.classList.contains('home')) {
+    (async function initializeHomepage() {
+        await loadHomepageProjects();
+        await loadGitHubProfile();
+    })();
 }
-
-loadAllProjects();
