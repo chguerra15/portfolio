@@ -87,19 +87,6 @@ async function loadGitHubProfile() {
 
     console.log('GitHub data loaded successfully:', githubData);
 
-    // ✅ Clear existing content before adding new stats
-    profileStats.innerHTML = `
-        <div class="github-card">
-            <h2>My GitHub Stats</h2>
-            <dl class="github-stats">
-                <div class="github-stat"><dt>Followers</dt><dd>${githubData.followers ?? 'N/A'}</dd></div>
-                <div class="github-stat"><dt>Following</dt><dd>${githubData.following ?? 'N/A'}</dd></div>
-                <div class="github-stat"><dt>Public Repos</dt><dd>${githubData.public_repos ?? 'N/A'}</dd></div>
-                <div class="github-stat"><dt>Public Gists</dt><dd>${githubData.public_gists ?? 'N/A'}</dd></div>
-            </dl>
-        </div>
-    `;
-}
 
 // ✅ Ensure GitHub stats load only **once**
 (async function initialize() {
