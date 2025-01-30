@@ -84,7 +84,7 @@ form?.addEventListener('submit', (event) => {
 // FETCH JSON FUNCTION
 export async function fetchJSON(url) {
     try {
-        console.log(`Fetching JSON from URL: "${url}"`);
+        console.log(`Fetching JSON from: ${url}`);
         const response = await fetch(url);
 
         if (!response.ok) {
@@ -92,13 +92,14 @@ export async function fetchJSON(url) {
         }
 
         const data = await response.json();
-        console.log('Fetched Data:', data);
+        console.log('Fetched Projects Data:', data); // ✅ Debug log
         return data;
     } catch (error) {
         console.error('Error fetching or parsing JSON data:', error);
-        return null; // Return null to handle errors properly
+        return [];
     }
 }
+
 
 // RENDER PROJECTS FUNCTION
 export function renderProjects(projects, containerElement) {
