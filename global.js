@@ -92,13 +92,14 @@ export async function fetchJSON(url) {
         }
 
         const data = await response.json();
-        console.log('Fetched Projects Data:', data); // ✅ Debug log
+        console.log('Fetched JSON:', data);
         return data;
     } catch (error) {
         console.error('Error fetching or parsing JSON data:', error);
-        return [];
+        return null;
     }
 }
+
 
 
 // RENDER PROJECTS FUNCTION
