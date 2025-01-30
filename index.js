@@ -1,22 +1,41 @@
-import { fetchJSON, renderProjects } from '../global.js';
 import { fetchGitHubData } from '../global.js';
 
-async function loadProjects() {
-    const projects = await fetchJSON('./lib/projects.json');
-
-    if (!projects || projects.length === 0) {
-        document.querySelector('.projects').innerHTML = "<p>No projects available.</p>";
-        return;
+async function fetchLatestRepos(username, count = 3) {
+    const response = await fetch(`https://api.github.com/users/${username}/repos?sort=created&per_page=${count}`);
+    if (!response.ok) {
+        console.error(`GitHub API request failed: ${response.statusText}`);
+        return [];
     }
+    return await response.json();
+}
 
-    const latestProjects = projects.slice(0, 3);
+async function loadProjects() {
     const projectsContainer = document.querySelector('.projects');
 
     if (!projectsContainer) return;
 
+    projectsContainer.innerHTML = "<p>Loading projects...</p>";
+
+    const repos = await fetchLatestRepos('chguerra15', 3);
+
+    if (!repos || repos.length === 0) {
+        projectsContainer.innerHTML = "<p>No projects available.</p>";
+        return;
+    }
+
     projectsContainer.innerHTML = '';
 
-    latestProjects.forEach(project => renderProjects(project, projectsContainer));
+    repos.forEach(repo => {
+        const article = document.createElement('article');
+
+        article.innerHTML = `
+            <h2>${repo.name}</h2>
+            <p>${repo.description ?? 'No description available.'}</p>
+            <a href="${repo.html_url}" target="_blank">View on GitHub</a>
+        `;
+
+        projectsContainer.appendChild(article);
+    });
 }
 
 async function loadGitHubProfile() {
