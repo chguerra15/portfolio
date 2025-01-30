@@ -328,50 +328,53 @@ body.dark .projects > article {
 /* Adjust main layout */
 .container {
   display: flex;
-  align-items: flex-start; /* Align items at the top */
+  align-items: flex-start;
   justify-content: space-between;
   gap: 2rem;
+  flex-wrap: wrap; /* Ensures responsiveness on smaller screens */
+}
+
+/* Left side (Text content) */
+.content-section {
+  flex: 2;
+  min-width: 300px;
 }
 
 /* Profile Image on the Right */
 .profile-section {
   flex: 1;
   display: flex;
-  justify-content: flex-end; /* Moves the image to the right */
+  justify-content: flex-end;
+  align-items: center;
 }
 
 .profile-section img {
-  width: 200px; /* Adjust size */
+  width: 200px;
   height: 200px;
-  border-radius: 50%; /* Circular shape */
+  border-radius: 50%;
   object-fit: cover;
-  border: 4px solid #fff; /* White border */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Shadow effect */
+  border: 4px solid #fff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
-/* Content (text) stays on the left */
-.content-section {
-  flex: 2;
-}
-
-/* GitHub Stats Section - Align Title & Stats */
+/* GitHub Stats Section */
 #profile-stats {
   display: flex;
   flex-direction: column;
-  align-items: center; /* Centering content */
+  align-items: center;
   text-align: center;
   background: #fff;
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   max-width: 800px;
-  margin: 20px auto;
+  margin: 40px auto 20px auto; /* Center the stats */
 }
 
 #profile-stats h2 {
   font-size: 24px;
   font-weight: bold;
-  margin-bottom: 15px; /* Space below title */
+  margin-bottom: 15px;
 }
 
 /* Stats Grid Layout */
@@ -379,12 +382,14 @@ body.dark .projects > article {
   display: flex;
   justify-content: space-around;
   width: 100%;
+  flex-wrap: wrap;
 }
 
 .github-stat {
   display: flex;
   flex-direction: column;
   align-items: center;
+  min-width: 120px;
 }
 
 .github-stat dt {
@@ -400,4 +405,18 @@ body.dark .projects > article {
   font-weight: bold;
   color: #000;
   margin: 0;
+}
+
+/* Responsive adjustments for smaller screens */
+@media (max-width: 768px) {
+  .container {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .profile-section {
+    justify-content: center;
+    margin-top: 20px;
+  }
 }
