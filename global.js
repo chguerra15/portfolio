@@ -96,7 +96,7 @@ export async function fetchJSON(url) {
         return data;
     } catch (error) {
         console.error('Error fetching or parsing JSON data:', error);
-        return null;
+        return [];
     }
 }
 
@@ -144,7 +144,7 @@ export function renderProjects(projects, containerElement, headingLevel = 'h2') 
 // LOAD PROJECTS
 (async function loadProjects() {
     console.log('Fetching projects...');
-    const projects = await fetchJSON('../lib/projects.json');
+    const projects = await fetchJSON('./lib/projects.json');
 
     const container = document.querySelector('.projects');
     if (!container) {
@@ -152,5 +152,9 @@ export function renderProjects(projects, containerElement, headingLevel = 'h2') 
         return;
     }
 
-    renderProjects(projects.slice(0, 3), container);
+    if (document.documentElement.classList.contains('home')) {
+        renderProjects(projects.slice(0, 3), container);
+    } else {
+        renderProjects(projects, container);
+    }
 })();
