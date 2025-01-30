@@ -152,5 +152,5 @@ export function renderProjects(projects, containerElement, headingLevel = 'h2') 
         return;
     }
 
-    renderProjects(projects, container);
+    renderProjects(projects.slice(0, 3), container);
 })();
