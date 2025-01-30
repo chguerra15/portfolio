@@ -84,53 +84,73 @@ form?.addEventListener('submit', (event) => {
 // FETCH JSON FUNCTION
 export async function fetchJSON(url) {
     try {
+        console.log(`Fetching JSON from: ${url}`);
         const response = await fetch(url);
+
         if (!response.ok) {
-            throw new Error(`Failed to fetch: ${response.statusText}`);
+            throw new Error(`Failed to fetch JSON: ${response.statusText}`);
         }
-        return await response.json();
+
+        const data = await response.json();
+        console.log('Fetched JSON:', data);
+        return data;
     } catch (error) {
-        console.error('Error fetching JSON:', error);
-        return [];
+        console.error('Error fetching or parsing JSON data:', error);
+        return null;
     }
 }
 
-export async function fetchGitHubData(username) {
-    return fetchJSON(`https://api.github.com/users/${username}`);
-}
-
+// RENDER PROJECTS FUNCTION
 export function renderProjects(projects, containerElement, headingLevel = 'h2') {
     if (!containerElement) {
-        console.error('Invalid container element');
+        console.error("Container element is invalid.");
         return;
     }
-    
-    containerElement.innerHTML = '';
-    
+
+    containerElement.innerHTML = ''; // Clear previous content
+
+    if (!projects || projects.length === 0) {
+        console.warn('No projects found in JSON file.');
+        containerElement.innerHTML = "<p>No projects available.</p>";
+        return;
+    }
+
+    console.log('Rendering projects...');
     projects.forEach(project => {
-        const article = document.createElement('article');
-        article.innerHTML = `
-            <${headingLevel}>${project.title}</${headingLevel}>
-            <img src="${project.image}" alt="${project.title}">
-            <p>${project.description}</p>
-        `;
+        if (!project.title) {
+            console.warn("Skipping invalid project:", project);
+            return;
+        }
+
+        const article = document.createElement("article");
+
+        const img = document.createElement("img");
+        img.src = project.image && project.image !== "" ? project.image : "../images/coming-soon.jpg";
+        img.alt = project.title || "Image coming soon";
+
+        const h2 = document.createElement("h2");
+        h2.textContent = project.title;
+
+        const p = document.createElement("p");
+        p.textContent = project.description;
+
+        article.appendChild(img);
+        article.appendChild(h2);
+        article.appendChild(p);
         containerElement.appendChild(article);
     });
 }
 
-export function renderGitHubStats(githubData, containerElement) {
-    if (!containerElement) {
-        console.error('Invalid container element');
+// LOAD PROJECTS
+(async function loadProjects() {
+    console.log('Fetching projects...');
+    const projects = await fetchJSON('../lib/projects.json');
+
+    const container = document.querySelector('.projects');
+    if (!container) {
+        console.error('Projects container not found.');
         return;
     }
 
-    containerElement.innerHTML = `
-        <h2>My GitHub Stats</h2>
-        <div class="github-stat-container">
-            <div class="github-stat"><dt>FOLLOWERS</dt><dd>${githubData.followers ?? 0}</dd></div>
-            <div class="github-stat"><dt>FOLLOWING</dt><dd>${githubData.following ?? 0}</dd></div>
-            <div class="github-stat"><dt>PUBLIC REPOS</dt><dd>${githubData.public_repos ?? 0}</dd></div>
-            <div class="github-stat"><dt>PUBLIC GISTS</dt><dd>${githubData.public_gists ?? 0}</dd></div>
-        </div>
-    `;
-}
+    renderProjects(projects, container);
+})();
