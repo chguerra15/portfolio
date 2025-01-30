@@ -142,5 +142,9 @@ export function renderProjects(projects, containerElement, headingLevel = 'h2') 
         return;
     }
 
-    renderProjects(projects, container);
+    if (document.body.classList.contains('home')) {
+        renderProjects(projects.slice(0, 3), container);
+    } else {
+        renderProjects(projects, container);
+    }
 })();
