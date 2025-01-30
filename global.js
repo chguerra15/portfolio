@@ -90,3 +90,36 @@ export async function fetchJSON(url) {
     }
 }
 
+// FETCH AND RENDER PROJECTS ON PROJECTS PAGE
+async function loadAllProjects() {
+    const projectsContainer = document.querySelector('.projects');
+
+    if (!projectsContainer) {
+        console.error("Projects page container not found.");
+        return;
+    }
+
+    console.log("Fetching all projects...");
+    const projects = await fetchJSON('../lib/projects.json');
+    console.log("Projects fetched:", projects);
+
+    if (!projects || projects.length === 0) {
+        projectsContainer.innerHTML = "<p>No projects available.</p>";
+        return;
+    }
+
+    projects.forEach(project => {
+        const article = document.createElement('article');
+        article.innerHTML = `
+            <img src="${project.image}" alt="${project.title}">
+            <h2>${project.title}</h2>
+            <p>${project.description}</p>
+        `;
+        projectsContainer.appendChild(article);
+    });
+}
+
+// Load projects only if on the projects page
+if (!document.documentElement.classList.contains('home')) {
+    loadAllProjects();
+}
