@@ -117,3 +117,20 @@ export function renderProjects(projects, containerElement, headingLevel = 'h2') 
         containerElement.appendChild(article);
     });
 }
+
+export function renderGitHubStats(githubData, containerElement) {
+    if (!containerElement) {
+        console.error('Invalid container element');
+        return;
+    }
+
+    containerElement.innerHTML = `
+        <h2>My GitHub Stats</h2>
+        <div class="github-stat-container">
+            <div class="github-stat"><dt>FOLLOWERS</dt><dd>${githubData.followers ?? 0}</dd></div>
+            <div class="github-stat"><dt>FOLLOWING</dt><dd>${githubData.following ?? 0}</dd></div>
+            <div class="github-stat"><dt>PUBLIC REPOS</dt><dd>${githubData.public_repos ?? 0}</dd></div>
+            <div class="github-stat"><dt>PUBLIC GISTS</dt><dd>${githubData.public_gists ?? 0}</dd></div>
+        </div>
+    `;
+}

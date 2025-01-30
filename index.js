@@ -1,4 +1,4 @@
-import { fetchJSON, renderProjects, fetchGitHubData } from './global.js';
+import { fetchJSON, renderProjects, fetchGitHubData, renderGitHubStats } from './global.js';
 
 async function loadProjects() {
     const projectsContainer = document.querySelector('.projects');
@@ -13,17 +13,23 @@ async function loadGitHubProfile() {
     if (!profileStats) return;
     
     const githubData = await fetchGitHubData('chguerra15');
-    profileStats.innerHTML = `
-        <dl>
-          <dt>Public Repos:</dt><dd>${githubData.public_repos}</dd>
-          <dt>Public Gists:</dt><dd>${githubData.public_gists}</dd>
-          <dt>Followers:</dt><dd>${githubData.followers}</dd>
-          <dt>Following:</dt><dd>${githubData.following}</dd>
-        </dl>
-    `;
+    renderGitHubStats(githubData, profileStats);
 }
 
 (async function initialize() {
     await loadProjects();
     await loadGitHubProfile();
 })();
+
+// projects.js
+import { fetchJSON, renderProjects } from '../global.js';
+
+async function loadAllProjects() {
+    const projectsContainer = document.querySelector('.projects');
+    if (!projectsContainer) return;
+    
+    const projects = await fetchJSON('../lib/projects.json');
+    renderProjects(projects, projectsContainer, 'h2');
+}
+
+loadAllProjects();
