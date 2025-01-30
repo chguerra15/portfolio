@@ -11,7 +11,7 @@ async function fetchLatestRepos(username, count = 3) {
 
         const repos = await response.json();
         console.log('Fetched GitHub Repos:', repos);
-        return repos;
+        return repos.slice(0, count); // Ensure we only take the last 'count' repos
     } catch (error) {
         console.error('Error fetching GitHub repositories:', error);
         return [];
@@ -42,7 +42,10 @@ async function loadProjects() {
 
     projectsContainer.innerHTML = '';
 
-    projects.forEach(project => {
+    // ✅ Ensure only 3 projects are rendered
+    const latestProjects = projects.slice(0, 3);
+
+    latestProjects.forEach(project => {
         const article = document.createElement('article');
         article.innerHTML = `
             <h2>${project.title ?? project.name}</h2>
@@ -56,14 +59,19 @@ async function loadProjects() {
 }
 
 async function loadGitHubProfile() {
-    console.log('Fetching GitHub profile...');
-
     const profileStats = document.querySelector('#profile-stats');
 
     if (!profileStats) {
         console.error('GitHub profile container not found.');
         return;
     }
+
+    // Prevent duplicate rendering
+    if (profileStats.dataset.loaded) {
+        console.warn('GitHub stats already loaded, skipping duplicate fetch.');
+        return;
+    }
+    profileStats.dataset.loaded = "true";
 
     profileStats.innerHTML = "<p>Loading GitHub data...</p>";
 
@@ -90,7 +98,10 @@ async function loadGitHubProfile() {
     `;
 }
 
+// Run both functions, ensuring GitHub stats only load once
 (async function initialize() {
     await loadProjects();
-    await loadGitHubProfile();
+    if (!document.querySelector('#profile-stats').dataset.loaded) {
+        await loadGitHubProfile();
+    }
 })();
