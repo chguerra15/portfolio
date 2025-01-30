@@ -1,4 +1,4 @@
-import { fetchJSON } from '../global.js';
+import { fetchJSON } from './global.js';
 
 async function fetchLatestRepos(username, count = 3) {
     try {
@@ -10,7 +10,7 @@ async function fetchLatestRepos(username, count = 3) {
         }
 
         const repos = await response.json();
-        console.log('Fetched Repos:', repos);
+        console.log('Fetched GitHub Repos:', repos);
         return repos;
     } catch (error) {
         console.error('Error fetching GitHub repositories:', error);
@@ -28,7 +28,7 @@ async function loadProjects() {
 
     projectsContainer.innerHTML = "<p>Loading projects...</p>";
 
-    let projects = await fetchJSON('../lib/projects.json');
+    let projects = await fetchJSON('./lib/projects.json');
 
     if (!projects || projects.length === 0) {
         console.warn('No projects found in JSON file. Fetching from GitHub instead...');
@@ -54,3 +54,43 @@ async function loadProjects() {
 
     console.log('Latest projects rendered successfully.');
 }
+
+async function loadGitHubProfile() {
+    console.log('Fetching GitHub profile...');
+
+    const profileStats = document.querySelector('#profile-stats');
+
+    if (!profileStats) {
+        console.error('GitHub profile container not found.');
+        return;
+    }
+
+    profileStats.innerHTML = "<p>Loading GitHub data...</p>";
+
+    const githubData = await fetchJSON('https://api.github.com/users/chguerra15');
+
+    if (!githubData || Object.keys(githubData).length === 0) {
+        console.error('GitHub data is missing or empty.');
+        profileStats.innerHTML = "<p>GitHub data unavailable.</p>";
+        return;
+    }
+
+    console.log('GitHub data loaded successfully:', githubData);
+
+    profileStats.innerHTML = `
+        <div class="github-card">
+            <h2>My GitHub Stats</h2>
+            <dl class="github-stats">
+                <div class="github-stat"><dt>Followers</dt><dd>${githubData.followers ?? 'N/A'}</dd></div>
+                <div class="github-stat"><dt>Following</dt><dd>${githubData.following ?? 'N/A'}</dd></div>
+                <div class="github-stat"><dt>Public Repos</dt><dd>${githubData.public_repos ?? 'N/A'}</dd></div>
+                <div class="github-stat"><dt>Public Gists</dt><dd>${githubData.public_gists ?? 'N/A'}</dd></div>
+            </dl>
+        </div>
+    `;
+}
+
+(async function initialize() {
+    await loadProjects();
+    await loadGitHubProfile();
+})();
