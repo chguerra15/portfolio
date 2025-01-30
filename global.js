@@ -152,9 +152,10 @@ export function renderProjects(projects, containerElement, headingLevel = 'h2') 
         return;
     }
 
-    if (document.documentElement.classList.contains('home')) {
-        renderProjects(projects.slice(0, 3), container);
-    } else {
+    if (window.location.pathname.includes('projects')) {
         renderProjects(projects, container);
+    } else {
+        renderProjects(projects.slice(0, 3), container);
     }
 })();
+
