@@ -113,10 +113,12 @@ async function loadAllProjects() {
         article.innerHTML = `
             <img src="${project.image}" alt="${project.title}">
             <h2>${project.title}</h2>
+            <p><strong>Year:</strong> ${project.year}</p>
             <p>${project.description}</p>
         `;
         projectsContainer.appendChild(article);
     });
+    
 }
 
 // Load projects only if on the projects page
