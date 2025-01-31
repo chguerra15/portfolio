@@ -116,8 +116,18 @@ async function loadAllProjects() {
             <p><strong>Year:</strong> ${project.year}</p>
             <p>${project.description}</p>
         `;
+        
+        const yearElement = document.createElement('p');
+        yearElement.innerHTML = `<strong>Year:</strong> ${project.year}`;
+        article.appendChild(yearElement);
+        
+        const descriptionElement = document.createElement('p');
+        descriptionElement.textContent = project.description;
+        article.appendChild(descriptionElement);
+        
         projectsContainer.appendChild(article);
     });
+    
     
 }
 
