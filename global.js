@@ -113,21 +113,11 @@ async function loadAllProjects() {
         article.innerHTML = `
             <img src="${project.image}" alt="${project.title}">
             <h2>${project.title}</h2>
-            <p><strong>Year:</strong> ${project.year}</p>
+            <p1><strong>Year:</strong> ${project.year}</p1>
             <p>${project.description}</p>
         `;
-        
-        const yearElement = document.createElement('p');
-        yearElement.innerHTML = `<strong>Year:</strong> ${project.year}`;
-        article.appendChild(yearElement);
-        
-        const descriptionElement = document.createElement('p');
-        descriptionElement.textContent = project.description;
-        article.appendChild(descriptionElement);
-        
         projectsContainer.appendChild(article);
     });
-    
     
 }
 
