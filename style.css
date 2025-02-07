@@ -419,4 +419,12 @@ body.dark .projects > article {
     justify-content: center;
     margin-top: 20px;
   }
+
+  /*lab5*/
+  #projects-pie-plot {
+    max-width: 20em;
+    margin: 2em auto;
+    display: block;
+}
+
 }
