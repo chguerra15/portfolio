@@ -421,11 +421,12 @@ body.dark .projects > article {
   }
 
   /*lab5*/
-  #projects-pie-plot {
-    max-width: 20em;
-    margin-block: 2em;
-  
+  #projects-plot {
+    max-width: 10em;  /* Reduce the size */
+    height: auto;      /* Maintain aspect ratio */
+    margin: 2em auto;  /* Add spacing */
     overflow: visible;
   }
+  
 
 }
