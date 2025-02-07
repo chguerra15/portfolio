@@ -422,10 +422,9 @@ body.dark .projects > article {
 
   /*lab5*/
   #projects-pie-plot {
-    max-width: 10em;  /* Reduce the size */
-    height: auto;      /* Maintain aspect ratio */
-    display: block;    /* Center the SVG */
-    margin: 2em auto;  /* Add spacing */
+    max-width: 20em;
+    margin-block: 2em;
+  
     overflow: visible;
   }
 
