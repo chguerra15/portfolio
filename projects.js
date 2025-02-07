@@ -17,7 +17,9 @@ async function loadAllProjects() {
     renderProjects(projects, projectsContainer, 'h2');
 }
 
-// ✅ Ensure this only runs on the Projects page
 if (!document.documentElement.classList.contains('home')) {
     loadAllProjects();
 }
+
+import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7.9.0/+esm";
+
