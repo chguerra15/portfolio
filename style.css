@@ -423,8 +423,9 @@ body.dark .projects > article {
   /*lab5*/
   #projects-pie-plot {
     max-width: 20em;
-    margin: 2em auto;
-    display: block;
-}
+    margin-block: 2em;
+  
+    overflow: visible;
+  }
 
 }
