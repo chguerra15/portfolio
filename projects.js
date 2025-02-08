@@ -23,7 +23,6 @@ if (!document.documentElement.classList.contains('home')) {
 
 import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7.9.0/+esm";
 
-// Ensure the DOM is fully loaded before running the D3 code
 document.addEventListener("DOMContentLoaded", function () {
     // Pie chart data (two slices: 33% and 66%)
     let data = [1, 2]; // The numbers represent the slices
@@ -48,7 +47,7 @@ document.addEventListener("DOMContentLoaded", function () {
     let arcGenerator = d3.arc().innerRadius(0).outerRadius(50); // Full circle (no donut hole)
     let arcs = arcData.map((d) => arcGenerator(d)); // Generate paths for the pie slices
 
-    // Select the SVG element and add the pie chart slices
+    // Select the SVG element
     const svg = d3.select("#projects-pie-plot")
         .attr("width", 200)
         .attr("height", 200)
