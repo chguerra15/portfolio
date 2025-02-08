@@ -113,13 +113,13 @@ async function loadAllProjects() {
         article.innerHTML = `
             <img src="${project.image}" alt="${project.title}">
             <h2>${project.title}</h2>
-            <p1><strong>Year:</strong> ${project.year}</p1>
             <p>${project.description}</p>
+            <p class="project-year">${project.year}</p> 
         `;
         projectsContainer.appendChild(article);
     });
-    
 }
+
 
 // Load projects only if on the projects page
 if (!document.documentElement.classList.contains('home')) {

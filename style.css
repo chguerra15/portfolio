@@ -427,6 +427,15 @@ body.dark .projects > article {
     margin: 2em auto;
     overflow: visible;
   }
+
+  .project-year {
+    font-family: Baskerville, serif; /* Use Baskerville for styling */
+    font-size: 1.2em;
+    font-variant-numeric: oldstyle-nums;
+    color: #555; /* Slightly muted text */
+    margin-top: 0.5em;
+}
+
   
   
 
