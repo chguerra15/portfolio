@@ -23,46 +23,43 @@ if (!document.documentElement.classList.contains('home')) {
 
 import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7.9.0/+esm";
 
+// Wait until the DOM is fully loaded before running the D3 code
 document.addEventListener("DOMContentLoaded", function () {
-    // Sample data for the pie chart (Replace with actual data)
-    let data = [1, 2]; // Each number represents a slice of the pie
+    // Example data (each number is a percentage of the pie)
+    let data = [1, 2]; // Each number represents a slice (you can replace this with real data)
 
-    let total = 0;
     // Calculate the total of the data
-    for (let d of data) {
-        total += d;
-    }
+    let total = data.reduce((acc, val) => acc + val, 0);
 
+    // Define the start and end angles for each slice
     let angle = 0;
     let arcData = [];
-
-    // Calculate start and end angles for each slice
-    for (let d of data) {
+    data.forEach(d => {
         let endAngle = angle + (d / total) * 2 * Math.PI;
         arcData.push({ startAngle: angle, endAngle });
         angle = endAngle;
-    }
+    });
 
-    // Create an arc generator for D3
-    let arcGenerator = d3.arc().innerRadius(0).outerRadius(50); // Full circle (no donut hole)
-    let arcs = arcData.map((d) => arcGenerator(d)); // Generate paths for the pie slices
+    // Define the arc generator
+    let arcGenerator = d3.arc().innerRadius(0).outerRadius(50); // Full pie (no donut hole)
+    let arcs = arcData.map(d => arcGenerator(d)); // Generate the paths for each slice
 
-    // Select the existing SVG element with id "projects-pie-plot"
+    // Select the existing SVG element (with id "projects-pie-plot")
     const svg = d3.select("#projects-pie-plot")
-        .attr("width", 200)
-        .attr("height", 200)
+        .attr("width", 200) // Set width of the SVG
+        .attr("height", 200) // Set height of the SVG
         .append("g")
-        .attr("transform", "translate(100, 100)"); // Center the pie chart
+        .attr("transform", "translate(100, 100)"); // Center the pie chart within the SVG
 
-    // Array of colors for each slice
-    const colors = ['red', 'blue'];
+    // Define the colors for each slice
+    const colors = ['red', 'blue']; // Add more colors if you have more slices
 
     // Append the pie slices (paths)
     arcs.forEach((arc, idx) => {
         svg.append('path')
             .attr('d', arc)  // Set the "d" attribute to the arc's path data
-            .attr('fill', colors[idx])  // Use the color from the array based on the index
+            .attr('fill', colors[idx])  // Assign color based on the index
             .attr('stroke', '#fff')  // Add a white stroke for separation
-            .style('stroke-width', '2px');  // Set stroke width for better visibility
+            .style('stroke-width', '2px');  // Set stroke width for visibility
     });
 });
