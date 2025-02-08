@@ -31,7 +31,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const height = 200;
     const radius = Math.min(width, height) / 2;
 
-    const svg = d3.select("#projects-plot")
+    const svg = d3.select("#projects-pie-plot")
         .attr("width", width)
         .attr("height", height)
         .append("g")
