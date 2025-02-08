@@ -24,7 +24,7 @@ if (!document.documentElement.classList.contains('home')) {
 import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7.9.0/+esm";
 
 document.addEventListener("DOMContentLoaded", () => {
-    const data = [3, 7]; // Example project data representing categories
+    const data = [3, 7]; // Example project data
     const colors = ['gold', 'purple'];
 
     const width = 300;
@@ -34,14 +34,12 @@ document.addEventListener("DOMContentLoaded", () => {
     const svg = d3.select("#projects-pie-plot")
         .attr("width", width)
         .attr("height", height)
-        .attr("viewBox", `0 0 ${width} ${height}`)
+        .attr("viewBox", `${-radius} ${-radius} ${width} ${height}`)
         .append("g")
-        .attr("transform", `translate(${width / 2}, ${height / 2})`);
+        .attr("transform", `translate(0, 0)`);
 
-    const pie = d3.pie().value(d => d); // Ensures values are used to determine slice sizes
-    const arcGenerator = d3.arc()
-        .innerRadius(0)
-        .outerRadius(radius);
+    const pie = d3.pie().sort(null).value(d => d);
+    const arcGenerator = d3.arc().innerRadius(0).outerRadius(radius);
 
     const arcs = pie(data);
 
