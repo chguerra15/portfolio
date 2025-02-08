@@ -422,16 +422,11 @@ body.dark .projects > article {
 
   /*lab5*/
   #projects-pie-plot {
-    position: absolute;
-    top: 100px; /* Adjust height */
-    left: 10px; /* Keep it inside the layout */
-    transform: none; /* Remove translateX to avoid offset issues */
-    width: 120px; /* Adjust size */
-    height: 120px;
+    max-width: 10em;
+    height: auto;
+    margin: 2em auto;
+    overflow: visible;
   }
-
-
-
 
   .project-year {
     font-family: Baskerville, serif;
@@ -443,18 +438,6 @@ body.dark .projects > article {
     display: block;
     text-align: left;
   }
-
-  .color-scheme {
-    position: absolute;
-    top: 10px;
-    right: 20px;
-    font-size: 1em;
-    background: rgba(255, 255, 255, 0.2);
-    padding: 5px 10px;
-    border-radius: 5px;
-}
-
-
 
   
   
