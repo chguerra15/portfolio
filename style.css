@@ -440,3 +440,27 @@ body.dark .projects > article {
   display: block;
   text-align: left;
 }
+
+#legend {
+  margin-top: 20px;
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.legend-color {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+}
+
+.legend-text {
+  font-size: 1.1em;
+  font-weight: bold;
+}
