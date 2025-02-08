@@ -22,97 +22,45 @@ if (!document.documentElement.classList.contains('home')) {
 }
 
 import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7.9.0/+esm";
+let arcGenerator = d3.arc().innerRadius(0).outerRadius(50);
+let arc = arcGenerator({
+    startAngle: 0,
+    endAngle: 2 * Math.PI,
+});
+d3.select('svg').append('path').attr('d', arc).attr('fill', 'red');
+let data = [1, 2];
+let total = 0;
 
-// Mock data for projects (replace with actual data)
-const projects = [
-    { title: "Project 1", description: "Description of project 1", year: 2021 },
-    { title: "Project 2", description: "Description of project 2", year: 2022 },
-    { title: "Project 3", description: "Description of project 3", year: 2021 },
-    { title: "Project 4", description: "Description of project 4", year: 2023 },
-    { title: "Project 5", description: "Description of project 5", year: 2022 },
-];
-
-// Function to render the pie chart
-function renderPieChart(projects) {
-    // Count projects per year
-    const yearCounts = projects.reduce((acc, project) => {
-        acc[project.year] = (acc[project.year] || 0) + 1;
-        return acc;
-    }, {});
-
-    const data = Object.entries(yearCounts).map(([year, count]) => ({
-        year: year,
-        count: count,
-    }));
-
-    // Pie chart dimensions
-    const width = 200;
-    const height = 200;
-    const radius = Math.min(width, height) / 2;
-
-    // Create the SVG container
-    const svg = d3.select("#projects-pie-plot")
-        .attr("width", width)
-        .attr("height", height)
-        .append("g")
-        .attr("transform", `translate(${width / 2}, ${height / 2})`);
-
-    // Arc generator for pie slices
-    const arc = d3.arc().innerRadius(0).outerRadius(radius);
-
-    // Pie layout to calculate angles based on data
-    const pie = d3.pie().value(d => d.count);
-
-    // Colors for slices
-    const color = d3.scaleOrdinal(d3.schemeCategory10);
-
-    // Draw the pie slices
-    svg.selectAll("path")
-        .data(pie(data))
-        .enter()
-        .append("path")
-        .attr("d", arc)
-        .attr("fill", (d, i) => color(i))
-        .attr("stroke", "#fff")
-        .style("stroke-width", "2px")
-        .on("click", function(event, d) {
-            // Filter projects based on the selected year
-            filterProjects(d.data.year);
-        });
-
-    // Labels for each slice
-    svg.selectAll("text")
-        .data(pie(data))
-        .enter()
-        .append("text")
-        .attr("transform", d => `translate(${arc.centroid(d)})`)
-        .attr("text-anchor", "middle")
-        .attr("font-size", "12px")
-        .attr("fill", "#fff")
-        .text(d => d.data.year);
+for (let d of data) {
+  total += d;
 }
 
-// Function to filter projects by year
-function filterProjects(year) {
-    const filteredProjects = projects.filter(project => project.year === year);
-    renderProjects(filteredProjects);
+let angle = 0;
+let arcData = [];
+
+for (let d of data) {
+  let endAngle = angle + (d / total) * 2 * Math.PI;
+  arcData.push({ startAngle: angle, endAngle });
+  angle = endAngle;
 }
 
-// Function to render the filtered projects
-function renderProjects(filteredProjects) {
-    const projectsContainer = document.querySelector('.projects');
-    projectsContainer.innerHTML = ""; // Clear existing projects
+let arcs = arcData.map((d) => arcGenerator(d));
+arcs.forEach((arc, idx) => {
+    const colors = ['red', 'blue'];  // Array of colors (one for each slice)
 
-    filteredProjects.forEach(project => {
-        const article = document.createElement('article');
-        article.innerHTML = `
-            <h2>${project.title}</h2>
-            <p>${project.description}</p>
-            <p class="project-year">c. ${project.year}</p>
-        `;
-        projectsContainer.appendChild(article);
-    });
-}
+    // Append each arc (pie slice) to the SVG
+    d3.select('svg')
+      .append('path')
+      .attr('d', arc)  // Set the "d" attribute to the arc's path data
+      .attr('fill', colors[idx])  // Use the color from the array based on the index
+      .attr('stroke', '#fff')  // Add a white stroke for separation
+      .style('stroke-width', '2px');  // Set the stroke width for better visibility
+});
 
-// Initialize the pie chart
-renderPieChart(projects);
+
+let colors = ['gold', 'purple'];
+
+  
+
+
+

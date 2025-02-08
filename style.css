@@ -422,10 +422,9 @@ body.dark .projects > article {
 
   /*lab5*/
   #projects-pie-plot {
-    width: 200px;  /* Set a fixed width for the SVG */
-    height: 200px; /* Set a fixed height for the SVG */
-    margin: 2em auto; /* Center the SVG */
-    overflow: visible; /* Ensure the SVG content doesn't get cut off */
+    max-width: 20em;
+    margin-block: 2em;
+    overflow: visible;
   }
 
   @import url('https://fonts.googleapis.com/css2?family=Baskerville&display=swap');
