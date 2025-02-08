@@ -424,23 +424,23 @@ body.dark .projects > article {
 
 /*lab5*/
 
+.projects-title {
+  font-size: 2em;
+  font-weight: bold;
+}
 
 #projects-pie-plot {
-  max-width: 20em;
-  margin-block: 2em;
-  overflow: visible;
-}
-#projects-pie-plot {
   display: block;
-  margin: 0 auto; /* Center the SVG horizontally */
-  margin-bottom: 20px;
+  margin: 20px auto;
+  width: 300px;
+  height: 300px;
 }
 
 #legend {
-  margin-top: 10px;
   display: flex;
   justify-content: center;
   gap: 1em;
+  margin-top: 10px;
 }
 
 .legend-item {
@@ -450,12 +450,12 @@ body.dark .projects > article {
 }
 
 .legend-color {
-  width: 20px;
-  height: 20px;
+  width: 15px;
+  height: 15px;
   border-radius: 50%;
 }
 
 .legend-text {
-  font-size: 1.1em;
+  font-size: 1em;
   font-weight: bold;
 }
