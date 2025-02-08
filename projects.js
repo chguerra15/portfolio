@@ -22,34 +22,41 @@ if (!document.documentElement.classList.contains('home')) {
 }
 
 import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7.9.0/+esm";
-let data = [1, 2];
-let total = 0;
-for (let d of data) {
-  total += d;
-}
 
-let angle = 0;
-let arcData = [];
+document.addEventListener("DOMContentLoaded", function() {
+    // Define the pie chart data
+    let data = [1, 2]; // Two slices: 33% and 66%
 
-for (let d of data) {
-  let endAngle = angle + (d / total) * 2 * Math.PI;
-  arcData.push({ startAngle: angle, endAngle });
-  angle = endAngle;
-}
+    let total = 0;
+    for (let d of data) {
+        total += d;
+    }
 
-let arcGenerator = d3.arc().innerRadius(0).outerRadius(50);
-let arcs = arcData.map((d) => arcGenerator(d));
+    let angle = 0;
+    let arcData = [];
 
-const svg = d3.select("#projects-pie-plot")
-  .attr("width", 200)
-  .attr("height", 200)
-  .append("g")
-  .attr("transform", "translate(100, 100)");
+    for (let d of data) {
+        let endAngle = angle + (d / total) * 2 * Math.PI;
+        arcData.push({ startAngle: angle, endAngle });
+        angle = endAngle;
+    }
 
-arcs.forEach(arc => {
-  svg.append('path')
-    .attr('d', arc)
-    .attr('fill', (d, i) => i === 0 ? 'red' : 'blue')  // Alternate color for slices
-    .attr('stroke', '#fff')
-    .style('stroke-width', '2px');
+    // Define the arc generator
+    let arcGenerator = d3.arc().innerRadius(0).outerRadius(50);
+    let arcs = arcData.map((d) => arcGenerator(d));
+
+    // Select the SVG and add paths
+    const svg = d3.select("#projects-pie-plot")
+        .attr("width", 200)
+        .attr("height", 200)
+        .append("g")
+        .attr("transform", "translate(100, 100)");
+
+    arcs.forEach(arc => {
+        svg.append('path')
+            .attr('d', arc)
+            .attr('fill', (d, i) => i === 0 ? 'red' : 'blue')  // Alternate color for slices
+            .attr('stroke', '#fff')
+            .style('stroke-width', '2px');
+    });
 });

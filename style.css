@@ -427,6 +427,7 @@ body.dark .projects > article {
     margin: 2em auto;
     overflow: visible;
   }
+  @import url('https://fonts.googleapis.com/css2?family=Baskerville&display=swap');
 
   .project-year {
     font-family: Baskerville, serif;
