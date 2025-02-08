@@ -423,12 +423,13 @@ body.dark .projects > article {
   /*lab5*/
   #projects-pie-plot {
     position: absolute;
-    top: 120px; /* Adjust height */
-    left: 5%; /* Move further left */
-    transform: translateX(-50%);
-    width: 150px; /* Adjust size */
-    height: 150px;
-}
+    top: 100px; /* Adjust height */
+    left: 10px; /* Keep it inside the layout */
+    transform: none; /* Remove translateX to avoid offset issues */
+    width: 120px; /* Adjust size */
+    height: 120px;
+  }
+
 
 
 
