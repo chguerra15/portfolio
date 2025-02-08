@@ -23,15 +23,18 @@ if (!document.documentElement.classList.contains('home')) {
 
 import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7.9.0/+esm";
 
-document.addEventListener("DOMContentLoaded", function() {
-    // Define the pie chart data
-    let data = [1, 2]; // Two slices: 33% and 66%
+// Ensure the DOM is fully loaded before running the D3 code
+document.addEventListener("DOMContentLoaded", function () {
+    // Pie chart data (two slices: 33% and 66%)
+    let data = [1, 2]; // The numbers represent the slices
 
     let total = 0;
+    // Calculate the total of the data
     for (let d of data) {
         total += d;
     }
 
+    // Calculate start and end angles for each slice
     let angle = 0;
     let arcData = [];
 
@@ -41,22 +44,23 @@ document.addEventListener("DOMContentLoaded", function() {
         angle = endAngle;
     }
 
-    // Define the arc generator
-    let arcGenerator = d3.arc().innerRadius(0).outerRadius(50);
-    let arcs = arcData.map((d) => arcGenerator(d));
+    // Create an arc generator for D3
+    let arcGenerator = d3.arc().innerRadius(0).outerRadius(50); // Full circle (no donut hole)
+    let arcs = arcData.map((d) => arcGenerator(d)); // Generate paths for the pie slices
 
-    // Select the SVG and add paths
+    // Select the SVG element and add the pie chart slices
     const svg = d3.select("#projects-pie-plot")
         .attr("width", 200)
         .attr("height", 200)
         .append("g")
-        .attr("transform", "translate(100, 100)");
+        .attr("transform", "translate(100, 100)"); // Center the pie chart
 
-    arcs.forEach(arc => {
+    // Append the pie slices
+    arcs.forEach((arc, index) => {
         svg.append('path')
-            .attr('d', arc)
-            .attr('fill', (d, i) => i === 0 ? 'red' : 'blue')  // Alternate color for slices
-            .attr('stroke', '#fff')
-            .style('stroke-width', '2px');
+            .attr('d', arc)  // Set the arc path
+            .attr('fill', index === 0 ? 'red' : 'blue')  // Alternate colors for slices
+            .attr('stroke', '#fff')  // White stroke for better separation
+            .style('stroke-width', '2px'); // Stroke width
     });
 });
