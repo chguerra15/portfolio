@@ -126,3 +126,17 @@ async function loadAllProjects() {
 if (!document.documentElement.classList.contains('home')) {
     loadAllProjects();
 }
+export function renderProjects(projects, container, headingTag = 'h2') {
+    projects.forEach(project => {
+        const article = document.createElement('article');
+        article.innerHTML = `
+            <img src="${project.image}" alt="${project.title}">
+            <${headingTag}>${project.title}</${headingTag}>
+            <div class="project-info">
+                <p>${project.description}</p>
+                <p class="project-year">c. ${project.year}</p> 
+            </div>
+        `;
+        container.appendChild(article);
+    });
+}
