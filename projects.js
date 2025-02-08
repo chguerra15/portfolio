@@ -23,7 +23,6 @@ if (!document.documentElement.classList.contains('home')) {
 
 import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7.9.0/+esm";
 
-// Wait until the DOM is fully loaded before running the D3 code
 document.addEventListener("DOMContentLoaded", function () {
     // Example data for pie chart slices (each represents a year with project counts)
     let data = [
@@ -47,6 +46,7 @@ document.addEventListener("DOMContentLoaded", function () {
     let arcGenerator = d3.arc().innerRadius(0).outerRadius(50);
     let arcs = arcData.map(d => arcGenerator(d));
 
+    // Ensure the SVG exists and has proper width and height
     const svg = d3.select("#projects-pie-plot")
         .attr("width", 200)
         .attr("height", 200)
@@ -65,7 +65,7 @@ document.addEventListener("DOMContentLoaded", function () {
             .style('stroke-width', '2px');  // Set stroke width for visibility
     });
 
-    // Create the legend for the pie chart
+    // Add a legend for the pie chart
     const legendContainer = d3.select('#legend');
     data.forEach((d, idx) => {
         legendContainer.append('div')
