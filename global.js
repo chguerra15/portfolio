@@ -113,11 +113,14 @@ async function loadAllProjects() {
         article.innerHTML = `
             <img src="${project.image}" alt="${project.title}">
             <h2>${project.title}</h2>
-            <p>${project.description}</p>
-            <p class="project-year">c. ${project.year}</p> 
+            <div class="project-info">
+                <p>${project.description}</p>
+                <p class="project-year">c. ${project.year}</p> 
+            </div>
         `;
         projectsContainer.appendChild(article);
     });
+    
 }
 
 
