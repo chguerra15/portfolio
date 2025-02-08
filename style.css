@@ -422,11 +422,13 @@ body.dark .projects > article {
 
   /*lab5*/
   #projects-pie-plot {
-    max-width: 10em;
-    height: auto;
-    margin: 2em auto;
+    width: 8em; /* Reduce size */
+    height: 8em; /* Keep aspect ratio */
+    display: block;
+    margin: 2em auto; /* Center it */
     overflow: visible;
   }
+
 
   .project-year {
     font-family: Baskerville, serif; /* Use Baskerville for styling */
