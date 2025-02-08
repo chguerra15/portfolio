@@ -24,19 +24,25 @@ if (!document.documentElement.classList.contains('home')) {
 import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7.9.0/+esm";
 
 document.addEventListener("DOMContentLoaded", () => {
-    let svg = d3.select("#projects-plot"); // Select specific SVG
+    const data = [1, 2]; // Example data
+    const colors = ['gold', 'purple'];
 
-    let width = 100,
-        height = 100,
-        radius = 50;
+    const width = 200;
+    const height = 200;
+    const radius = Math.min(width, height) / 2;
 
-    let data = [1, 2]; // Example data
-    let colors = ['gold', 'purple'];
+    const svg = d3.select("#projects-plot")
+        .attr("width", width)
+        .attr("height", height)
+        .append("g")
+        .attr("transform", `translate(${width / 2}, ${height / 2})`);
 
-    let pie = d3.pie();
-    let arcGenerator = d3.arc().innerRadius(0).outerRadius(radius);
+    const pie = d3.pie();
+    const arcGenerator = d3.arc()
+        .innerRadius(0)
+        .outerRadius(radius);
 
-    let arcs = pie(data);
+    const arcs = pie(data);
 
     svg.selectAll("path")
         .data(arcs)
@@ -47,3 +53,4 @@ document.addEventListener("DOMContentLoaded", () => {
         .attr("stroke", "#fff")
         .style("stroke-width", "2px");
 });
+
