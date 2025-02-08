@@ -121,6 +121,7 @@ async function loadAllProjects() {
 }
 
 
+
 // Load projects only if on the projects page
 if (!document.documentElement.classList.contains('home')) {
     loadAllProjects();
