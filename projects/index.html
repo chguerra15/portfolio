@@ -5,25 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Projects</title>
     <link rel="stylesheet" href="../style.css">
+    <script type="module" src="../global.js"></script>
+    <script type="module" src="../projects.js"></script>
 </head>
 <body>
     <main>
         <h1 class="projects-title">Projects</h1>
 
-        <!-- Place the pie chart here, directly below the title -->
         <section class="pie-chart-section">
             <h2>Projects Distribution by Year</h2>
-            <svg id="projects-pie-plot" viewBox="-50 -50 100 100" width="200" height="200">
-                <!-- Pie chart will be dynamically rendered here -->
+            <svg id="projects-plot" viewBox="-50 -50 100 100">
+                <circle cx="0" cy="0" r="50" fill="red" />
             </svg>
             <div id="legend"></div>
         </section>
 
-        <!-- Below the pie chart section, list the projects -->
         <div class="projects"></div>
     </main>
-
-    <script type="module" src="../global.js"></script>
-    <script type="module" src="../projects.js"></script>
 </body>
 </html>
