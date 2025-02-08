@@ -34,7 +34,6 @@ let total = 0;
 for (let d of data) {
   total += d;
 }
-
 let angle = 0;
 let arcData = [];
 
@@ -43,7 +42,6 @@ for (let d of data) {
   arcData.push({ startAngle: angle, endAngle });
   angle = endAngle;
 }
-
 let arcs = arcData.map((d) => arcGenerator(d));
 arcs.forEach((arc, idx) => {
     const colors = ['red', 'blue'];  // Array of colors (one for each slice)
@@ -56,11 +54,5 @@ arcs.forEach((arc, idx) => {
       .attr('stroke', '#fff')  // Add a white stroke for separation
       .style('stroke-width', '2px');  // Set the stroke width for better visibility
 });
-
-
-let colors = ['gold', 'purple'];
-
-  
-
 
 
