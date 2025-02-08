@@ -37,32 +37,31 @@ document.addEventListener("DOMContentLoaded", function () {
     let angle = 0;
     let arcData = [];
     data.forEach(d => {
-        let endAngle = angle + (d.count / total) * 2 * Math.PI;
-        arcData.push({ startAngle: angle, endAngle, year: d.year });
-        angle = endAngle;
+        let endAngle = angle + (d.count / total) * 2 * Math.PI; // Full circle, 360 degrees
+        arcData.push({ startAngle: angle, endAngle });
+        angle = endAngle;  // Update angle for next slice
     });
 
-    // Arc generator for pie chart slices
+    // Arc generator with outer radius of 50, inner radius of 0 (pie chart, not a donut)
     let arcGenerator = d3.arc().innerRadius(0).outerRadius(50);
-    let arcs = arcData.map(d => arcGenerator(d));
 
-    // Ensure the SVG exists and has proper width and height
+    // Select the SVG and set up the container (center the pie chart)
     const svg = d3.select("#projects-pie-plot")
         .attr("width", 200)
         .attr("height", 200)
         .append("g")
-        .attr("transform", "translate(100, 100)"); // Center the pie chart within the SVG
+        .attr("transform", "translate(100, 100)"); // Center the pie chart in the SVG
 
-    // Define colors for each slice
-    const colors = ['#32CD32', '#4682B4', '#FF69B4', '#8A2BE2']; // Green, Blue, Pink, Purple
+    // Color for the pie slices
+    const colors = ['#32CD32', '#4682B4', '#FF69B4', '#8A2BE2'];  // Green, Blue, Pink, Purple
 
-    // Append pie slices
-    arcs.forEach((arc, idx) => {
+    // Render each pie slice (we have only 1 slice in this example)
+    arcData.forEach((arc, idx) => {
         svg.append('path')
-            .attr('d', arc)  // Set the "d" attribute to the arc's path data
+            .attr('d', arcGenerator(arc))  // Set the "d" attribute to the arc's path data
             .attr('fill', colors[idx])  // Assign color based on the index
             .attr('stroke', '#fff')  // Add a white stroke for separation
-            .style('stroke-width', '2px');  // Set stroke width for visibility
+            .style('stroke-width', '2px');  // Stroke width
     });
 
     // Add a legend for the pie chart
