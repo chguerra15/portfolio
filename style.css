@@ -423,12 +423,6 @@ body.dark .projects > article {
 }
 
 /*lab5*/
-#projects-pie-plot {
-  max-width: 20em;
-  margin-block: 2em;
-  overflow: visible;
-}
-
 
 .project-year {
   font-family: Baskerville, serif;
@@ -463,4 +457,26 @@ body.dark .projects > article {
 .legend-text {
   font-size: 1.1em;
   font-weight: bold;
+}
+
+.pie-chart-section {
+  margin-top: 3em;
+  text-align: center;
+  padding: 2em;
+  background-color: #f4f4f4; /* Light background for contrast */
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+#projects-pie-plot {
+  display: block;
+  margin: 0 auto; /* Center the SVG horizontally */
+  margin-bottom: 20px;
+}
+
+#legend {
+  margin-top: 10px;
+  display: flex;
+  justify-content: center;
+  gap: 1em;
 }
