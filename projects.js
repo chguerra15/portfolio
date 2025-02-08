@@ -30,3 +30,4 @@ let arc = arcGenerator({
 d3.select('svg').append('path').attr('d', arc).attr('fill', 'red');
 
 
+
