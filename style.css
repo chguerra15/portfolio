@@ -423,6 +423,12 @@ body.dark .projects > article {
 }
 
 /*lab5*/
+#projects-pie-plot {
+  max-width: 20em;
+  margin-block: 2em;
+  overflow: visible;
+}
+
 
 .project-year {
   font-family: Baskerville, serif;
@@ -460,7 +466,7 @@ body.dark .projects > article {
 }
 
 .pie-chart-section {
-  margin-top: 3em;
+  margin-top: 2em;  /* Space between Projects title and pie chart */
   text-align: center;
   padding: 2em;
   background-color: #f4f4f4; /* Light background for contrast */
