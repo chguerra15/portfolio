@@ -1,15 +1,15 @@
 console.log("🚀 projects.js is starting...");
 
-import { fetchJSON, renderProjects } from '../global.js';
+import { fetchJSON, renderProjects } from 'global.js';
 
-console.log("✅ Successfully imported fetchJSON and renderProjects.");
+console.log("Successfully imported fetchJSON and renderProjects.");
 
 async function loadAllProjects() {
     console.log("📂 Loading projects...");
     const projectsContainer = document.querySelector('.projects');
 
     if (!projectsContainer) {
-        console.error("❌ Projects page container not found.");
+        console.error("Projects page container not found.");
         return;
     }
 
@@ -24,7 +24,7 @@ async function loadAllProjects() {
 
         renderProjects(projects, projectsContainer, 'h2');
     } catch (error) {
-        console.error("❌ Error fetching projects:", error);
+        console.error("Error fetching projects:", error);
     }
 }
 
@@ -49,7 +49,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const svg = d3.select("#projects-pie-plot");
 
     if (svg.empty()) {
-        console.error("❌ SVG element not found!");
+        console.error("SVG element not found!");
         return;
     }
 
