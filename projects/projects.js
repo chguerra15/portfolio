@@ -1,4 +1,6 @@
 import { fetchJSON } from '../global.js';
+import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7.9.0/+esm";
+
 
 let query = '';
 let selectedYear = null; // ✅ Stores the selected pie chart filter
