@@ -437,10 +437,11 @@ body.dark .projects > article {
 }
 
 #legend {
+  margin-top: 10px;
   display: flex;
   justify-content: center;
   gap: 1em;
-  margin-top: 10px;
+  flex-wrap: wrap;
 }
 
 .legend-item {
@@ -453,9 +454,16 @@ body.dark .projects > article {
   width: 15px;
   height: 15px;
   border-radius: 50%;
+  display: inline-block;
 }
 
 .legend-text {
   font-size: 1em;
   font-weight: bold;
+}
+
+
+body {
+  background-color: #fff; /* Changes to white for a cleaner look */
+  color: #000; /* Ensures contrast */
 }
