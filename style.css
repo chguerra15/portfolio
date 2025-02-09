@@ -431,11 +431,11 @@ body.dark .projects > article {
 
 #projects-pie-plot {
   display: block;
-  margin: 20px auto;
-  width: 300px;
-  height: 300px;
+  margin: 0 auto; 
+  max-width: 300px;
+  height: auto;
+  overflow: visible;
 }
-
 #legend {
   margin-top: 10px;
   display: flex;
@@ -460,10 +460,4 @@ body.dark .projects > article {
 .legend-text {
   font-size: 1em;
   font-weight: bold;
-}
-
-
-body {
-  background-color: #fff; /* Changes to white for a cleaner look */
-  color: #000; /* Ensures contrast */
 }
