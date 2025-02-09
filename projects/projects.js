@@ -8,31 +8,32 @@ async function loadProjectPieChart() {
         return;
     }
 
-    // ✅ Fetch projects data
+    // ✅ Fetch project data
     const projects = await fetchJSON('../lib/projects.json');
     if (!projects || projects.length === 0) {
         console.error("No projects found.");
         return;
     }
 
-    // ✅ Count projects per year
-    const yearCounts = {};
-    projects.forEach(project => {
-        const year = project.year;
-        yearCounts[year] = (yearCounts[year] || 0) + 1;
-    });
+    // ✅ Group projects by year using `d3.rollups()`
+    let rolledData = d3.rollups(
+        projects,
+        (v) => v.length,  // Count occurrences
+        (d) => d.year      // Group by year
+    );
 
-    // ✅ Convert yearCounts to an array
-    const data = Object.entries(yearCounts).map(([year, count]) => ({ year, count }));
-    const years = data.map(d => d.year);
-    const values = data.map(d => d.count);
+    // ✅ Convert rolled data into an array suitable for the pie chart
+    let data = rolledData.map(([year, count]) => ({ value: count, label: year }));
 
-    // ✅ Colors for each year
+    // ✅ Sort years in descending order (optional)
+    data.sort((a, b) => b.label - a.label);
+
+    // ✅ Define colors dynamically based on the number of years
     const colors = d3.scaleOrdinal()
-        .domain(years)
-        .range(["#D98CA6", "#6096C3", "#B6D7A8", "#6AA84F"]);
+        .domain(data.map(d => d.label))
+        .range(["#D98CA6", "#6096C3", "#B6D7A8", "#6AA84F"]); // Add more colors if needed
 
-    // ✅ Pie Chart Config
+    // ✅ Pie chart dimensions
     const width = 300, height = 300, radius = Math.min(width, height) / 2;
 
     svg.attr("width", width)
@@ -44,7 +45,7 @@ async function loadProjectPieChart() {
        .attr("transform", `translate(${width / 2}, ${height / 2})`);
 
     const g = svg.select("g");
-    const pie = d3.pie().value(d => d.count);
+    const pie = d3.pie().value(d => d.value);
     const arcGenerator = d3.arc().innerRadius(0).outerRadius(radius);
 
     // ✅ Draw Pie Chart
@@ -54,19 +55,19 @@ async function loadProjectPieChart() {
         .enter()
         .append("path")
         .attr("d", arcGenerator)
-        .attr("fill", d => colors(d.data.year))
+        .attr("fill", d => colors(d.data.label))
         .attr("stroke", "#fff")
         .style("stroke-width", "2px");
 
-    // ✅ Add Legend
+    // ✅ Update Legend
     const legend = d3.select("#legend").html(""); // Clear old legend
     data.forEach((d, i) => {
         const item = legend.append("div").attr("class", "legend-item");
-        item.append("div").attr("class", "legend-color").style("background-color", colors(d.year));
-        item.append("div").attr("class", "legend-text").text(`${d.year} (${d.count})`);
+        item.append("div").attr("class", "legend-color").style("background-color", colors(d.label));
+        item.append("div").attr("class", "legend-text").text(`${d.label} (${d.value})`);
     });
 
-    console.log("Pie chart successfully rendered!");
+    console.log("Pie chart successfully rendered with project data!");
 }
 
 // ✅ Run function on page load
