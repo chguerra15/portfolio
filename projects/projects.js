@@ -1,6 +1,7 @@
 import { fetchJSON } from '../global.js';
 
-let query = '';  // ✅ Stores the search query
+let query = '';
+let selectedYear = null; // ✅ Stores the selected pie chart filter
 
 async function loadAllProjects() {
     const projectsContainer = document.querySelector('.projects');
@@ -16,8 +17,7 @@ async function loadAllProjects() {
         return;
     }
 
-    // ✅ Store projects globally for filtering
-    let allProjects = projects;
+    let allProjects = projects; // Store projects globally for filtering
 
     // ✅ Function to Render Projects
     function renderProjects(filteredProjects) {
@@ -37,21 +37,99 @@ async function loadAllProjects() {
         });
     }
 
+    // ✅ Function to Filter Projects
+    function getFilteredProjects() {
+        return allProjects.filter(project =>
+            (!query || Object.values(project).join('\n').toLowerCase().includes(query.toLowerCase())) &&
+            (!selectedYear || project.year === selectedYear)
+        );
+    }
+    
+
+    // ✅ Function to Render Pie Chart
+    function renderPieChart(projectsGiven) {
+        let rolledData = d3.rollups(
+            projectsGiven,
+            (v) => v.length,
+            (d) => d.year,
+        );
+
+        let data = rolledData.map(([year, count]) => ({ value: count, label: year }));
+
+        const colors = ["#D98CA6", "#6096C3", "#B6D7A8", "#6AA84F"];
+        const width = 300, height = 300;
+        const radius = Math.min(width, height) / 2;
+
+        let svg = d3.select("#projects-pie-plot");
+        svg.selectAll("*").remove(); // ✅ Clear previous chart
+
+        let g = svg
+            .attr("width", width)
+            .attr("height", height)
+            .attr("viewBox", `0 0 ${width} ${height}`)
+            .append("g")
+            .attr("transform", `translate(${width / 2}, ${height / 2})`);
+
+        const pie = d3.pie().value(d => d.value);
+        const arcGenerator = d3.arc().innerRadius(0).outerRadius(radius);
+
+        let arcs = pie(data);
+
+        g.selectAll("path")
+            .data(arcs)
+            .enter()
+            .append("path")
+            .attr("d", arcGenerator)
+            .attr("fill", (d, i) => colors[i])
+            .attr("stroke", "#fff")
+            .style("stroke-width", "2px")
+            .style("cursor", "pointer") // ✅ Clickable slices
+            .on("click", (event, d) => {
+                selectedYear = selectedYear === d.data.label ? null : d.data.label;
+                renderProjects(getFilteredProjects());
+                renderPieChart(getFilteredProjects()); // ✅ Update pie
+            });
+
+        renderLegend(data, colors);
+    }
+
+    // ✅ Function to Render Legend
+    function renderLegend(data, colors) {
+        let legend = d3.select("#legend");
+        legend.selectAll("*").remove(); // ✅ Clear previous legend
+
+        let items = legend.selectAll(".legend-item")
+            .data(data)
+            .enter()
+            .append("div")
+            .attr("class", "legend-item")
+            .style("cursor", "pointer")
+            .on("click", (event, d) => {
+                selectedYear = selectedYear === d.label ? null : d.label;
+                renderProjects(getFilteredProjects());
+                renderPieChart(getFilteredProjects()); // ✅ Update pie
+            });
+
+        items.append("div")
+            .attr("class", "legend-color")
+            .style("background-color", (d, i) => colors[i]);
+
+        items.append("span")
+            .attr("class", "legend-text")
+            .text(d => `${d.label} (${d.value})`);
+    }
+
     // ✅ Render all projects initially
     renderProjects(allProjects);
+    renderPieChart(allProjects);
 
     // ✅ Search Functionality
     let searchInput = document.querySelector('.searchBar');
-
     searchInput.addEventListener('input', (event) => {  // Live search
-        query = event.target.value.toLowerCase();  // Convert query to lowercase for case-insensitive search
+        query = event.target.value.toLowerCase();  
 
-        let filteredProjects = allProjects.filter(project =>
-            project.title.toLowerCase().includes(query) ||  // Search in titles
-            project.year.toString().includes(query)         // Allow searching by year
-        );
-
-        renderProjects(filteredProjects);  // ✅ Re-render projects
+        renderProjects(getFilteredProjects());
+        renderPieChart(getFilteredProjects()); // ✅ Update pie
     });
 }
 

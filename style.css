@@ -461,3 +461,26 @@ body.dark .projects > article {
   font-size: 1em;
   font-weight: bold;
 }
+
+.searchBar {
+  display: block;
+  width: 100%;
+  max-width: 400px;
+  padding: 10px;
+  margin: 20px auto;
+  border: 2px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+path {
+  transition: opacity 300ms;
+}
+
+&:has(path:hover) path:not(:hover) {
+  opacity: 0.5;
+}
+
+path:hover {
+  cursor: pointer;
+}
