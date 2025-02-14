@@ -117,13 +117,19 @@
                     file: d.file,
                     id: d.id
                 }));
+                console.log("Loaded Data:", data);  // ✅ Debugging step
+                if (data.length === 0) {
+                console.error("CSV file is empty or not formatted correctly.");
+                }
 
                 createScatterplot(data);
                 createSummaryTable(data);
-            } catch (error) {
+            } 
+            catch (error) {
                 console.error("Error loading CSV:", error);
             }
         }
+
 
         function createScatterplot(commits) {
             const xScale = d3.scaleTime()
