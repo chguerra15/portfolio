@@ -10,7 +10,22 @@
     <script src="https://d3js.org/d3.v7.min.js"></script>
 
     <style>
-        /* Style for summary stats */
+        /* Summary Container */
+        .summary-wrapper {
+            max-width: 800px;
+            margin: 20px auto;
+            text-align: center;
+        }
+
+        /* Title */
+        .summary-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #212529;
+            margin-bottom: 10px;
+        }
+
+        /* Stats Box */
         .summary-container {
             display: flex;
             justify-content: space-around;
@@ -19,14 +34,13 @@
             background-color: #f8f9fa;
             border-radius: 8px;
             box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
-            margin: 20px auto;
-            max-width: 800px;
         }
 
         .summary-item {
             flex: 1;
         }
 
+        /* Labels */
         .summary-label {
             font-size: 14px;
             font-weight: 600;
@@ -34,6 +48,7 @@
             text-transform: uppercase;
         }
 
+        /* Values */
         .summary-value {
             font-size: 32px;
             font-weight: bold;
@@ -43,7 +58,10 @@
     </style>
 </head>
 <body>
-    <div id="summary"></div>
+    <div class="summary-wrapper">
+        <div class="summary-title">Summary</div>  
+        <div id="summary"></div>
+    </div>
 
     <script>
         async function loadData() {
@@ -52,27 +70,54 @@
                 let data = await d3.csv('loc.csv');  
                 console.log("CSV Data Loaded:", data);
 
-                // Compute summary stats
+                // === COMPUTE SUMMARY STATS USING d3-array ===
+                
+                // 1. Aggregates over the whole dataset
                 let totalCommits = data.length;
-                let totalFiles = new Set(data.map(d => d.file)).size;
-                let totalLOC = d3.sum(data, d => +d.length);
-                let maxDepth = d3.max(data, d => +d.depth);
-                let longestLine = d3.max(data, d => +d.length);
-                let maxLines = d3.max(data, d => +d.line);
+                let totalFiles = d3.group(data, d => d.file).size; // Unique files
+                let totalLOC = d3.sum(data, d => +d.length); // Sum of line lengths
+                let maxDepth = d3.max(data, d => +d.depth); // Max depth
+                let avgDepth = d3.mean(data, d => +d.depth); // Avg depth
+                let longestLine = d3.max(data, d => +d.length); // Longest line
 
-                // Select summary div and create the layout
+                // 2. Number of distinct values
+                let totalAuthors = d3.group(data, d => d.author).size; // Unique authors
+                let totalDaysWorked = d3.group(data, d => d.date).size; // Unique days
+
+                // 3. Grouped Aggregates (e.g., Avg file length)
+                const fileLengths = d3.rollups(
+                    data,
+                    (v) => d3.max(v, d => +d.line), // Max line per file
+                    (d) => d.file
+                );
+                const avgFileLength = d3.mean(fileLengths, d => d[1]); // Avg of max file lengths
+
+                // 4. Most Active Time of Day
+                const workByPeriod = d3.rollups(
+                    data,
+                    v => v.length,
+                    d => new Date(d.datetime).toLocaleString('en', { dayPeriod: 'short' })
+                );
+                const maxPeriod = d3.greatest(workByPeriod, d => d[1])?.[0];
+
+                // === DISPLAY THE SUMMARY STATS IN THE UI ===
+
                 const summaryDiv = d3.select("#summary")
                     .append("div")
                     .attr("class", "summary-container");
 
-                // Create each summary item
+                // Define stats to display
                 const stats = [
                     { label: "Commits", value: totalCommits },
                     { label: "Files", value: totalFiles },
                     { label: "Total LOC", value: totalLOC },
                     { label: "Max Depth", value: maxDepth },
+                    { label: "Avg Depth", value: avgDepth.toFixed(2) }, // Rounded
                     { label: "Longest Line", value: longestLine },
-                    { label: "Max Lines", value: maxLines }
+                    { label: "Authors", value: totalAuthors },
+                    { label: "Days Worked", value: totalDaysWorked },
+                    { label: "Avg File Length", value: avgFileLength.toFixed(2) },
+                    { label: "Most Active Time", value: maxPeriod }
                 ];
 
                 summaryDiv.selectAll(".summary-item")
