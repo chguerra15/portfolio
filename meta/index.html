@@ -14,34 +14,55 @@
 
     <script>
         let data = [];
-
+    
         async function loadData() {
             try {
-                // Load CSV file
-                data = await d3.csv('loc.csv'); // Ensure loc.csv is in the correct directory
+                data = await d3.csv('loc.csv');  
                 console.log("CSV Data Loaded:", data);
-
-                // Check if data exists
+    
+                const statsDiv = d3.select("#stats");
+                statsDiv.html(""); 
+    
                 if (data.length > 0) {
-                    d3.select("#stats")
-                      .append("p")
-                      .text(`First row: ${JSON.stringify(data[0])}`);
+                    const table = statsDiv.append("table").style("border-collapse", "collapse");
+    
+                    const headers = Object.keys(data[0]);
+                    const thead = table.append("thead");
+                    const headerRow = thead.append("tr");
+                    headerRow.selectAll("th")
+                        .data(headers)
+                        .enter()
+                        .append("th")
+                        .text(d => d)
+                        .style("border", "1px solid black")
+                        .style("padding", "5px")
+                        .style("background-color", "#ddd");
+    
+                    const tbody = table.append("tbody");
+                    data.forEach(row => {
+                        const tr = tbody.append("tr");
+                        headers.forEach(column => {
+                            tr.append("td")
+                              .text(row[column])
+                              .style("border", "1px solid black")
+                              .style("padding", "5px");
+                        });
+                    });
+    
                 } else {
-                    d3.select("#stats")
-                      .append("p")
-                      .text("No data found in CSV.");
+                    statsDiv.append("p").text("No data found in CSV.");
                 }
-
+    
             } catch (error) {
                 console.error("Error loading CSV:", error);
                 d3.select("#stats").append("p").text("Failed to load data.");
             }
         }
-
-        // Load data when the document is ready
+    
         document.addEventListener('DOMContentLoaded', async () => {
             await loadData();
         });
     </script>
+    
 </body>
 </html>
