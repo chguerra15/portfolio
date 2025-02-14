@@ -10,34 +10,43 @@
     <script src="https://d3js.org/d3.v7.min.js"></script>
 
     <style>
-        /* Summary Container */
+        /* Wrapper for better positioning */
         .summary-wrapper {
-            max-width: 800px;
-            margin: 20px auto;
-            text-align: center;
+            max-width: 850px;
+            margin: 30px auto;
         }
 
-        /* Title */
+        /* Summary Box with Padding */
+        .summary-container {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Title inside the box */
         .summary-title {
-            font-size: 20px;
+            font-size: 22px;
             font-weight: bold;
             color: #212529;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
         }
 
-        /* Stats Box */
-        .summary-container {
-            display: flex;
-            justify-content: space-around;
+        /* Grid layout for better spacing */
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px; /* Space between items */
+            width: 100%;
+            max-width: 750px;
             text-align: center;
-            padding: 20px;
-            background-color: #f8f9fa;
-            border-radius: 8px;
-            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
         }
 
         .summary-item {
-            flex: 1;
+            padding: 10px;
         }
 
         /* Labels */
@@ -46,73 +55,66 @@
             font-weight: 600;
             color: #6c757d;
             text-transform: uppercase;
+            margin-bottom: 5px;
         }
 
         /* Values */
         .summary-value {
-            font-size: 32px;
+            font-size: 30px;
             font-weight: bold;
             color: #212529;
-            margin-top: 5px;
         }
     </style>
 </head>
 <body>
     <div class="summary-wrapper">
-        <div class="summary-title">Summary</div>  
-        <div id="summary"></div>
+        <div class="summary-container">
+            <div class="summary-title">Summary</div>  <!-- Now inside the box -->
+            <div id="summary" class="summary-grid"></div>
+        </div>
     </div>
 
     <script>
         async function loadData() {
             try {
-                // Load CSV data
                 let data = await d3.csv('loc.csv');  
                 console.log("CSV Data Loaded:", data);
 
-                // === COMPUTE SUMMARY STATS USING d3-array ===
-                
-                // 1. Aggregates over the whole dataset
+                // Compute summary stats
                 let totalCommits = data.length;
-                let totalFiles = d3.group(data, d => d.file).size; // Unique files
-                let totalLOC = d3.sum(data, d => +d.length); // Sum of line lengths
-                let maxDepth = d3.max(data, d => +d.depth); // Max depth
-                let avgDepth = d3.mean(data, d => +d.depth); // Avg depth
-                let longestLine = d3.max(data, d => +d.length); // Longest line
+                let totalFiles = d3.group(data, d => d.file).size;
+                let totalLOC = d3.sum(data, d => +d.length);
+                let maxDepth = d3.max(data, d => +d.depth) || 0;
+                let avgDepth = d3.mean(data, d => +d.depth) || 0;
+                let longestLine = d3.max(data, d => +d.length) || 0;
+                let totalAuthors = d3.group(data, d => d.author).size;
+                let totalDaysWorked = d3.group(data, d => d.date).size;
 
-                // 2. Number of distinct values
-                let totalAuthors = d3.group(data, d => d.author).size; // Unique authors
-                let totalDaysWorked = d3.group(data, d => d.date).size; // Unique days
-
-                // 3. Grouped Aggregates (e.g., Avg file length)
+                // Avg file length computation
                 const fileLengths = d3.rollups(
                     data,
-                    (v) => d3.max(v, d => +d.line), // Max line per file
-                    (d) => d.file
+                    v => d3.max(v, d => +d.line),
+                    d => d.file
                 );
-                const avgFileLength = d3.mean(fileLengths, d => d[1]); // Avg of max file lengths
+                const avgFileLength = d3.mean(fileLengths, d => d[1]) || 0;
 
-                // 4. Most Active Time of Day
+                // Most Active Time of Day
                 const workByPeriod = d3.rollups(
                     data,
                     v => v.length,
                     d => new Date(d.datetime).toLocaleString('en', { dayPeriod: 'short' })
                 );
-                const maxPeriod = d3.greatest(workByPeriod, d => d[1])?.[0];
+                const maxPeriod = d3.greatest(workByPeriod, d => d[1])?.[0] || "Unknown";
 
-                // === DISPLAY THE SUMMARY STATS IN THE UI ===
+                // Display in summary grid
+                const summaryDiv = d3.select("#summary");
 
-                const summaryDiv = d3.select("#summary")
-                    .append("div")
-                    .attr("class", "summary-container");
-
-                // Define stats to display
                 const stats = [
                     { label: "Commits", value: totalCommits },
                     { label: "Files", value: totalFiles },
-                    { label: "Total LOC", value: totalLOC },
+                    { label: "Total LOC", value: totalLOC.toLocaleString() },
                     { label: "Max Depth", value: maxDepth },
-                    { label: "Avg Depth", value: avgDepth.toFixed(2) }, // Rounded
+                    { label: "Avg Depth", value: avgDepth.toFixed(2) },
                     { label: "Longest Line", value: longestLine },
                     { label: "Authors", value: totalAuthors },
                     { label: "Days Worked", value: totalDaysWorked },
@@ -136,7 +138,6 @@
             }
         }
 
-        // Load data when the page loads
         document.addEventListener('DOMContentLoaded', async () => {
             await loadData();
         });
