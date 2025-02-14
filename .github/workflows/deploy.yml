@@ -1,44 +1,59 @@
-name: Deploy
+# Simple workflow for deploying static content to GitHub Pages
+name: Deploy static content to Pages
 
 on:
+  # Runs on pushes targeting the default branch
   push:
-    branches:
-      - main  # Change this if your default branch is different
-  workflow_dispatch:  # Allows manual triggering from GitHub Actions
+    branches: ['main']
 
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:
-  contents: write  # Ensures GitHub Actions can commit and push changes
+  contents: write
   pages: write
   id-token: write
 
-jobs:
-  deploy:
-    runs-on: ubuntu-latest
+# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
+# However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
+concurrency:
+  group: 'pages'
+  cancel-in-progress: false
 
+jobs:
+  # Single deploy job since we're just deploying
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          fetch-depth: '0'  # Ensures full Git history is available
-
-      - name: Set Up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 'lts/*'
-
-      - name: Install Dependencies
-        run: npm install
-
+          fetch-depth: '0'
       - name: Run Elocuent
         run: |
-          mkdir -p meta  # Ensure meta directory exists
           npx elocuent -d . -o meta/loc.csv
 
       - name: Commit and Push
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git pull --rebase --autostash  # Prevent merge conflicts
+          mkdir -p meta
+          git pull
           git add -f meta/loc.csv
-          git diff --quiet && git diff --staged --quiet || git commit -m "Update code statistics"
+          git commit -m "Update code statistics" || echo "No changes to commit"
           git push
+          
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          # Upload entire repository
+          path: '.'
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
