@@ -8,61 +8,93 @@
     <script type="module" src="../global.js"></script>
     <script type="module" src="./projects.js"></script>
     <script src="https://d3js.org/d3.v7.min.js"></script>
+
+    <style>
+        /* Style for summary stats */
+        .summary-container {
+            display: flex;
+            justify-content: space-around;
+            text-align: center;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+            margin: 20px auto;
+            max-width: 800px;
+        }
+
+        .summary-item {
+            flex: 1;
+        }
+
+        .summary-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #6c757d;
+            text-transform: uppercase;
+        }
+
+        .summary-value {
+            font-size: 32px;
+            font-weight: bold;
+            color: #212529;
+            margin-top: 5px;
+        }
+    </style>
 </head>
 <body>
-    <div id="stats"></div>
+    <div id="summary"></div>
 
     <script>
-        let data = [];
-    
         async function loadData() {
             try {
-                data = await d3.csv('loc.csv');  
+                // Load CSV data
+                let data = await d3.csv('loc.csv');  
                 console.log("CSV Data Loaded:", data);
-    
-                const statsDiv = d3.select("#stats");
-                statsDiv.html(""); 
-    
-                if (data.length > 0) {
-                    const table = statsDiv.append("table").style("border-collapse", "collapse");
-    
-                    const headers = Object.keys(data[0]);
-                    const thead = table.append("thead");
-                    const headerRow = thead.append("tr");
-                    headerRow.selectAll("th")
-                        .data(headers)
-                        .enter()
-                        .append("th")
-                        .text(d => d)
-                        .style("border", "1px solid black")
-                        .style("padding", "5px")
-                        .style("background-color", "#ddd");
-    
-                    const tbody = table.append("tbody");
-                    data.forEach(row => {
-                        const tr = tbody.append("tr");
-                        headers.forEach(column => {
-                            tr.append("td")
-                              .text(row[column])
-                              .style("border", "1px solid black")
-                              .style("padding", "5px");
-                        });
-                    });
-    
-                } else {
-                    statsDiv.append("p").text("No data found in CSV.");
-                }
-    
+
+                // Compute summary stats
+                let totalCommits = data.length;
+                let totalFiles = new Set(data.map(d => d.file)).size;
+                let totalLOC = d3.sum(data, d => +d.length);
+                let maxDepth = d3.max(data, d => +d.depth);
+                let longestLine = d3.max(data, d => +d.length);
+                let maxLines = d3.max(data, d => +d.line);
+
+                // Select summary div and create the layout
+                const summaryDiv = d3.select("#summary")
+                    .append("div")
+                    .attr("class", "summary-container");
+
+                // Create each summary item
+                const stats = [
+                    { label: "Commits", value: totalCommits },
+                    { label: "Files", value: totalFiles },
+                    { label: "Total LOC", value: totalLOC },
+                    { label: "Max Depth", value: maxDepth },
+                    { label: "Longest Line", value: longestLine },
+                    { label: "Max Lines", value: maxLines }
+                ];
+
+                summaryDiv.selectAll(".summary-item")
+                    .data(stats)
+                    .enter()
+                    .append("div")
+                    .attr("class", "summary-item")
+                    .html(d => `
+                        <div class="summary-label">${d.label}</div>
+                        <div class="summary-value">${d.value}</div>
+                    `);
+
             } catch (error) {
                 console.error("Error loading CSV:", error);
-                d3.select("#stats").append("p").text("Failed to load data.");
+                d3.select("#summary").append("p").text("Failed to load data.");
             }
         }
-    
+
+        // Load data when the page loads
         document.addEventListener('DOMContentLoaded', async () => {
             await loadData();
         });
     </script>
-    
 </body>
 </html>
