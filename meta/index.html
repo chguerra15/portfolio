@@ -3,37 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Commits Visualization</title>
-    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <title>Meta</title>
     <link rel="stylesheet" href="../style.css">
     <script type="module" src="../global.js"></script>
     <script type="module" src="./projects.js"></script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+
     <style>
-        body {
-            font-family: Arial, sans-serif;
-        }
-
-        .container {
-            max-width: 1000px;
+        /* Wrapper for better positioning */
+        .summary-wrapper {
+            max-width: 850px;
             margin: 30px auto;
-            text-align: center;
         }
 
-        .chart-container {
-            margin-bottom: 40px;
-        }
-
-        .tooltip {
-            position: absolute;
-            background-color: rgba(255, 255, 255, 0.9);
-            padding: 8px;
-            border-radius: 5px;
-            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
-            pointer-events: none;
-            opacity: 0;
-            transition: opacity 0.2s ease-in-out;
-        }
-
+        /* Summary Box with Padding */
         .summary-container {
             background-color: #ffffff;
             padding: 20px;
@@ -44,16 +27,19 @@
             align-items: center;
         }
 
+        /* Title inside the box */
         .summary-title {
             font-size: 22px;
             font-weight: bold;
+            color: #212529;
             margin-bottom: 15px;
         }
 
+        /* Grid layout for better spacing */
         .summary-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
+            gap: 20px; /* Space between items */
             width: 100%;
             max-width: 750px;
             text-align: center;
@@ -63,6 +49,7 @@
             padding: 10px;
         }
 
+        /* Labels */
         .summary-label {
             font-size: 14px;
             font-weight: 600;
@@ -71,69 +58,105 @@
             margin-bottom: 5px;
         }
 
+        /* Values */
         .summary-value {
             font-size: 30px;
             font-weight: bold;
             color: #212529;
         }
 
-        circle:hover {
-            transform: scale(1.3);
+        /* Scatterplot styles */
+        .chart-container {
+            text-align: center;
+            margin: 40px auto;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <!-- Scatter Plot -->
-        <div class="chart-container">
-            <h2>Commits by Time of Day</h2>
-            <div id="chart"></div>
-        </div>
+    <div class="chart-container">
+        <h2>Commits by Time of Day</h2>
+        <div id="chart"></div>
+    </div>
 
-        <!-- Summary Table -->
+    <div class="summary-wrapper">
         <div class="summary-container">
-            <div class="summary-title">Summary</div>
+            <div class="summary-title">Summary</div>  
             <div id="summary" class="summary-grid"></div>
         </div>
     </div>
 
-    <div id="tooltip" class="tooltip"></div>
-
     <script>
-        const width = 1000, height = 600;
+        const width = 900, height = 500;
         const margin = { top: 20, right: 40, bottom: 50, left: 60 };
 
+        // Append SVG for scatterplot
         const svg = d3.select("#chart")
             .append("svg")
             .attr("width", width)
             .attr("height", height)
             .style("background", "#f9f9f9");
 
-        const tooltip = d3.select("#tooltip");
-
         async function loadData() {
             try {
-                let data = await d3.csv("commits.csv", d => ({
-                    datetime: new Date(d.datetime),
-                    hourFrac: +d.hourFrac,
-                    totalLines: +d.totalLines,
-                    author: d.author,
-                    file: d.file,
-                    id: d.id
-                }));
+                let data = await d3.csv('loc.csv');  
+                console.log("CSV Data Loaded:", data);
 
-                console.log("🔹 CSV Data Loaded:", data);
+                // Compute summary stats
+                let totalCommits = data.length;
+                let totalFiles = d3.group(data, d => d.file).size;
+                let totalLOC = d3.sum(data, d => +d.length);
+                let maxDepth = d3.max(data, d => +d.depth) || 0;
+                let avgDepth = d3.mean(data, d => +d.depth) || 0;
+                let longestLine = d3.max(data, d => +d.length) || 0;
+                let totalAuthors = d3.group(data, d => d.author).size;
+                let totalDaysWorked = d3.group(data, d => d.date).size;
 
-                if (data.length === 0) {
-                    console.error("❌ CSV file is empty or not formatted correctly.");
-                    return;
-                }
+                // Avg file length computation
+                const fileLengths = d3.rollups(
+                    data,
+                    v => d3.max(v, d => +d.line),
+                    d => d.file
+                );
+                const avgFileLength = d3.mean(fileLengths, d => d[1]) || 0;
+
+                // Most Active Time of Day
+                const workByPeriod = d3.rollups(
+                    data,
+                    v => v.length,
+                    d => new Date(d.datetime).toLocaleString('en', { dayPeriod: 'short' })
+                );
+                const maxPeriod = d3.greatest(workByPeriod, d => d[1])?.[0] || "Unknown";
+
+                // Display in summary grid
+                const summaryDiv = d3.select("#summary");
+
+                const stats = [
+                    { label: "Commits", value: totalCommits },
+                    { label: "Files", value: totalFiles },
+                    { label: "Total LOC", value: totalLOC.toLocaleString() },
+                    { label: "Max Depth", value: maxDepth },
+                    { label: "Avg Depth", value: avgDepth.toFixed(2) },
+                    { label: "Longest Line", value: longestLine },
+                    { label: "Authors", value: totalAuthors },
+                    { label: "Days Worked", value: totalDaysWorked },
+                    { label: "Avg File Length", value: avgFileLength.toFixed(2) },
+                    { label: "Most Active Time", value: maxPeriod }
+                ];
+
+                summaryDiv.selectAll(".summary-item")
+                    .data(stats)
+                    .enter()
+                    .append("div")
+                    .attr("class", "summary-item")
+                    .html(d => `
+                        <div class="summary-label">${d.label}</div>
+                        <div class="summary-value">${d.value}</div>
+                    `);
 
                 createScatterplot(data);
-                createSummaryTable(data);
-            } 
-            catch (error) {
-                console.error("❌ Error loading CSV:", error);
+            } catch (error) {
+                console.error("Error loading CSV:", error);
+                d3.select("#summary").append("p").text("Failed to load data.");
             }
         }
 
@@ -145,8 +168,9 @@
                 return;
             }
 
+            // Define X and Y scales
             const xScale = d3.scaleTime()
-                .domain(d3.extent(commits, d => d.datetime))
+                .domain(d3.extent(commits, d => new Date(d.datetime)))
                 .range([margin.left, width - margin.right])
                 .nice();
 
@@ -154,11 +178,13 @@
                 .domain([0, 24])
                 .range([height - margin.bottom, margin.top]);
 
-            const [minLines, maxLines] = d3.extent(commits, d => d.totalLines);
+            // Radius scale
+            const [minLines, maxLines] = d3.extent(commits, d => +d.length);
             const rScale = d3.scaleSqrt()
                 .domain([minLines, maxLines])
-                .range([3, 30]);
+                .range([3, 20]);
 
+            // Axes
             const xAxis = d3.axisBottom(xScale).ticks(10);
             const yAxis = d3.axisLeft(yScale).tickFormat(d => `${String(d).padStart(2, '0')}:00`);
 
@@ -170,73 +196,22 @@
                 .attr("transform", `translate(${margin.left},0)`)
                 .call(yAxis);
 
+            // Scatterplot dots
             const dots = svg.append("g").attr("class", "dots");
 
             dots.selectAll("circle")
                 .data(commits)
                 .join("circle")
-                .attr("cx", d => xScale(d.datetime))
-                .attr("cy", d => yScale(d.hourFrac))
-                .attr("r", d => rScale(d.totalLines))
+                .attr("cx", d => xScale(new Date(d.datetime)))
+                .attr("cy", d => yScale(+d.hourFrac))
+                .attr("r", d => rScale(+d.length))
                 .attr("fill", "steelblue")
-                .attr("fill-opacity", 0.7)
-                .on("mouseenter", (event, d) => {
-                    d3.select(event.currentTarget).style("fill-opacity", 1);
-                    updateTooltipContent(d);
-                    updateTooltipPosition(event);
-                    tooltip.style("opacity", 1);
-                })
-                .on("mouseleave", () => {
-                    d3.select(event.currentTarget).style("fill-opacity", 0.7);
-                    tooltip.style("opacity", 0);
-                });
-
-            dots.selectAll("circle")
-                .sort((a, b) => d3.descending(a.totalLines, b.totalLines));
+                .attr("fill-opacity", 0.7);
         }
 
-        function updateTooltipContent(commit) {
-            tooltip.html(`
-                <strong>Commit:</strong> ${commit.id} <br>
-                <strong>Date:</strong> ${commit.datetime.toLocaleString()} <br>
-                <strong>Author:</strong> ${commit.author} <br>
-                <strong>File:</strong> ${commit.file} <br>
-                <strong>Lines Edited:</strong> ${commit.totalLines}
-            `);
-        }
-
-        function updateTooltipPosition(event) {
-            tooltip.style("left", `${event.pageX + 10}px`)
-                   .style("top", `${event.pageY + 10}px`);
-        }
-
-        function createSummaryTable(data) {
-            const totalCommits = data.length;
-            const totalFiles = d3.group(data, d => d.file).size;
-            const totalLOC = d3.sum(data, d => +d.totalLines);
-            const totalAuthors = d3.group(data, d => d.author).size;
-            const totalDaysWorked = d3.group(data, d => d.datetime.toDateString()).size;
-
-            const stats = [
-                { label: "Commits", value: totalCommits },
-                { label: "Files", value: totalFiles },
-                { label: "Total LOC", value: totalLOC.toLocaleString() },
-                { label: "Authors", value: totalAuthors },
-                { label: "Days Worked", value: totalDaysWorked }
-            ];
-
-            d3.select("#summary").selectAll(".summary-item")
-                .data(stats)
-                .enter()
-                .append("div")
-                .attr("class", "summary-item")
-                .html(d => `
-                    <div class="summary-label">${d.label}</div>
-                    <div class="summary-value">${d.value}</div>
-                `);
-        }
-
-        document.addEventListener("DOMContentLoaded", loadData);
+        document.addEventListener('DOMContentLoaded', async () => {
+            await loadData();
+        });
     </script>
 </body>
 </html>
