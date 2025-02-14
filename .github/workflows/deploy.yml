@@ -1,0 +1,44 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - main  # Change this if your default branch is different
+  workflow_dispatch:  # Allows manual triggering from GitHub Actions
+
+permissions:
+  contents: write  # Ensures GitHub Actions can commit and push changes
+  pages: write
+  id-token: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: '0'  # Ensures full Git history is available
+
+      - name: Set Up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 'lts/*'
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Run Elocuent
+        run: |
+          mkdir -p meta  # Ensure meta directory exists
+          npx elocuent -d . -o meta/loc.csv
+
+      - name: Commit and Push
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git pull --rebase --autostash  # Prevent merge conflicts
+          git add -f meta/loc.csv
+          git diff --quiet && git diff --staged --quiet || git commit -m "Update code statistics"
+          git push
