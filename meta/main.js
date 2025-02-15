@@ -25,7 +25,7 @@ function createScatterplot(commits) {
 
     const width = 1000;
     const height = 600;
-    const margin = { top: 50, right: 50, bottom: 50, left: 80 };
+    const margin = { top: 50, right: 50, bottom: 70, left: 80 };
 
     const usableArea = {
         top: margin.top,
@@ -54,8 +54,13 @@ function createScatterplot(commits) {
         .domain([0, 24])
         .range([usableArea.height, 0]);
 
-    const xAxis = d3.axisBottom(xScale).tickSize(-usableArea.height).tickPadding(10);
-    const yAxis = d3.axisLeft(yScale).tickSize(-usableArea.width).tickPadding(10);
+    const xAxis = d3.axisBottom(xScale)
+        .tickSize(-usableArea.height)
+        .tickFormat(d3.timeFormat("%a %d")); // Formats as 'Tue 13'
+
+    const yAxis = d3.axisLeft(yScale)
+        .tickSize(-usableArea.width)
+        .tickFormat(d => `${d}:00`); // Formats as '10:00', '15:00', etc.
 
     // White background for better visibility
     svg.append("rect")
@@ -80,10 +85,24 @@ function createScatterplot(commits) {
         .selectAll("line")
         .attr("stroke", "#ddd");
 
+    // Add X axis
+    svg.append("g")
+        .attr("transform", `translate(0, ${usableArea.height})`)
+        .call(xAxis)
+        .selectAll("text")  // Rotate text for better readability
+        .style("text-anchor", "end")
+        .attr("dx", "-.8em")
+        .attr("dy", ".15em")
+        .attr("transform", "rotate(-45)");
+
+    // Add Y axis
+    svg.append("g")
+        .call(yAxis);
+
     // Add axes labels
     svg.append("text")
         .attr("x", usableArea.width / 2)
-        .attr("y", usableArea.height + margin.bottom - 10)
+        .attr("y", height - 20)
         .attr("text-anchor", "middle")
         .style("font-size", "14px")
         .text("Date");
@@ -136,6 +155,7 @@ function createScatterplot(commits) {
         });
     }
 }
+
 
 
 
