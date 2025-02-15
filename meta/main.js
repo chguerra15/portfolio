@@ -1,41 +1,27 @@
 async function loadData() {
     try {
         let data = await d3.csv("loc.csv");
-        console.log("Raw CSV Data:", data); // Debugging log
-
         data.forEach(d => {
             d.datetime = new Date(d.time);
             d.hourFrac = d.datetime.getHours() + d.datetime.getMinutes() / 60;
             d.lines = +d.length;
         });
-
         return data;
     } catch (error) {
-        console.error("Error loading data:", error);
+        console.error("Error loading CSV:", error);
         d3.select("#summary").append("p").text("Failed to load data.");
         return [];
     }
 }
 
 document.addEventListener("DOMContentLoaded", async function() {
-    console.log("Page Loaded");
-
     const data = await loadData();
-
-    console.log("Chart container exists:", d3.select("#chart").size());
-    console.log("Summary container exists:", d3.select("#summary").size());
-
     createScatterplot(data);
     createSummary(data);
 });
 
 function createScatterplot(commits) {
-    if (!commits.length) {
-        console.error("No commits data to display.");
-        return;
-    }
-
-    console.log("Commits Data for Scatterplot:", commits);
+    if (!commits.length) return;
 
     const width = 1000;
     const height = 600;
@@ -70,22 +56,19 @@ function createScatterplot(commits) {
         .join("circle")
         .attr("cx", d => xScale(d.datetime))
         .attr("cy", d => yScale(d.hourFrac))
-        .attr("r", d => Math.sqrt(d.lines) * 2 + 3) // Adjust for better visibility
+        .attr("r", d => Math.sqrt(d.lines) * 2 + 3)
         .attr("fill", "steelblue")
         .style("opacity", 0.7)
-        .on("mouseover", function(event, d) {
+        .on("mouseover", function() {
             d3.select(this).attr("fill", "orange");
         })
-        .on("mouseout", function(event, d) {
+        .on("mouseout", function() {
             d3.select(this).attr("fill", "steelblue");
         });
 }
 
 function createSummary(data) {
-    if (!data.length) {
-        console.error("No summary data to display.");
-        return;
-    }
+    if (!data.length) return;
 
     const stats = [
         { label: "Commits", value: data.length },
