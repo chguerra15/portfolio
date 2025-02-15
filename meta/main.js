@@ -1,37 +1,28 @@
-const width = 1000, height = 500;
-const margin = { top: 40, right: 40, bottom: 50, left: 60 };
+const width = 900, height = 500;
+const margin = { top: 20, right: 40, bottom: 50, left: 60 };
 
-// Append SVG for scatterplot
+// Select chart container
 const svg = d3.select("#chart")
     .append("svg")
     .attr("viewBox", `0 0 ${width} ${height}`)
-    .attr("preserveAspectRatio", "xMidYMid meet");
+    .style("overflow", "hidden");
 
-// Tooltip setup
-const tooltip = d3.select("#tooltip");
-
-// Load data and create visualization
+// Load Data
 async function loadData() {
     try {
-        let data = await d3.csv("loc.csv");
-
-        // Convert datetime and ensure hourFrac is within 0-24 range
-        data.forEach(d => {
-            d.datetime = new Date(d.datetime);
-            d.hourFrac = +d.hourFrac * 24; // Ensure correct scaling
-            d.totalLines = +d.length;
-        });
-
-        console.log("CSV Data Loaded:", data);
+        let data = await d3.csv('loc.csv', d => ({
+            datetime: new Date(d.datetime),
+            hourFrac: +d.hourFrac * 24, // Ensure proper mapping
+            totalLines: +d.length
+        }));
 
         createScatterplot(data);
-        createSummaryTable(data);
     } catch (error) {
         console.error("Error loading CSV:", error);
-        d3.select("#summary").append("p").text("Failed to load data.");
     }
 }
 
+// Scatterplot Function
 function createScatterplot(commits) {
     console.log("✅ Creating Scatterplot with Data:", commits);
 
@@ -40,42 +31,39 @@ function createScatterplot(commits) {
         return;
     }
 
-    // Define scales
+    // Define Scales
     const xScale = d3.scaleTime()
         .domain(d3.extent(commits, d => d.datetime))
         .range([margin.left, width - margin.right])
         .nice();
 
     const yScale = d3.scaleLinear()
-        .domain([24, 0]) // Flip Y-axis
+        .domain([24, 0])  // Flip Y-axis (00:00 at bottom)
         .range([height - margin.bottom, margin.top]);
 
+    // Radius Scale
     const rScale = d3.scaleSqrt()
         .domain(d3.extent(commits, d => d.totalLines))
         .range([3, 20]);
 
-    // Axes
-    const xAxis = d3.axisBottom(xScale).ticks(10);
-    const yAxis = d3.axisLeft(yScale).tickFormat(d => `${String(d).padStart(2, '0')}:00`);
-
+    // Add Axes
     svg.append("g")
         .attr("transform", `translate(0,${height - margin.bottom})`)
-        .call(xAxis);
+        .call(d3.axisBottom(xScale).tickFormat(d3.timeFormat('%b %d'))); // Fix X-axis labels
 
     svg.append("g")
         .attr("transform", `translate(${margin.left},0)`)
-        .call(yAxis);
+        .call(d3.axisLeft(yScale).tickFormat(d => `${d}:00`)); // Fix Y-axis labels
 
-    // Gridlines
+    // Add Gridlines
     svg.append("g")
         .attr("class", "gridlines")
         .attr("transform", `translate(${margin.left}, 0)`)
         .call(d3.axisLeft(yScale).tickSize(-width + margin.right + margin.left).tickFormat(""));
 
-    // Dots
-    const dots = svg.append("g").attr("class", "dots");
-
-    dots.selectAll("circle")
+    // Scatterplot Dots
+    svg.append("g").attr("class", "dots")
+        .selectAll("circle")
         .data(commits)
         .join("circle")
         .attr("cx", d => xScale(d.datetime))
@@ -88,4 +76,5 @@ function createScatterplot(commits) {
         .style("cursor", "pointer");
 }
 
-document.addEventListener("DOMContentLoaded", loadData);
+// Load Data on Page Load
+document.addEventListener('DOMContentLoaded', loadData);
