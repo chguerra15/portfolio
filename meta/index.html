@@ -59,7 +59,6 @@
             color: #212529;
         }
 
-        /* Chart container */
         .chart-container {
             max-width: 1000px;
             margin: 50px auto;
@@ -67,14 +66,11 @@
     </style>
 </head>
 <body>
-
-    <!-- Chart container -->
     <div class="chart-container">
         <h2>Commits by Time of Day</h2>
         <div id="chart"></div>
     </div>
 
-    <!-- Summary container -->
     <div class="summary-wrapper">
         <div class="summary-container">
             <div class="summary-title">Summary</div>
@@ -82,52 +78,6 @@
         </div>
     </div>
 
-    <script>
-        async function loadData() {
-            try {
-                let data = await d3.csv('loc.csv');  
-                console.log("CSV Data Loaded:", data);
-
-                data.forEach(d => {
-                    d.datetime = new Date(d.time);
-                    d.hourFrac = d.datetime.getHours() + d.datetime.getMinutes() / 60;
-                    d.lines = +d.length;
-                });
-
-                createScatterplot(data);
-                createSummary(data);
-
-            } catch (error) {
-                console.error("Error loading CSV:", error);
-                d3.select("#summary").append("p").text("Failed to load data.");
-            }
-        }
-
-        
-
-        function createSummary(data) {
-            const summaryData = [
-                { label: "Commits", value: data.length },
-                { label: "Files", value: new Set(data.map(d => d.file)).size },
-                { label: "Total LOC", value: d3.sum(data, d => d.lines).toLocaleString() },
-                { label: "Longest Line", value: d3.max(data, d => d.lines) || 0 },
-                { label: "Authors", value: new Set(data.map(d => d.author)).size },
-                { label: "Days Worked", value: new Set(data.map(d => d.date)).size },
-            ];
-
-            d3.select("#summary").selectAll(".summary-item")
-                .data(summaryData)
-                .enter()
-                .append("div")
-                .attr("class", "summary-item")
-                .html(d => `
-                    <div class="summary-label">${d.label}</div>
-                    <div class="summary-value">${d.value}</div>
-                `);
-        }
-
-        document.addEventListener('DOMContentLoaded', loadData);
-    </script>
-
+    <script src="../main.js"></script>
 </body>
 </html>
