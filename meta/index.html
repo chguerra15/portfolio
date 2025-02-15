@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Meta - Code Analysis</title>
     <link rel="stylesheet" href="../style.css">
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script type="module" src="../global.js"></script>
+    <script type="module" src="main.js"></script>
 </head>
 <body>
 
@@ -15,80 +18,27 @@
     <div id="chart"></div>
 
     <p id="selection-count">No commits selected</p>
-
-    <!-- Table for selection breakdown -->
-    <table id="language-breakdown" class="language-stats">
-        <thead>
-            <tr>
-                <th>Language</th>
-                <th>Lines Edited</th>
-                <th>Percentage</th>
-            </tr>
-        </thead>
-        <tbody>
-            <!-- Dynamic rows will be inserted here -->
-        </tbody>
-    </table>
-
-    <dl id="commit-tooltip" class="info tooltip" hidden>
-        <dt>Commit</dt>
-        <dd><a href="" id="commit-link" target="_blank"></a></dd>
-      
-        <dt>Date</dt>
-        <dd id="commit-date"></dd>
-      
-        <dt>Time</dt>
-        <dd id="commit-time"></dd>
-      
-        <dt>Author</dt>
-        <dd id="commit-author"></dd>
-      
-        <dt>Lines Edited</dt>
-        <dd id="commit-lines"></dd>
-    </dl>
-      
-
-    <script src="https://d3js.org/d3.v7.min.js"></script>
-    <script type="module" src="../global.js"></script>
-    <script type="module" src="main.js"></script>
+    <div id="language-breakdown" class="language-stats"></div>
 
     <h2 class="summary-title">Summary</h2>
-
-    <!-- Table for summary section -->
-    <table class="summary-table">
-        <thead>
-            <tr>
-                <th>Metric</th>
-                <th>Value</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>Commits</td>
-                <td id="total-commits">--</td>
-            </tr>
-            <tr>
-                <td>Files</td>
-                <td id="total-files">--</td>
-            </tr>
-            <tr>
-                <td>Total LOC</td>
-                <td id="total-loc">--</td>
-            </tr>
-            <tr>
-                <td>Max Depth</td>
-                <td id="max-depth">--</td>
-            </tr>
-            <tr>
-                <td>Longest Line</td>
-                <td id="longest-line">--</td>
-            </tr>
-            <tr>
-                <td>Max Lines</td>
-                <td id="max-lines">--</td>
-            </tr>
-        </tbody>
-    </table>
+    <div class="summary-container">
+        <table class="summary-table">
+            <thead>
+                <tr>
+                    <th>Metric</th>
+                    <th>Value</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td>Commits</td><td id="total-commits">--</td></tr>
+                <tr><td>Files</td><td id="total-files">--</td></tr>
+                <tr><td>Total LOC</td><td id="total-loc">--</td></tr>
+                <tr><td>Max Depth</td><td id="max-depth">--</td></tr>
+                <tr><td>Longest Line</td><td id="longest-line">--</td></tr>
+                <tr><td>Max Lines</td><td id="max-lines">--</td></tr>
+            </tbody>
+        </table>
+    </div>
 
 </body>
 </html>
