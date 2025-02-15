@@ -9,33 +9,27 @@
 <body>
 
     <h1 class="page-title">Meta</h1>
-    <p class="page-description">This page includes stats about the code of this website.</p>
+    <p class="page-description">My Github Stats</p>
 
-    <!-- Summary Section -->
-    <h2 class="summary-title">Summary</h2>
-    <div class="summary-container">
-        <div class="stat-box"><span class="stat-label">Commits</span> <span class="stat-value" id="total-commits">--</span></div>
-        <div class="stat-box"><span class="stat-label">Files</span> <span class="stat-value" id="total-files">--</span></div>
-        <div class="stat-box"><span class="stat-label">Total LOC</span> <span class="stat-value" id="total-loc">--</span></div>
-        <div class="stat-box"><span class="stat-label">Max Depth</span> <span class="stat-value" id="max-depth">--</span></div>
-        <div class="stat-box"><span class="stat-label">Longest Line</span> <span class="stat-value" id="longest-line">--</span></div>
-        <div class="stat-box"><span class="stat-label">Max Lines</span> <span class="stat-value" id="max-lines">--</span></div>
-    </div>
-
-    <div class="figure-caption">
-        <strong>Figure 1:</strong> Example of a summary stats section
-    </div>
-
-    <!-- Scatterplot Section -->
     <h2 class="summary-title">Commits by Time of Day</h2>
     <div id="chart"></div>
 
-    <!-- ✅ Selection Count & Language Breakdown -->
     <p id="selection-count">No commits selected</p>
-    <div id="language-breakdown" class="language-stats"></div>
 
+    <!-- Table for selection breakdown -->
+    <table id="language-breakdown" class="language-stats">
+        <thead>
+            <tr>
+                <th>Language</th>
+                <th>Lines Edited</th>
+                <th>Percentage</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Dynamic rows will be inserted here -->
+        </tbody>
+    </table>
 
-    <!-- ✅ Tooltip for commit hover details -->
     <dl id="commit-tooltip" class="info tooltip" hidden>
         <dt>Commit</dt>
         <dd><a href="" id="commit-link" target="_blank"></a></dd>
@@ -51,13 +45,50 @@
       
         <dt>Lines Edited</dt>
         <dd id="commit-lines"></dd>
-      </dl>
+    </dl>
       
 
-    <!-- ✅ Import D3 Library -->
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <script type="module" src="../global.js"></script>
     <script type="module" src="main.js"></script>
+
+    <h2 class="summary-title">Summary</h2>
+
+    <!-- Table for summary section -->
+    <table class="summary-table">
+        <thead>
+            <tr>
+                <th>Metric</th>
+                <th>Value</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Commits</td>
+                <td id="total-commits">--</td>
+            </tr>
+            <tr>
+                <td>Files</td>
+                <td id="total-files">--</td>
+            </tr>
+            <tr>
+                <td>Total LOC</td>
+                <td id="total-loc">--</td>
+            </tr>
+            <tr>
+                <td>Max Depth</td>
+                <td id="max-depth">--</td>
+            </tr>
+            <tr>
+                <td>Longest Line</td>
+                <td id="longest-line">--</td>
+            </tr>
+            <tr>
+                <td>Max Lines</td>
+                <td id="max-lines">--</td>
+            </tr>
+        </tbody>
+    </table>
 
 </body>
 </html>
