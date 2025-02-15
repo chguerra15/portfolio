@@ -10,6 +10,14 @@
     <script src="https://d3js.org/d3.v7.min.js"></script>
 
     <style>
+        /* Page Layout */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f8f8;
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+        }
 
         /* Scatterplot container */
         .chart-container {
@@ -89,6 +97,13 @@
             pointer-events: none;
             opacity: 0;
             transition: opacity 0.2s ease-in-out;
+        }
+
+        /* Ensure SVG Fits in Container */
+        svg {
+            width: 100%;
+            height: auto;
+            max-height: 500px;
         }
 
         /* Scatterplot dot interaction */
