@@ -1,27 +1,41 @@
 async function loadData() {
     try {
         let data = await d3.csv("loc.csv");
+        console.log("Raw CSV Data:", data); // Debugging log
+
         data.forEach(d => {
             d.datetime = new Date(d.time);
             d.hourFrac = d.datetime.getHours() + d.datetime.getMinutes() / 60;
             d.lines = +d.length;
         });
+
         return data;
     } catch (error) {
-        console.error("Error loading CSV:", error);
+        console.error("Error loading data:", error);
         d3.select("#summary").append("p").text("Failed to load data.");
         return [];
     }
 }
 
 document.addEventListener("DOMContentLoaded", async function() {
+    console.log("Page Loaded");
+
     const data = await loadData();
+
+    console.log("Chart container exists:", d3.select("#chart").size());
+    console.log("Summary container exists:", d3.select("#summary").size());
+
     createScatterplot(data);
     createSummary(data);
 });
 
 function createScatterplot(commits) {
-    if (!commits.length) return;
+    if (!commits.length) {
+        console.error("No commits data to display.");
+        return;
+    }
+
+    console.log("Commits Data for Scatterplot:", commits);
 
     const width = 1000;
     const height = 600;
@@ -31,58 +45,70 @@ function createScatterplot(commits) {
         .append("svg")
         .attr("width", width)
         .attr("height", height)
-        .style("background", "#fff")
-        .append("g")
-        .attr("transform", `translate(${margin.left},${margin.top})`);
+        .style("background", "#fff");
 
     const xScale = d3.scaleTime()
         .domain(d3.extent(commits, d => d.datetime))
-        .range([0, width - margin.left - margin.right])
+        .range([margin.left, width - margin.right])
         .nice();
 
     const yScale = d3.scaleLinear()
         .domain([0, 24])
-        .range([height - margin.top - margin.bottom, 0]);
+        .range([height - margin.bottom, margin.top]);
 
     svg.append("g")
-        .attr("transform", `translate(0,${height - margin.top - margin.bottom})`)
+        .attr("transform", `translate(0,${height - margin.bottom})`)
         .call(d3.axisBottom(xScale).ticks(10));
 
     svg.append("g")
+        .attr("transform", `translate(${margin.left},0)`)
         .call(d3.axisLeft(yScale).ticks(24).tickFormat(d => `${d}:00`));
 
-    const circles = svg.selectAll("circle")
+    svg.append("g")
+        .selectAll("circle")
         .data(commits)
         .join("circle")
         .attr("cx", d => xScale(d.datetime))
         .attr("cy", d => yScale(d.hourFrac))
-        .attr("r", d => Math.sqrt(d.lines) * 2 + 3)
+        .attr("r", d => Math.sqrt(d.lines) * 2 + 3) // Adjust for better visibility
         .attr("fill", "steelblue")
         .style("opacity", 0.7)
-        .on("mouseover", function() {
+        .on("mouseover", function(event, d) {
             d3.select(this).attr("fill", "orange");
         })
-        .on("mouseout", function() {
+        .on("mouseout", function(event, d) {
             d3.select(this).attr("fill", "steelblue");
         });
+}
 
-    const brush = d3.brush()
-        .extent([[0, 0], [width - margin.left - margin.right, height - margin.top - margin.bottom]])
-        .on("brush", brushed);
-
-    svg.append("g").call(brush);
-
-    function brushed(event) {
-        const selection = event.selection;
-        if (!selection) return;
-
-        const [[x0, y0], [x1, y1]] = selection;
-
-        circles.attr("fill", d => {
-            const isSelected =
-                xScale(d.datetime) >= x0 && xScale(d.datetime) <= x1 &&
-                yScale(d.hourFrac) >= y0 && yScale(d.hourFrac) <= y1;
-            return isSelected ? "red" : "steelblue";
-        });
+function createSummary(data) {
+    if (!data.length) {
+        console.error("No summary data to display.");
+        return;
     }
+
+    const stats = [
+        { label: "Commits", value: data.length },
+        { label: "Files", value: new Set(data.map(d => d.file)).size },
+        { label: "Total LOC", value: d3.sum(data, d => +d.length).toLocaleString() },
+        { label: "Max Depth", value: d3.max(data, d => +d.depth) || 0 },
+        { label: "Avg Depth", value: (d3.mean(data, d => +d.depth) || 0).toFixed(2) },
+        { label: "Longest Line", value: d3.max(data, d => +d.length) || 0 },
+        { label: "Authors", value: new Set(data.map(d => d.author)).size },
+        { label: "Days Worked", value: new Set(data.map(d => d.date)).size },
+        { label: "Most Active Time", value: "Unknown" }
+    ];
+
+    d3.select("#summary")
+        .selectAll(".summary-item")
+        .data(stats)
+        .enter()
+        .append("div")
+        .attr("class", "summary-item")
+        .html(d => `
+            <div>
+                <div class="summary-label">${d.label}</div>
+                <div class="summary-value">${d.value}</div>
+            </div>
+        `);
 }
