@@ -10,13 +10,11 @@
     <script src="https://d3js.org/d3.v7.min.js"></script>
 
     <style>
-        /* Wrapper for better positioning */
         .summary-wrapper {
             max-width: 850px;
             margin: 30px auto;
         }
 
-        /* Summary Box with Padding */
         .summary-container {
             background-color: #ffffff;
             padding: 20px;
@@ -27,7 +25,6 @@
             align-items: center;
         }
 
-        /* Title inside the box */
         .summary-title {
             font-size: 22px;
             font-weight: bold;
@@ -35,11 +32,10 @@
             margin-bottom: 15px;
         }
 
-        /* Grid layout for better spacing */
         .summary-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 20px; /* Space between items */
+            gap: 20px;
             width: 100%;
             max-width: 750px;
             text-align: center;
@@ -49,7 +45,6 @@
             padding: 10px;
         }
 
-        /* Labels */
         .summary-label {
             font-size: 14px;
             font-weight: 600;
@@ -58,14 +53,12 @@
             margin-bottom: 5px;
         }
 
-        /* Values */
         .summary-value {
             font-size: 30px;
             font-weight: bold;
             color: #212529;
         }
 
-        /* Scatterplot styles */
         .chart-container {
             text-align: center;
             margin: 40px auto;
@@ -100,7 +93,7 @@
             try {
                 let data = await d3.csv('loc.csv', d => ({
                     datetime: new Date(d.datetime),
-                    hourFrac: +d.hourFrac,  // ✅ Ensure it's a number
+                    hourFrac: +d.hourFrac || 0,  // ✅ Ensure it's a number
                     totalLines: +d.length,
                     author: d.author,
                     file: d.file,
@@ -108,6 +101,7 @@
                 }));
 
                 console.log("Loaded Data:", data.slice(0, 10)); // Debugging step
+                console.log("Debugging hourFrac values:", data.map(d => d.hourFrac));  // Debug print
 
                 if (data.length === 0) {
                     console.error("CSV file is empty or incorrect.");
@@ -136,7 +130,7 @@
                 .nice();
 
             const yScale = d3.scaleLinear()
-                .domain([0, 24])  // ✅ Ensures 00:00 is at the bottom, 24:00 at the top
+                .domain([24, 0])  // ✅ Ensures 00:00 is at the bottom, 24:00 at the top
                 .range([height - margin.bottom, margin.top]); // ✅ Proper mapping
 
             // Radius scale
@@ -164,42 +158,10 @@
                 .data(commits)
                 .join("circle")
                 .attr("cx", d => xScale(new Date(d.datetime)))
-                .attr("cy", d => yScale(+d.hourFrac))  // ✅ Properly maps values
+                .attr("cy", d => yScale(+d.hourFrac || 0))  // ✅ Properly maps values
                 .attr("r", d => rScale(+d.totalLines))
                 .attr("fill", "steelblue")
                 .attr("fill-opacity", 0.7);
-        }
-
-        function createSummaryTable(data) {
-            const totalCommits = data.length;
-            const totalFiles = d3.group(data, d => d.file).size;
-            const totalLOC = d3.sum(data, d => +d.totalLines);
-            const maxDepth = d3.max(data, d => +d.depth) || 0;
-            const avgDepth = d3.mean(data, d => +d.depth) || 0;
-            const longestLine = d3.max(data, d => +d.totalLines) || 0;
-            const totalAuthors = d3.group(data, d => d.author).size;
-            const totalDaysWorked = d3.group(data, d => d.datetime.toDateString()).size;
-
-            const stats = [
-                { label: "Commits", value: totalCommits },
-                { label: "Files", value: totalFiles },
-                { label: "Total LOC", value: totalLOC.toLocaleString() },
-                { label: "Max Depth", value: maxDepth },
-                { label: "Avg Depth", value: avgDepth.toFixed(2) },
-                { label: "Longest Line", value: longestLine },
-                { label: "Authors", value: totalAuthors },
-                { label: "Days Worked", value: totalDaysWorked }
-            ];
-
-            d3.select("#summary").selectAll(".summary-item")
-                .data(stats)
-                .enter()
-                .append("div")
-                .attr("class", "summary-item")
-                .html(d => `
-                    <div class="summary-label">${d.label}</div>
-                    <div class="summary-value">${d.value}</div>
-                `);
         }
 
         document.addEventListener("DOMContentLoaded", loadData);
