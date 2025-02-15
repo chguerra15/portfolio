@@ -25,7 +25,7 @@ function createScatterplot(commits) {
 
     const width = 1000;
     const height = 600;
-    const margin = { top: 10, right: 10, bottom: 30, left: 50 };
+    const margin = { top: 50, right: 50, bottom: 50, left: 80 };
 
     const usableArea = {
         top: margin.top,
@@ -36,6 +36,8 @@ function createScatterplot(commits) {
         height: height - margin.top - margin.bottom
     };
 
+    d3.select("#chart").selectAll("*").remove(); // Clear previous render
+
     const svg = d3.select("#chart")
         .append("svg")
         .attr("viewBox", `0 0 ${width} ${height}`)
@@ -45,32 +47,54 @@ function createScatterplot(commits) {
 
     const xScale = d3.scaleTime()
         .domain(d3.extent(commits, d => d.datetime))
-        .range([usableArea.left, usableArea.right])
+        .range([0, usableArea.width])
         .nice();
 
     const yScale = d3.scaleLinear()
         .domain([0, 24])
-        .range([usableArea.bottom, usableArea.top]);
+        .range([usableArea.height, 0]);
 
-    const xAxis = d3.axisBottom(xScale);
-    const yAxis = d3.axisLeft(yScale);
-
-    svg.append("g")
-        .attr("transform", `translate(0, ${usableArea.bottom})`)
-        .call(xAxis);
-
-    svg.append("g")
-        .attr("transform", `translate(${usableArea.left}, 0)`)
-        .call(yAxis);
+    const xAxis = d3.axisBottom(xScale).tickSize(-usableArea.height).tickPadding(10);
+    const yAxis = d3.axisLeft(yScale).tickSize(-usableArea.width).tickPadding(10);
 
     // White background for better visibility
     svg.append("rect")
-        .attr("x", usableArea.left)
-        .attr("y", usableArea.top)
+        .attr("x", 0)
+        .attr("y", 0)
         .attr("width", usableArea.width)
         .attr("height", usableArea.height)
         .attr("fill", "white")
         .attr("stroke", "#ddd");
+
+    // Grid lines
+    svg.append("g")
+        .attr("class", "grid")
+        .call(yAxis)
+        .selectAll("line")
+        .attr("stroke", "#ddd");
+
+    svg.append("g")
+        .attr("class", "grid")
+        .attr("transform", `translate(0, ${usableArea.height})`)
+        .call(xAxis)
+        .selectAll("line")
+        .attr("stroke", "#ddd");
+
+    // Add axes labels
+    svg.append("text")
+        .attr("x", usableArea.width / 2)
+        .attr("y", usableArea.height + margin.bottom - 10)
+        .attr("text-anchor", "middle")
+        .style("font-size", "14px")
+        .text("Date");
+
+    svg.append("text")
+        .attr("transform", "rotate(-90)")
+        .attr("y", -margin.left + 15)
+        .attr("x", -usableArea.height / 2)
+        .attr("text-anchor", "middle")
+        .style("font-size", "14px")
+        .text("Time of Day");
 
     const dots = svg.append("g").attr("class", "dots");
 
@@ -91,7 +115,7 @@ function createScatterplot(commits) {
 
     // Selection box for commits
     const brush = d3.brush()
-        .extent([[usableArea.left, usableArea.top], [usableArea.right, usableArea.bottom]])
+        .extent([[0, 0], [usableArea.width, usableArea.height]])
         .on("start brush", brushed);
 
     svg.append("g")
@@ -112,6 +136,7 @@ function createScatterplot(commits) {
         });
     }
 }
+
 
 
 function createSummary(data) {
