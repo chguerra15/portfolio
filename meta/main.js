@@ -25,60 +25,56 @@ function createScatterplot(commits) {
 
     const width = 1000;
     const height = 600;
-    const margin = { top: 20, right: 20, bottom: 50, left: 80 };
+    const margin = { top: 10, right: 10, bottom: 30, left: 50 };
+
+    const usableArea = {
+        top: margin.top,
+        right: width - margin.right,
+        bottom: height - margin.bottom,
+        left: margin.left,
+        width: width - margin.left - margin.right,
+        height: height - margin.top - margin.bottom
+    };
 
     const svg = d3.select("#chart")
         .append("svg")
-        .attr("width", width)
-        .attr("height", height)
+        .attr("viewBox", `0 0 ${width} ${height}`)
+        .style("overflow", "visible")
         .append("g")
         .attr("transform", `translate(${margin.left},${margin.top})`);
 
     const xScale = d3.scaleTime()
         .domain(d3.extent(commits, d => d.datetime))
-        .range([0, width - margin.left - margin.right])
+        .range([usableArea.left, usableArea.right])
         .nice();
 
     const yScale = d3.scaleLinear()
         .domain([0, 24])
-        .range([height - margin.top - margin.bottom, 0]);
+        .range([usableArea.bottom, usableArea.top]);
 
-    const xAxis = d3.axisBottom(xScale).ticks(10);
-    const yAxis = d3.axisLeft(yScale).ticks(24).tickFormat(d => `${d}:00`);
-
-    // Grid lines
-    svg.append("g")
-        .attr("class", "grid")
-        .call(d3.axisLeft(yScale).tickSize(-width + margin.left + margin.right).tickFormat(""));
+    const xAxis = d3.axisBottom(xScale);
+    const yAxis = d3.axisLeft(yScale);
 
     svg.append("g")
-        .attr("class", "grid")
-        .attr("transform", `translate(0,${height - margin.top - margin.bottom})`)
-        .call(d3.axisBottom(xScale).tickSize(-height + margin.top + margin.bottom).tickFormat(""));
+        .attr("transform", `translate(0, ${usableArea.bottom})`)
+        .call(xAxis);
 
-    // X Axis
     svg.append("g")
-        .attr("transform", `translate(0,${height - margin.top - margin.bottom})`)
-        .call(xAxis)
-        .append("text")
-        .attr("x", (width - margin.left - margin.right) / 2)
-        .attr("y", 40)
-        .attr("fill", "black")
-        .attr("text-anchor", "middle")
-        .text("Date");
+        .attr("transform", `translate(${usableArea.left}, 0)`)
+        .call(yAxis);
 
-    // Y Axis
-    svg.append("g")
-        .call(yAxis)
-        .append("text")
-        .attr("transform", "rotate(-90)")
-        .attr("x", -((height - margin.top - margin.bottom) / 2))
-        .attr("y", -60)
-        .attr("fill", "black")
-        .attr("text-anchor", "middle")
-        .text("Time of Day");
+    // White background for better visibility
+    svg.append("rect")
+        .attr("x", usableArea.left)
+        .attr("y", usableArea.top)
+        .attr("width", usableArea.width)
+        .attr("height", usableArea.height)
+        .attr("fill", "white")
+        .attr("stroke", "#ddd");
 
-    const circles = svg.selectAll("circle")
+    const dots = svg.append("g").attr("class", "dots");
+
+    dots.selectAll("circle")
         .data(commits)
         .join("circle")
         .attr("cx", d => xScale(d.datetime))
@@ -93,12 +89,14 @@ function createScatterplot(commits) {
             d3.select(this).attr("fill", "steelblue");
         });
 
-    // Brush selection
+    // Selection box for commits
     const brush = d3.brush()
-        .extent([[0, 0], [width - margin.left - margin.right, height - margin.top - margin.bottom]])
-        .on("brush", brushed);
+        .extent([[usableArea.left, usableArea.top], [usableArea.right, usableArea.bottom]])
+        .on("start brush", brushed);
 
-    svg.append("g").call(brush);
+    svg.append("g")
+        .attr("class", "brush")
+        .call(brush);
 
     function brushed(event) {
         const selection = event.selection;
@@ -106,7 +104,7 @@ function createScatterplot(commits) {
 
         const [[x0, y0], [x1, y1]] = selection;
 
-        circles.attr("fill", d => {
+        dots.selectAll("circle").attr("fill", d => {
             const isSelected =
                 xScale(d.datetime) >= x0 && xScale(d.datetime) <= x1 &&
                 yScale(d.hourFrac) >= y0 && yScale(d.hourFrac) <= y1;
