@@ -8,6 +8,7 @@
     <script type="module" src="../global.js"></script>
     <script type="module" src="./projects.js"></script>
     <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="../main.js"></script>
 
     <style>
         .summary-wrapper {
@@ -79,42 +80,11 @@
     </div>
 
     <script>
-        async function loadData() {
-            try {
-                let data = await d3.csv('loc.csv');  
-                console.log("CSV Data Loaded:", data);
-
-                let stats = [
-                    { label: "Commits", value: data.length },
-                    { label: "Files", value: new Set(data.map(d => d.file)).size },
-                    { label: "Total LOC", value: d3.sum(data, d => +d.length).toLocaleString() },
-                    { label: "Max Depth", value: d3.max(data, d => +d.depth) || 0 },
-                    { label: "Avg Depth", value: (d3.mean(data, d => +d.depth) || 0).toFixed(2) },
-                    { label: "Longest Line", value: d3.max(data, d => +d.length) || 0 },
-                    { label: "Authors", value: new Set(data.map(d => d.author)).size },
-                    { label: "Days Worked", value: new Set(data.map(d => d.date)).size },
-                    { label: "Most Active Time", value: "Unknown" }
-                ];
-
-                const summaryDiv = d3.select("#summary");
-                summaryDiv.selectAll(".summary-item")
-                    .data(stats)
-                    .enter()
-                    .append("div")
-                    .attr("class", "summary-item")
-                    .html(d => `
-                        <div>
-                            <div class="summary-label">${d.label}</div>
-                            <div class="summary-value">${d.value}</div>
-                        </div>
-                    `);
-            } catch (error) {
-                console.error("Error loading CSV:", error);
-                d3.select("#summary").append("p").text("Failed to load data.");
-            }
-        }
-
-        document.addEventListener('DOMContentLoaded', loadData);
+        document.addEventListener('DOMContentLoaded', async () => {
+            const data = await loadData();
+            createScatterplot(data);
+            createSummary(data);
+        });
     </script>
 </body>
 </html>
