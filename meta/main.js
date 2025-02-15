@@ -1,20 +1,28 @@
-document.addEventListener("DOMContentLoaded", function() {
-    d3.csv("loc.csv").then(function(data) {
+async function loadData() {
+    try {
+        let data = await d3.csv("loc.csv");
         data.forEach(d => {
             d.datetime = new Date(d.time);
             d.hourFrac = d.datetime.getHours() + d.datetime.getMinutes() / 60;
             d.lines = +d.length;
         });
-
-        createScatterplot(data);
-        createSummary(data);
-    }).catch(error => {
+        return data;
+    } catch (error) {
         console.error("Error loading data:", error);
         d3.select("#summary").append("p").text("Failed to load data.");
-    });
+        return [];
+    }
+}
+
+document.addEventListener("DOMContentLoaded", async function() {
+    const data = await loadData();
+    createScatterplot(data);
+    createSummary(data);
 });
 
 function createScatterplot(commits) {
+    if (!commits.length) return;
+
     const width = 1000;
     const height = 600;
     const margin = { top: 20, right: 20, bottom: 50, left: 60 };
@@ -45,14 +53,13 @@ function createScatterplot(commits) {
         .attr("transform", `translate(${margin.left},0)`)
         .call(yAxis);
 
-    // Circles for commits
     const dots = svg.append("g")
         .selectAll("circle")
         .data(commits)
         .join("circle")
         .attr("cx", d => xScale(d.datetime))
         .attr("cy", d => yScale(d.hourFrac))
-        .attr("r", d => Math.sqrt(d.lines) * 2) // Scales bubble size for visibility
+        .attr("r", d => Math.sqrt(d.lines) * 2 + 3) // Adjust radius for better visibility
         .attr("fill", "steelblue")
         .style("opacity", 0.7)
         .on("mouseover", function(event, d) {
@@ -61,27 +68,33 @@ function createScatterplot(commits) {
         .on("mouseout", function(event, d) {
             d3.select(this).attr("fill", "steelblue");
         });
+}
 
-    // Selection box for multiple commits
-    const brush = d3.brush()
-        .extent([[margin.left, margin.top], [width - margin.right, height - margin.bottom]])
-        .on("start brush", brushed);
+function createSummary(data) {
+    if (!data.length) return;
 
-    svg.append("g")
-        .attr("class", "brush")
-        .call(brush);
+    const stats = [
+        { label: "Commits", value: data.length },
+        { label: "Files", value: new Set(data.map(d => d.file)).size },
+        { label: "Total LOC", value: d3.sum(data, d => +d.length).toLocaleString() },
+        { label: "Max Depth", value: d3.max(data, d => +d.depth) || 0 },
+        { label: "Avg Depth", value: (d3.mean(data, d => +d.depth) || 0).toFixed(2) },
+        { label: "Longest Line", value: d3.max(data, d => +d.length) || 0 },
+        { label: "Authors", value: new Set(data.map(d => d.author)).size },
+        { label: "Days Worked", value: new Set(data.map(d => d.date)).size },
+        { label: "Most Active Time", value: "Unknown" }
+    ];
 
-    function brushed(event) {
-        const selection = event.selection;
-        if (!selection) return;
-
-        const [[x0, y0], [x1, y1]] = selection;
-
-        dots.attr("fill", d => {
-            const isSelected =
-                xScale(d.datetime) >= x0 && xScale(d.datetime) <= x1 &&
-                yScale(d.hourFrac) >= y0 && yScale(d.hourFrac) <= y1;
-            return isSelected ? "red" : "steelblue";
-        });
-    }
+    const summaryDiv = d3.select("#summary");
+    summaryDiv.selectAll(".summary-item")
+        .data(stats)
+        .enter()
+        .append("div")
+        .attr("class", "summary-item")
+        .html(d => `
+            <div>
+                <div class="summary-label">${d.label}</div>
+                <div class="summary-value">${d.value}</div>
+            </div>
+        `);
 }
