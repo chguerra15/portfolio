@@ -10,13 +10,11 @@
     <script src="https://d3js.org/d3.v7.min.js"></script>
 
     <style>
-        /* Wrapper for better positioning */
         .summary-wrapper {
             max-width: 850px;
             margin: 30px auto;
         }
 
-        /* Summary Box with Padding */
         .summary-container {
             background-color: #ffffff;
             padding: 20px;
@@ -27,7 +25,6 @@
             align-items: center;
         }
 
-        /* Title inside the box */
         .summary-title {
             font-size: 22px;
             font-weight: bold;
@@ -35,11 +32,10 @@
             margin-bottom: 15px;
         }
 
-        /* Grid layout for better spacing */
         .summary-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 20px; /* Space between items */
+            gap: 20px;
             width: 100%;
             max-width: 750px;
             text-align: center;
@@ -49,7 +45,6 @@
             padding: 10px;
         }
 
-        /* Labels */
         .summary-label {
             font-size: 14px;
             font-weight: 600;
@@ -58,18 +53,31 @@
             margin-bottom: 5px;
         }
 
-        /* Values */
         .summary-value {
             font-size: 30px;
             font-weight: bold;
             color: #212529;
         }
+
+        /* Chart container */
+        .chart-container {
+            max-width: 1000px;
+            margin: 50px auto;
+        }
     </style>
 </head>
 <body>
+
+    <!-- Chart container -->
+    <div class="chart-container">
+        <h2>Commits by Time of Day</h2>
+        <div id="chart"></div>
+    </div>
+
+    <!-- Summary container -->
     <div class="summary-wrapper">
         <div class="summary-container">
-            <div class="summary-title">Summary</div>  <!-- Now inside the box -->
+            <div class="summary-title">Summary</div>
             <div id="summary" class="summary-grid"></div>
         </div>
     </div>
@@ -80,57 +88,14 @@
                 let data = await d3.csv('loc.csv');  
                 console.log("CSV Data Loaded:", data);
 
-                // Compute summary stats
-                let totalCommits = data.length;
-                let totalFiles = d3.group(data, d => d.file).size;
-                let totalLOC = d3.sum(data, d => +d.length);
-                let maxDepth = d3.max(data, d => +d.depth) || 0;
-                let avgDepth = d3.mean(data, d => +d.depth) || 0;
-                let longestLine = d3.max(data, d => +d.length) || 0;
-                let totalAuthors = d3.group(data, d => d.author).size;
-                let totalDaysWorked = d3.group(data, d => d.date).size;
+                data.forEach(d => {
+                    d.datetime = new Date(d.time);
+                    d.hourFrac = d.datetime.getHours() + d.datetime.getMinutes() / 60;
+                    d.lines = +d.length;
+                });
 
-                // Avg file length computation
-                const fileLengths = d3.rollups(
-                    data,
-                    v => d3.max(v, d => +d.line),
-                    d => d.file
-                );
-                const avgFileLength = d3.mean(fileLengths, d => d[1]) || 0;
-
-                // Most Active Time of Day
-                const workByPeriod = d3.rollups(
-                    data,
-                    v => v.length,
-                    d => new Date(d.datetime).toLocaleString('en', { dayPeriod: 'short' })
-                );
-                const maxPeriod = d3.greatest(workByPeriod, d => d[1])?.[0] || "Unknown";
-
-                // Display in summary grid
-                const summaryDiv = d3.select("#summary");
-
-                const stats = [
-                    { label: "Commits", value: totalCommits },
-                    { label: "Files", value: totalFiles },
-                    { label: "Total LOC", value: totalLOC.toLocaleString() },
-                    { label: "Max Depth", value: maxDepth },
-                    { label: "Avg Depth", value: avgDepth.toFixed(2) },
-                    { label: "Longest Line", value: longestLine },
-                    { label: "Authors", value: totalAuthors },
-                    { label: "Days Worked", value: totalDaysWorked },
-                    { label: "Avg File Length", value: avgFileLength.toFixed(2) },
-                    { label: "Most Active Time", value: maxPeriod }
-                ];
-
-                summaryDiv.selectAll(".summary-item")
-                    .data(stats)
-                    .enter()
-                    .append("div")
-                    .attr("class", "summary-item")
-                    .html(d => 
-                        <div class="summary-label">${d.label}</div>
-                        <div class="summary-value">${d.value}</div>
-                    );
+                createScatterplot(data);
+                createSummary(data);
 
             } catch (error) {
                 console.error("Error loading CSV:", error);
@@ -138,9 +103,69 @@
             }
         }
 
-        document.addEventListener('DOMContentLoaded', async () => {
-            await loadData();
-        });
+        function createScatterplot(commits) {
+            const width = 1000;
+            const height = 600;
+
+            const svg = d3.select("#chart")
+                .append("svg")
+                .attr("viewBox", `0 0 ${width} ${height}`)
+                .style("overflow", "visible");
+
+            const xScale = d3.scaleTime()
+                .domain(d3.extent(commits, d => d.datetime))
+                .range([50, width - 50])
+                .nice();
+
+            const yScale = d3.scaleLinear()
+                .domain([0, 24])
+                .range([height - 50, 50]);
+
+            svg.append("g")
+                .attr("transform", `translate(0,${height - 50})`)
+                .call(d3.axisBottom(xScale));
+
+            svg.append("g")
+                .attr("transform", "translate(50,0)")
+                .call(d3.axisLeft(yScale).ticks(24).tickFormat(d => `${d}:00`));
+
+            svg.append("g")
+                .selectAll("circle")
+                .data(commits)
+                .join("circle")
+                .attr("cx", d => xScale(d.datetime))
+                .attr("cy", d => yScale(d.hourFrac))
+                .attr("r", 5)
+                .attr("fill", "steelblue")
+                .style("opacity", 0.7);
+        }
+
+        function createSummary(data) {
+            const summaryData = [
+                { label: "Commits", value: data.length },
+                { label: "Files", value: new Set(data.map(d => d.file)).size },
+                { label: "Total LOC", value: d3.sum(data, d => d.lines).toLocaleString() },
+                { label: "Max Depth", value: d3.max(data, d => +d.depth) || 0 },
+                { label: "Avg Depth", value: (d3.mean(data, d => +d.depth) || 0).toFixed(2) },
+                { label: "Longest Line", value: d3.max(data, d => d.lines) || 0 },
+                { label: "Authors", value: new Set(data.map(d => d.author)).size },
+                { label: "Days Worked", value: new Set(data.map(d => d.date)).size },
+                { label: "Most Active Time", value: "Unknown" } // Placeholder
+            ];
+
+            d3.select("#summary").selectAll(".summary-item")
+                .data(summaryData)
+                .enter()
+                .append("div")
+                .attr("class", "summary-item")
+                .html(d => `
+                    <div class="summary-label">${d.label}</div>
+                    <div class="summary-value">${d.value}</div>
+                `);
+        }
+
+        document.addEventListener('DOMContentLoaded', loadData);
     </script>
+
 </body>
 </html>
