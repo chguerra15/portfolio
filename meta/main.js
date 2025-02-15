@@ -1,11 +1,14 @@
 async function loadData() {
     try {
         let data = await d3.csv("loc.csv");
+        console.log("Raw CSV Data:", data); // Debugging log
+
         data.forEach(d => {
             d.datetime = new Date(d.time);
             d.hourFrac = d.datetime.getHours() + d.datetime.getMinutes() / 60;
             d.lines = +d.length;
         });
+
         return data;
     } catch (error) {
         console.error("Error loading data:", error);
@@ -15,13 +18,24 @@ async function loadData() {
 }
 
 document.addEventListener("DOMContentLoaded", async function() {
+    console.log("Page Loaded");
+
     const data = await loadData();
+
+    console.log("Chart container exists:", d3.select("#chart").size());
+    console.log("Summary container exists:", d3.select("#summary").size());
+
     createScatterplot(data);
     createSummary(data);
 });
 
 function createScatterplot(commits) {
-    if (!commits.length) return;
+    if (!commits.length) {
+        console.error("No commits data to display.");
+        return;
+    }
+
+    console.log("Commits Data for Scatterplot:", commits);
 
     const width = 1000;
     const height = 600;
@@ -42,24 +56,21 @@ function createScatterplot(commits) {
         .domain([0, 24])
         .range([height - margin.bottom, margin.top]);
 
-    const xAxis = d3.axisBottom(xScale).ticks(10);
-    const yAxis = d3.axisLeft(yScale).ticks(24).tickFormat(d => `${d}:00`);
-
     svg.append("g")
         .attr("transform", `translate(0,${height - margin.bottom})`)
-        .call(xAxis);
+        .call(d3.axisBottom(xScale).ticks(10));
 
     svg.append("g")
         .attr("transform", `translate(${margin.left},0)`)
-        .call(yAxis);
+        .call(d3.axisLeft(yScale).ticks(24).tickFormat(d => `${d}:00`));
 
-    const dots = svg.append("g")
+    svg.append("g")
         .selectAll("circle")
         .data(commits)
         .join("circle")
         .attr("cx", d => xScale(d.datetime))
         .attr("cy", d => yScale(d.hourFrac))
-        .attr("r", d => Math.sqrt(d.lines) * 2 + 3) // Adjust radius for better visibility
+        .attr("r", d => Math.sqrt(d.lines) * 2 + 3) // Adjust for better visibility
         .attr("fill", "steelblue")
         .style("opacity", 0.7)
         .on("mouseover", function(event, d) {
@@ -71,7 +82,10 @@ function createScatterplot(commits) {
 }
 
 function createSummary(data) {
-    if (!data.length) return;
+    if (!data.length) {
+        console.error("No summary data to display.");
+        return;
+    }
 
     const stats = [
         { label: "Commits", value: data.length },
@@ -85,8 +99,8 @@ function createSummary(data) {
         { label: "Most Active Time", value: "Unknown" }
     ];
 
-    const summaryDiv = d3.select("#summary");
-    summaryDiv.selectAll(".summary-item")
+    d3.select("#summary")
+        .selectAll(".summary-item")
         .data(stats)
         .enter()
         .append("div")
