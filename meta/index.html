@@ -3,74 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Meta</title>
-    <link rel="stylesheet" href="../style.css">
+    <title>Commits Visualization</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script defer src="main.js"></script>
     <script type="module" src="../global.js"></script>
     <script type="module" src="./projects.js"></script>
-    <script src="https://d3js.org/d3.v7.min.js"></script>
-
-    <style>
-        /* Wrapper for better positioning */
-        .summary-wrapper {
-            max-width: 850px;
-            margin: 30px auto;
-        }
-
-        /* Summary Box with Padding */
-        .summary-container {
-            background-color: #ffffff;
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        /* Title inside the box */
-        .summary-title {
-            font-size: 22px;
-            font-weight: bold;
-            color: #212529;
-            margin-bottom: 15px;
-        }
-
-        /* Grid layout for better spacing */
-        .summary-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
-            width: 100%;
-            max-width: 750px;
-            text-align: center;
-        }
-
-        .summary-item {
-            padding: 10px;
-        }
-
-        /* Labels */
-        .summary-label {
-            font-size: 14px;
-            font-weight: 600;
-            color: #6c757d;
-            text-transform: uppercase;
-            margin-bottom: 5px;
-        }
-
-        /* Values */
-        .summary-value {
-            font-size: 30px;
-            font-weight: bold;
-            color: #212529;
-        }
-
-        /* Scatterplot styles */
-        .chart-container {
-            text-align: center;
-            margin: 40px auto;
-        }
-    </style>
 </head>
 <body>
     <div class="chart-container">
@@ -84,83 +22,5 @@
             <div id="summary" class="summary-grid"></div>
         </div>
     </div>
-
-    <script>
-        const width = 900, height = 500;
-        const margin = { top: 20, right: 40, bottom: 50, left: 60 };
-
-        // Append SVG for scatterplot
-        const svg = d3.select("#chart")
-            .append("svg")
-            .attr("width", width)
-            .attr("height", height)
-            .style("background", "#f9f9f9");
-
-        async function loadData() {
-            try {
-                let data = await d3.csv('loc.csv');
-                console.log("CSV Data Loaded:", data);
-
-                // Compute summary stats
-                let totalCommits = data.length;
-                let totalFiles = d3.group(data, d => d.file).size;
-                let totalLOC = d3.sum(data, d => +d.length);
-                let maxDepth = d3.max(data, d => +d.depth) || 0;
-                let avgDepth = d3.mean(data, d => +d.depth) || 0;
-                let longestLine = d3.max(data, d => +d.length) || 0;
-                let totalAuthors = d3.group(data, d => d.author).size;
-                let totalDaysWorked = d3.group(data, d => d.date).size;
-
-                // Avg file length computation
-                const fileLengths = d3.rollups(
-                    data,
-                    v => d3.max(v, d => +d.line),
-                    d => d.file
-                );
-                const avgFileLength = d3.mean(fileLengths, d => d[1]) || 0;
-
-                // Most Active Time of Day
-                const workByPeriod = d3.rollups(
-                    data,
-                    v => v.length,
-                    d => new Date(d.datetime).toLocaleString('en', { dayPeriod: 'short' })
-                );
-                const maxPeriod = d3.greatest(workByPeriod, d => d[1])?.[0] || "Unknown";
-
-                // Display in summary grid
-                const summaryDiv = d3.select("#summary");
-
-                const stats = [
-                    { label: "Commits", value: totalCommits },
-                    { label: "Files", value: totalFiles },
-                    { label: "Total LOC", value: totalLOC.toLocaleString() },
-                    { label: "Max Depth", value: maxDepth },
-                    { label: "Avg Depth", value: avgDepth.toFixed(2) },
-                    { label: "Longest Line", value: longestLine },
-                    { label: "Authors", value: totalAuthors },
-                    { label: "Days Worked", value: totalDaysWorked },
-                    { label: "Avg File Length", value: avgFileLength.toFixed(2) },
-                    { label: "Most Active Time", value: maxPeriod }
-                ];
-
-                summaryDiv.selectAll(".summary-item")
-                    .data(stats)
-                    .enter()
-                    .append("div")
-                    .attr("class", "summary-item")
-                    .html(d => `
-                        <div class="summary-label">${d.label}</div>
-                        <div class="summary-value">${d.value}</div>
-                    `);
-
-                createScatterplot(data);
-            } catch (error) {
-                console.error("Error loading CSV:", error);
-                d3.select("#summary").append("p").text("Failed to load data.");
-            }
-        }
-    </script>
-    <h2>Commits by time of day</h2>
-    <div id="chart"></div>
 </body>
 </html>
