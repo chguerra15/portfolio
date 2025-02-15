@@ -10,16 +10,6 @@
     <script src="https://d3js.org/d3.v7.min.js"></script>
 
     <style>
-        /* Page Layout */
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f8f8f8;
-            margin: 0;
-            padding: 20px;
-            text-align: center;
-        }
-
-        /* Scatterplot container */
         .chart-container {
             background-color: white;
             padding: 20px;
@@ -34,8 +24,6 @@
             font-weight: bold;
             margin-bottom: 20px;
         }
-
-        /* Summary Box */
         .summary-wrapper {
             max-width: 850px;
             margin: 50px auto;
@@ -59,7 +47,6 @@
             margin-bottom: 15px;
         }
 
-        /* Grid Layout */
         .summary-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
@@ -87,7 +74,6 @@
             color: #212529;
         }
 
-        /* Tooltip Styling */
         .tooltip {
             position: absolute;
             background-color: rgba(255, 255, 255, 0.9);
@@ -99,14 +85,12 @@
             transition: opacity 0.2s ease-in-out;
         }
 
-        /* Ensure SVG Fits in Container */
         svg {
             width: 100%;
             height: auto;
             max-height: 500px;
         }
 
-        /* Scatterplot dot interaction */
         circle:hover {
             transform: scale(1.2);
             transition: 0.2s ease-in-out;
@@ -115,14 +99,11 @@
     </style>
 </head>
 <body>
-
-    <!-- Scatterplot -->
     <div class="chart-container">
         <h2>Commits by Time of Day</h2>
         <div id="chart"></div>
     </div>
 
-    <!-- Summary Stats -->
     <div class="summary-wrapper">
         <div class="summary-container">
             <div class="summary-title">Summary</div>
