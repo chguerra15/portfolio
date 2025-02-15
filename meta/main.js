@@ -137,7 +137,6 @@ function createScatterplot() {
 function brushed(event) {
     brushSelection = event.selection;
     updateSelection();
-    updateSelectionCount();
     updateLanguageBreakdown();
 }
 
