@@ -31,27 +31,27 @@ function createScatterplot(commits) {
         .append("svg")
         .attr("width", width)
         .attr("height", height)
-        .style("background", "#fff");
+        .style("background", "#fff")
+        .append("g")
+        .attr("transform", `translate(${margin.left},${margin.top})`);
 
     const xScale = d3.scaleTime()
         .domain(d3.extent(commits, d => d.datetime))
-        .range([margin.left, width - margin.right])
+        .range([0, width - margin.left - margin.right])
         .nice();
 
     const yScale = d3.scaleLinear()
         .domain([0, 24])
-        .range([height - margin.bottom, margin.top]);
+        .range([height - margin.top - margin.bottom, 0]);
 
     svg.append("g")
-        .attr("transform", `translate(0,${height - margin.bottom})`)
+        .attr("transform", `translate(0,${height - margin.top - margin.bottom})`)
         .call(d3.axisBottom(xScale).ticks(10));
 
     svg.append("g")
-        .attr("transform", `translate(${margin.left},0)`)
         .call(d3.axisLeft(yScale).ticks(24).tickFormat(d => `${d}:00`));
 
-    svg.append("g")
-        .selectAll("circle")
+    const circles = svg.selectAll("circle")
         .data(commits)
         .join("circle")
         .attr("cx", d => xScale(d.datetime))
@@ -65,33 +65,24 @@ function createScatterplot(commits) {
         .on("mouseout", function() {
             d3.select(this).attr("fill", "steelblue");
         });
-}
 
-function createSummary(data) {
-    if (!data.length) return;
+    const brush = d3.brush()
+        .extent([[0, 0], [width - margin.left - margin.right, height - margin.top - margin.bottom]])
+        .on("brush", brushed);
 
-    const stats = [
-        { label: "Commits", value: data.length },
-        { label: "Files", value: new Set(data.map(d => d.file)).size },
-        { label: "Total LOC", value: d3.sum(data, d => +d.length).toLocaleString() },
-        { label: "Max Depth", value: d3.max(data, d => +d.depth) || 0 },
-        { label: "Avg Depth", value: (d3.mean(data, d => +d.depth) || 0).toFixed(2) },
-        { label: "Longest Line", value: d3.max(data, d => +d.length) || 0 },
-        { label: "Authors", value: new Set(data.map(d => d.author)).size },
-        { label: "Days Worked", value: new Set(data.map(d => d.date)).size },
-        { label: "Most Active Time", value: "Unknown" }
-    ];
+    svg.append("g").call(brush);
 
-    d3.select("#summary")
-        .selectAll(".summary-item")
-        .data(stats)
-        .enter()
-        .append("div")
-        .attr("class", "summary-item")
-        .html(d => `
-            <div>
-                <div class="summary-label">${d.label}</div>
-                <div class="summary-value">${d.value}</div>
-            </div>
-        `);
+    function brushed(event) {
+        const selection = event.selection;
+        if (!selection) return;
+
+        const [[x0, y0], [x1, y1]] = selection;
+
+        circles.attr("fill", d => {
+            const isSelected =
+                xScale(d.datetime) >= x0 && xScale(d.datetime) <= x1 &&
+                yScale(d.hourFrac) >= y0 && yScale(d.hourFrac) <= y1;
+            return isSelected ? "red" : "steelblue";
+        });
+    }
 }
