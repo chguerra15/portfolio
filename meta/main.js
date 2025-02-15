@@ -59,10 +59,10 @@ function createScatterplot(commits) {
         .attr("r", d => Math.sqrt(d.lines) * 2 + 3)
         .attr("fill", "steelblue")
         .style("opacity", 0.7)
-        .on("mouseover", function(event, d) {
+        .on("mouseover", function() {
             d3.select(this).attr("fill", "orange");
         })
-        .on("mouseout", function(event, d) {
+        .on("mouseout", function() {
             d3.select(this).attr("fill", "steelblue");
         });
 }
