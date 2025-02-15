@@ -3,22 +3,61 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Meta</title>
+    <title>Meta - Code Analysis</title>
     <link rel="stylesheet" href="../style.css">
-    <script type="module" src="../global.js"></script>
-    <script type="module" src="./projects.js"></script>
-    <script src="https://d3js.org/d3.v7.min.js"></script>
-    <script src="main.js" defer></script>
 </head>
 <body>
-    <h2>Commits by Time of Day</h2>
+
+    <h1 class="page-title">Meta</h1>
+    <p class="page-description">This page includes stats about the code of this website.</p>
+
+    <!-- Summary Section -->
+    <h2 class="summary-title">Summary</h2>
+    <div class="summary-container">
+        <div class="stat-box"><span class="stat-label">Commits</span> <span class="stat-value" id="total-commits">--</span></div>
+        <div class="stat-box"><span class="stat-label">Files</span> <span class="stat-value" id="total-files">--</span></div>
+        <div class="stat-box"><span class="stat-label">Total LOC</span> <span class="stat-value" id="total-loc">--</span></div>
+        <div class="stat-box"><span class="stat-label">Max Depth</span> <span class="stat-value" id="max-depth">--</span></div>
+        <div class="stat-box"><span class="stat-label">Longest Line</span> <span class="stat-value" id="longest-line">--</span></div>
+        <div class="stat-box"><span class="stat-label">Max Lines</span> <span class="stat-value" id="max-lines">--</span></div>
+    </div>
+
+    <div class="figure-caption">
+        <strong>Figure 1:</strong> Example of a summary stats section
+    </div>
+
+    <!-- Scatterplot Section -->
+    <h2 class="summary-title">Commits by Time of Day</h2>
     <div id="chart"></div>
 
-    <div class="summary-wrapper">
-        <div class="summary-container">
-            <div class="summary-title">Summary</div>
-            <div id="summary" class="summary-grid"></div>
-        </div>
-    </div>
+    <!-- ✅ Selection Count & Language Breakdown -->
+    <p id="selection-count">No commits selected</p>
+    <div id="language-breakdown" class="language-stats"></div>
+
+
+    <!-- ✅ Tooltip for commit hover details -->
+    <dl id="commit-tooltip" class="info tooltip" hidden>
+        <dt>Commit</dt>
+        <dd><a href="" id="commit-link" target="_blank"></a></dd>
+      
+        <dt>Date</dt>
+        <dd id="commit-date"></dd>
+      
+        <dt>Time</dt>
+        <dd id="commit-time"></dd>
+      
+        <dt>Author</dt>
+        <dd id="commit-author"></dd>
+      
+        <dt>Lines Edited</dt>
+        <dd id="commit-lines"></dd>
+      </dl>
+      
+
+    <!-- ✅ Import D3 Library -->
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script type="module" src="../global.js"></script>
+    <script type="module" src="main.js"></script>
+
 </body>
 </html>
