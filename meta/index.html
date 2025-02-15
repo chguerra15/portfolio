@@ -98,65 +98,26 @@
 
         async function loadData() {
             try {
-                let data = await d3.csv('loc.csv');  
-                console.log("CSV Data Loaded:", data);
+                let data = await d3.csv('loc.csv', d => ({
+                    datetime: new Date(d.datetime),
+                    hourFrac: +d.hourFrac,  // ✅ Ensure it's a number
+                    totalLines: +d.length,
+                    author: d.author,
+                    file: d.file,
+                    id: d.id
+                }));
 
-                // Compute summary stats
-                let totalCommits = data.length;
-                let totalFiles = d3.group(data, d => d.file).size;
-                let totalLOC = d3.sum(data, d => +d.length);
-                let maxDepth = d3.max(data, d => +d.depth) || 0;
-                let avgDepth = d3.mean(data, d => +d.depth) || 0;
-                let longestLine = d3.max(data, d => +d.length) || 0;
-                let totalAuthors = d3.group(data, d => d.author).size;
-                let totalDaysWorked = d3.group(data, d => d.date).size;
+                console.log("Loaded Data:", data.slice(0, 10)); // Debugging step
 
-                // Avg file length computation
-                const fileLengths = d3.rollups(
-                    data,
-                    v => d3.max(v, d => +d.line),
-                    d => d.file
-                );
-                const avgFileLength = d3.mean(fileLengths, d => d[1]) || 0;
-
-                // Most Active Time of Day
-                const workByPeriod = d3.rollups(
-                    data,
-                    v => v.length,
-                    d => new Date(d.datetime).toLocaleString('en', { dayPeriod: 'short' })
-                );
-                const maxPeriod = d3.greatest(workByPeriod, d => d[1])?.[0] || "Unknown";
-
-                // Display in summary grid
-                const summaryDiv = d3.select("#summary");
-
-                const stats = [
-                    { label: "Commits", value: totalCommits },
-                    { label: "Files", value: totalFiles },
-                    { label: "Total LOC", value: totalLOC.toLocaleString() },
-                    { label: "Max Depth", value: maxDepth },
-                    { label: "Avg Depth", value: avgDepth.toFixed(2) },
-                    { label: "Longest Line", value: longestLine },
-                    { label: "Authors", value: totalAuthors },
-                    { label: "Days Worked", value: totalDaysWorked },
-                    { label: "Avg File Length", value: avgFileLength.toFixed(2) },
-                    { label: "Most Active Time", value: maxPeriod }
-                ];
-
-                summaryDiv.selectAll(".summary-item")
-                    .data(stats)
-                    .enter()
-                    .append("div")
-                    .attr("class", "summary-item")
-                    .html(d => `
-                        <div class="summary-label">${d.label}</div>
-                        <div class="summary-value">${d.value}</div>
-                    `);
+                if (data.length === 0) {
+                    console.error("CSV file is empty or incorrect.");
+                    return;
+                }
 
                 createScatterplot(data);
+                createSummaryTable(data);
             } catch (error) {
                 console.error("Error loading CSV:", error);
-                d3.select("#summary").append("p").text("Failed to load data.");
             }
         }
 
@@ -175,11 +136,11 @@
                 .nice();
 
             const yScale = d3.scaleLinear()
-                .domain([24, 0])
-                .range([height - margin.bottom, margin.top]);
+                .domain([24, 0])  // ✅ Ensures 24:00 is at the top, 00:00 at the bottom
+                .range([margin.top, height - margin.bottom]); 
 
             // Radius scale
-            const [minLines, maxLines] = d3.extent(commits, d => +d.length);
+            const [minLines, maxLines] = d3.extent(commits, d => +d.totalLines);
             const rScale = d3.scaleSqrt()
                 .domain([minLines, maxLines])
                 .range([3, 20]);
@@ -203,15 +164,39 @@
                 .data(commits)
                 .join("circle")
                 .attr("cx", d => xScale(new Date(d.datetime)))
-                .attr("cy", d => yScale(+d.hourFrac))
-                .attr("r", d => rScale(+d.length))
+                .attr("cy", d => yScale(+d.hourFrac))  // ✅ Properly maps values
+                .attr("r", d => rScale(+d.totalLines))
                 .attr("fill", "steelblue")
                 .attr("fill-opacity", 0.7);
         }
 
-        document.addEventListener('DOMContentLoaded', async () => {
-            await loadData();
-        });
+        function createSummaryTable(data) {
+            const totalCommits = data.length;
+            const totalFiles = d3.group(data, d => d.file).size;
+            const totalLOC = d3.sum(data, d => +d.totalLines);
+            const totalAuthors = d3.group(data, d => d.author).size;
+            const totalDaysWorked = d3.group(data, d => d.datetime.toDateString()).size;
+
+            const stats = [
+                { label: "Commits", value: totalCommits },
+                { label: "Files", value: totalFiles },
+                { label: "Total LOC", value: totalLOC.toLocaleString() },
+                { label: "Authors", value: totalAuthors },
+                { label: "Days Worked", value: totalDaysWorked }
+            ];
+
+            d3.select("#summary").selectAll(".summary-item")
+                .data(stats)
+                .enter()
+                .append("div")
+                .attr("class", "summary-item")
+                .html(d => `
+                    <div class="summary-label">${d.label}</div>
+                    <div class="summary-value">${d.value}</div>
+                `);
+        }
+
+        document.addEventListener("DOMContentLoaded", loadData);
     </script>
 </body>
 </html>
