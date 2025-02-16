@@ -136,7 +136,7 @@ function createScatterplot() {
 // ✅ Brush function
 function brushed(event) {
     brushSelection = event.selection;
-    updateSelection();
+    updateSelectionCount();
     updateLanguageBreakdown();
 }
 
@@ -254,3 +254,27 @@ function displayStats() {
 document.addEventListener("DOMContentLoaded", async () => {
     await loadData();
 });
+
+.commit-stats-container {
+    margin-top: 15px;
+    padding: 10px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    max-width: 300px;
+}
+
+.language-breakdown-container {
+    margin-top: 15px;
+    padding: 10px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    max-width: 400px;
+}
+
+.language-stats {
+    padding: 10px;
+    font-size: 16px;
+}

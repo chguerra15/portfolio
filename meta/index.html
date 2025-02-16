@@ -18,7 +18,22 @@
     <div id="chart"></div>
 
     <div class="commit-stats-container">
-        <p id="selection-count">No commits selected</p>
+        <table class="commit-stats-table">
+            <thead>
+                <tr>
+                    <th>Commits Selected</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td id="selection-count">No commits selected</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="language-breakdown-container">
+        <h3 class="section-title">Language Breakdown</h3>
         <div id="language-breakdown" class="language-stats"></div>
     </div>
 
