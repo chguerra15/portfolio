@@ -891,3 +891,38 @@ dd {
   padding-top: 0.6em;
   margin-left: 0;
 }
+
+/* The overall container: place child divs side by side */
+#scrollytelling-files {
+  display: flex;       /* side-by-side layout */
+  align-items: flex-start;
+  margin-top: 2rem;    /* add spacing above if you want */
+}
+
+/* The left visualization container */
+#chart-files {
+  width: 60%;
+  background: #f9f9f9; /* optional, just to see its area */
+  height: 600px;       /* or adjust as needed */
+  margin-right: 1rem;
+  /* If you want to pin the VIS during scroll instead, you could do sticky here, 
+     but typically we pin the text side. So leaving it static for now. */
+}
+
+/* The right scrolly text container */
+#scroll-container-files {
+  width: 40%;
+  position: sticky; /* pins the scrolly text in place while user scrolls */
+  top: 0;
+  height: 100vh;    /* fill the viewport vertically */
+  overflow-y: auto; /* makes it scrollable internally */
+  background: #ffffff; /* optional */
+  box-shadow: 0 0 4px rgba(0,0,0,0.1);
+  padding: 1rem;
+}
+
+/* Each "step" gets a big bottom margin so we can scroll through them */
+#items-container-files .step {
+  margin-bottom: 150vh;
+  /* You can tweak 150vh to control how long each step remains "active" while scrolling */
+}
