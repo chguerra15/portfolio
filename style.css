@@ -79,6 +79,9 @@ footer {
   object-fit: cover; /* Ensures the image fills the circular area */
   border: 4px solid #fff; /* Optional: Adds a white border */
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Optional: Adds a subtle shadow */
+  @starting-style {
+    r: 0;
+  }
 }
 
 /* General Contact Page Styles */
@@ -490,15 +493,7 @@ path:hover {
   margin: 30px auto;
 }
 
-.summary-container {
-  background-color: #ffffff;
-  padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
+
 
 .summary-title {
   font-size: 22px;
@@ -553,11 +548,6 @@ path:hover {
     margin-bottom: 15px;
 }
 
-.summary-container {
-    display: flex;
-    justify-content: center;
-    margin: 20px auto;
-}
 
 .summary-table {
     width: 50%;
@@ -572,19 +562,8 @@ path:hover {
     text-align: left;
 }
 
-.summary-table th {
-    background-color: #f8f8f8;
-    font-weight: bold;
-}
 
-#chart {
-    display: flex;
-    justify-content: center;
-    margin: 20px auto;
-    background-color: white;
-    padding: 10px;
-    border-radius: 8px;
-}
+
 
 .commit-stats-container {
   margin-top: 15px;
@@ -611,4 +590,304 @@ path:hover {
 }
 
 
+.slider-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
 
+#commitTime {
+  margin-left: auto;
+  font-weight: bold;
+}
+
+#commitSlider {
+  flex-grow: 1;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 8px;
+  background: linear-gradient(to right, #357edd var(--progress), white var(--progress));
+  border-radius: 5px;
+  outline: none;
+  transition: 0.3s;
+}
+
+/* Webkit Browsers (Chrome, Safari) */
+#commitSlider::-webkit-slider-runnable-track {
+  height: 8px;
+  border-radius: 5px;
+  background: linear-gradient(to right, #357edd var(--progress), white var(--progress));
+}
+
+/* The Circle (Thumb) */
+#commitSlider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  background: white;
+  border: 2px solid #357edd;
+  border-radius: 50%;
+  cursor: pointer;
+  margin-top: -5px;
+}
+
+/* Firefox */
+#commitSlider::-moz-range-track {
+  height: 8px;
+  border-radius: 5px;
+  background: linear-gradient(to right, #357edd var(--progress), white var(--progress));
+}
+
+#commitSlider::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  background: white;
+  border: 2px solid #357edd;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+/* Ensure the color updates dynamically */
+#commitSlider {
+  --progress: 100%;
+}
+
+.files-container {
+  margin-top: 20px;
+}
+
+.summary-container {
+  display: flex;
+  justify-content: space-between; /* Puts space between elements */
+  align-items: flex-start; /* Aligns them at the top */
+  gap: 20px; /* Adds spacing between the summary and file list */
+}
+
+.summary {
+  flex: 1; /* Allows it to take up equal space */
+  min-width: 300px; /* Prevents it from shrinking too much */
+}
+
+.files {
+  flex: 2; /* Allows files to take more space */
+  min-width: 400px; /* Prevents files from shrinking too much */
+}
+
+
+.files > div {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: subgrid;
+}
+
+.files dt {
+  grid-column: 1;
+  font-weight: bold;
+}
+
+.files dd {
+  grid-column: 2;
+  margin: 0;
+}
+
+.line {
+  display: flex;
+  width: 0.5em;
+  aspect-ratio: 1;
+  border-radius: 50%;
+}
+
+/* Ensure dots wrap neatly */
+dd {
+  grid-column: 2;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: start;
+  align-content: start;
+  gap: 0.15em;
+  padding-top: 0.6em;
+  margin-left: 0;
+}
+
+:global(body) {
+  max-width: min(120ch, 80vw);
+}
+
+#scrollytelling {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* This creates two equal columns */
+  gap: 20px; /* Adds some space between columns */
+}
+
+/* feel free to play with this to make your scrolly more seemless with your plot */
+
+
+
+#chart {
+  background-color: white; /* ✅ White background for the chart container */
+  padding: 10px; /* Adds space inside */
+  border-radius: 8px; /* Rounded corners */
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* Optional: Adds a soft shadow */
+}
+
+
+
+#spacer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background: none; /* transparent */
+  pointer-events: none;
+}
+
+#items-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+}
+
+#scroll-container {
+  grid-column: 1;
+  position: relative;
+  width: 95%;
+  height: 420px;
+  overflow-y: scroll;
+  border: 1px solid #ccc;
+  background-color: white; /* ✅ White background */
+  padding: 10px; /* Adds spacing inside */
+  border-radius: 8px; /* Optional: Rounded corners */
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* ✅ Optional: Soft shadow */
+  margin-bottom: 50px;
+}
+
+/* ✅ Ensure commit items have dividers */
+.item {
+  border-bottom: 1px solid #ddd; /* ✅ Light gray divider between commits */
+  padding: 10px;
+  background-color: white; /* Ensure each commit is on a white background */
+}
+
+/* ✅ Remove bottom border from last commit to avoid extra line */
+.item:last-child {
+  border-bottom: none;
+}
+
+
+#file-scrollytelling {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  align-items: center;
+  margin-top: 50px;
+  height: 500px;
+}
+
+#file-narrative {
+  height: 400px;
+  overflow-y: scroll;
+  padding: 20px;
+  font-size: 18px;
+  line-height: 1.5;
+}
+
+.scroll-text {
+  opacity: 0.3;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.scroll-text.active {
+  opacity: 1;
+  font-weight: bold;
+  font-size: 22px;
+}
+
+#file-scrolly-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+#file-scroll-container {
+  width: 50%;
+  height: 350px;
+  overflow-y: scroll;
+  background: white;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  padding: 10px;
+}
+
+#file-items-container div {
+  padding: 10px;
+  border-bottom: 1px solid #ddd; /* ✅ Adds grid-like lines between files */
+}
+
+#file-unit-visualization {
+  width: 50%;
+  height: 350px;
+  background: white;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  padding: 10px;
+}
+
+/*?*/
+/* Ensure Summary & Files sit next to each other */
+.summary-files-wrapper {
+  display: flex;
+  gap: 20px; /* Space between Summary & Files */
+  justify-content: center;
+  align-items: flex-start;
+  margin-top: 20px;
+}
+
+/* Make Summary table responsive */
+.summary {
+  flex: 1; /* Allows Summary to take available space */
+  max-width: 400px;
+  background: white;
+  padding: 1em;
+  border-radius: 10px;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Ensure Files list looks good */
+.files-container {
+  flex: 1;
+  max-width: 400px;
+  background: white;
+  padding: 1em;
+  border-radius: 10px;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Make file names & dots look good */
+.files > div {
+  display: grid;
+  grid-template-columns: subgrid;
+}
+
+/* Individual line dots */
+.line {
+  display: flex;
+  width: 0.5em;
+  aspect-ratio: 1;
+  background: steelblue;
+  border-radius: 50%;
+}
+
+/* Allow dots to wrap neatly */
+dd {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: start;
+  align-content: start;
+  gap: 0.15em;
+  padding-top: 0.6em;
+  margin-left: 0;
+}

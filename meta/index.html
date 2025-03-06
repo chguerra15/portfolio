@@ -14,47 +14,45 @@
     <h1 class="page-title">Meta</h1>
     <p class="page-description">My Github Stats</p>
 
-    <h2 class="summary-title">Commits by Time of Day</h2>
-    <div id="chart"></div>
-
-    <div class="commit-stats-container">
-        <table class="commit-stats-table">
-            <thead>
-                <tr>
-                    <th>Commits Selected</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td id="selection-count">No commits selected</td>
-                </tr>
-            </tbody>
-        </table>
+    <!-- Interactive Narrative Visualization -->
+    <div id="scrollytelling">
+        <!-- Commit History Scrollytelling -->
+        <div id="scroll-container">
+            <div id="spacer"></div>
+            <div id="items-container"></div>
+        </div>
+        <!-- Scatter Plot -->
+        <div id="chart"></div>
     </div>
 
-    <div class="language-breakdown-container">
-        <h3 class="section-title">Language Breakdown</h3>
-        <div id="language-breakdown" class="language-stats"></div>
-    </div>
+    <!-- Summary + Files Section (Now Side by Side) -->
+    <div class="summary-files-wrapper">
+        <!-- Summary Section -->
+        <div class="summary">
+            <h2 class="summary-title">Summary</h2>
+            <table class="summary-table">
+                <thead>
+                    <tr>
+                        <th>Metric</th>
+                        <th>Value</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>Commits</td><td id="total-commits">--</td></tr>
+                    <tr><td>Files</td><td id="total-files">--</td></tr>
+                    <tr><td>Total LOC</td><td id="total-loc">--</td></tr>
+                    <tr><td>Max Depth</td><td id="max-depth">--</td></tr>
+                    <tr><td>Longest Line</td><td id="longest-line">--</td></tr>
+                    <tr><td>Max Lines</td><td id="max-lines">--</td></tr>
+                </tbody>
+            </table>
+        </div>
 
-    <h2 class="summary-title">Summary</h2>
-    <div class="summary-container">
-        <table class="summary-table">
-            <thead>
-                <tr>
-                    <th>Metric</th>
-                    <th>Value</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr><td>Commits</td><td id="total-commits">--</td></tr>
-                <tr><td>Files</td><td id="total-files">--</td></tr>
-                <tr><td>Total LOC</td><td id="total-loc">--</td></tr>
-                <tr><td>Max Depth</td><td id="max-depth">--</td></tr>
-                <tr><td>Longest Line</td><td id="longest-line">--</td></tr>
-                <tr><td>Max Lines</td><td id="max-lines">--</td></tr>
-            </tbody>
-        </table>
+        <!-- Files Changed Section -->
+        <div class="files-container">
+            <h2 class="files-title">Files Changed</h2>
+            <dl class="files"></dl>
+        </div>
     </div>
 
 </body>
