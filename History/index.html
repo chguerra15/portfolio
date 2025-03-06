@@ -1,217 +1,75 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Scrollytelling Example</title>
-
-  <!-- D3 from CDN -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>History overtime</title>
+    <link rel="stylesheet" href="../style.css">
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script type="module" src="../global.js"></script>
+    <script type="module" src="main.js"></script>
   <script src="https://d3js.org/d3.v7.min.js"></script>
-
-  <!-- Inline CSS for pinned layout and styling -->
   <style>
-    /* Make the page fill the viewport */
-    html, body {
-      margin: 0; 
-      padding: 0; 
-      height: 100%;
-      font-family: sans-serif;
+    html, body { margin:0; padding:0; height:200vh; overflow-x:hidden; font-family:sans-serif; }
+    .visualization-box {
+      position:fixed; top:50%; left:50%;
+      transform:translate(-50%,-50%);
+      width:800px; height:500px;
+      border:1px solid #ccc; background:#fff;
     }
-
-    /* Container for scrollytelling */
-    #scrollytelling-files {
-      display: flex;           /* chart on the left, text on the right */
-      width: 100%;
-      height: 100vh;          /* fill the full window height */
-      box-sizing: border-box;
-    }
-
-    /* Left side: chart */
-    #chart-files {
-      width: 60%;
-      height: 100%;
-      background: #f7f7f7;     /* just so you can see the area */
-      position: relative;
-    }
-
-    /* Right side: pinned scroll container */
-    #scroll-container-files {
-      width: 40%;
-      position: sticky;
-      top: 0;
-      height: 100vh;
-      overflow-y: auto;
-      background: #ffffff;
-      border-left: 1px solid #ccc;
-      padding: 1rem;
-    }
-
-    /* The actual steps go inside here */
-    #items-container-files {
-      padding: 1rem;
-    }
-
-    /* Each step has a large bottom margin so we can scroll enough
-       to see each step come into view. */
-    .step {
-      margin-bottom: 150vh;
-      font-size: 1.2rem;
-      font-weight: bold;
-    }
-
-    /* Basic styling for the bar chart (optional) */
-    .bar {
-      fill: steelblue;
-    }
-    .axis path,
-    .axis line {
-      stroke: #333;
-    }
+    .axis path, .axis line { stroke:#333; }
+    .bar { fill:steelblue; }
   </style>
-
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>12 Projects</title>
-<link rel="stylesheet" href="../style.css">
-<script type="module" src="../global.js"></script>
-<script type="module" src="./projects.js"></script>
 </head>
 <body>
-
-  <div id="scrollytelling-files">
-    <!-- LEFT: Visualization -->
-    <div id="chart-files"></div>
-
-    <!-- RIGHT: Scrolling text -->
-    <div id="scroll-container-files">
-      <div id="items-container-files">
-        <section class="step">Step 0: Showing all files.</section>
-        <section class="step">Step 1: Highlight only the largest 2 files.</section>
-        <section class="step">Step 2: Highlight only the smallest 2 files.</section>
-        <section class="step">Step 3: Show them all again.</section>
-      </div>
-    </div>
-  </div>
-
-  <!-- Inline JS: Intersection Observer + D3 chart -->
-  <script>
-  // Hardcoded data: pretend these are filenames & sizes
-  const fileData = [
-    { filename: "index.html", size: 300 },
-    { filename: "main.js",    size: 1200 },
-    { filename: "style.css",  size: 600 },
-    { filename: "readme.md",  size: 100 },
-    { filename: "config.json", size: 800 }
-  ];
-
-  // Sort descending by size, just for convenience
-  fileData.sort((a, b) => d3.descending(a.size, b.size));
-
-  // Dimensions for the SVG
-  const margin = { top: 20, right: 30, bottom: 30, left: 100 };
-  const width = 600;
-  const height = 500;
-
-  // Create an SVG in the chart area
-  const chartContainer = d3.select("#chart-files");
-  const svg = chartContainer
-    .append("svg")
-    .attr("width", width)
-    .attr("height", height);
-
-  // Build an x-scale (size)
-  const x = d3.scaleLinear()
-    .range([margin.left, width - margin.right]);
-
-  // Build a y-scale (files)
-  const y = d3.scaleBand()
-    .range([margin.top, height - margin.bottom])
-    .padding(0.1);
-
-  // Draw axes placeholders once
-  const xAxis = svg.append("g")
-    .attr("transform", `translate(0,${margin.top})`)
-    .attr("class", "axis x-axis");
-
-  const yAxis = svg.append("g")
-    .attr("transform", `translate(${margin.left},0)`)
-    .attr("class", "axis y-axis");
-
-  // Intersection Observer Setup
-  // We'll watch each .step, and whenever one is visible enough,
-  // we call updateChart(stepIndex).
-  const stepSel = d3.selectAll("#items-container-files .step");
-  const observerOptions = {
-    root: null,
-    threshold: 0.6 // step is active once 60% visible
-  };
-
-  function onIntersect(entries) {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        const index = +d3.select(entry.target).attr("data-index");
-        updateChart(index);
-      }
-    });
-  }
-
-  const observer = new IntersectionObserver(onIntersect, observerOptions);
-  stepSel.each(function(d, i) {
-    d3.select(this).attr("data-index", i);
-    observer.observe(this);
-  });
-
-  // updateChart: decides which files to show
-  function updateChart(stepIndex) {
-    let subset = fileData; // default: all
-    if (stepIndex === 1) {
-      subset = fileData.slice(0, 2); // largest 2
-    } else if (stepIndex === 2) {
-      subset = fileData.slice(-2); // smallest 2
-    } else if (stepIndex === 3) {
-      subset = fileData; // all again
-    }
-
-    // Update scales based on the subset
-    x.domain([0, d3.max(subset, d => d.size) || 1]);
-    y.domain(subset.map(d => d.filename));
-
-    // Update axes
-    xAxis
-      .transition()
-      .duration(500)
-      .call(d3.axisTop(x).ticks(5));
-
-    yAxis
-      .transition()
-      .duration(500)
-      .call(d3.axisLeft(y));
-
-    // Bind data to bars
-    const bars = svg.selectAll(".bar")
-      .data(subset, d => d.filename);
-
-    // Enter
-    bars.enter().append("rect")
-      .attr("class", "bar")
-      .attr("x", x(0))
-      .attr("y", d => y(d.filename))
-      .attr("height", y.bandwidth())
-      .attr("width", d => x(d.size) - x(0))
-      .attr("fill", "steelblue")
-      .merge(bars) // update existing
-      .transition()
-      .duration(600)
-      .attr("y", d => y(d.filename))
-      .attr("height", y.bandwidth())
-      .attr("width", d => x(d.size) - x(0));
-
-    // Exit
-    bars.exit().remove();
-  }
-
-  // Draw the initial view (step 0)
-  updateChart(0);
-  </script>
-
+<div class="visualization-box" id="chart-container"></div>
+<script>
+const timeLabels=["Jan","Feb","Mar","Apr"];
+const fileData=[
+  {filename:"main.js",sizes:[200,400,900,1200]},
+  {filename:"config.json",sizes:[50,80,500,700]},
+  {filename:"style.css",sizes:[100,120,350,400]},
+  {filename:"index.html",sizes:[80,200,250,300]},
+  {filename:"readme.md",sizes:[20,50,120,150]}
+];
+const margin={top:30,right:30,bottom:50,left:100},width=800,height=500;
+const svg=d3.select("#chart-container").append("svg")
+  .attr("width",width).attr("height",height);
+const x=d3.scaleLinear().range([margin.left,width-margin.right]);
+const y=d3.scaleBand().range([margin.top,height-margin.bottom]).padding(0.1);
+const xAxisG=svg.append("g").attr("class","axis x-axis").attr("transform","translate(0,"+margin.top+")");
+const yAxisG=svg.append("g").attr("class","axis y-axis").attr("transform","translate("+margin.left+",0)");
+svg.append("text").attr("class","x-label")
+  .attr("x",width-margin.right).attr("y",margin.top-10)
+  .attr("text-anchor","end").attr("font-weight","bold")
+  .text("File Size (KB)");
+const timeLabel=svg.append("text").attr("x",margin.left)
+  .attr("y",margin.top-10).attr("font-weight","bold");
+function getDataAtTime(i){return fileData.map(d=>({filename:d.filename,size:d.sizes[i]}));}
+function updateChart(i){
+  const data=getDataAtTime(i);
+  x.domain([0,d3.max(data,d=>d.size)||1]);
+  y.domain(data.map(d=>d.filename));
+  xAxisG.transition().duration(300).call(d3.axisTop(x).ticks(5));
+  yAxisG.transition().duration(300).call(d3.axisLeft(y));
+  const bars=svg.selectAll(".bar").data(data,d=>d.filename);
+  bars.enter().append("rect").attr("class","bar")
+    .attr("x",x(0)).attr("y",d=>y(d.filename))
+    .attr("width",d=>x(d.size)-x(0)).attr("height",y.bandwidth())
+    .merge(bars).transition().duration(300)
+    .attr("y",d=>y(d.filename))
+    .attr("width",d=>x(d.size)-x(0))
+    .attr("height",y.bandwidth());
+  bars.exit().remove();
+  timeLabel.text("Month: "+timeLabels[i]);
+}
+window.addEventListener("scroll",()=>{
+  const s=window.scrollY, m=document.body.scrollHeight-window.innerHeight;
+  const frac=m>0?s/m:0;
+  const idx=Math.min(timeLabels.length-1,Math.floor(frac*timeLabels.length));
+  updateChart(idx);
+});
+updateChart(0);
+</script>
 </body>
 </html>
