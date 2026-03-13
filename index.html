@@ -1,57 +1,750 @@
 <!DOCTYPE html>
-<html lang="en" class="home">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Christian Guerra: Personal site and portfolio</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Christian Guerra — Data Scientist</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #0c0c0b;
+      --surface: #141412;
+      --border: #2a2924;
+      --text: #e8e4d9;
+      --muted: #7a7567;
+      --accent: #d4a853;
+      --accent-dim: rgba(212,168,83,0.12);
+      --font-display: 'Playfair Display', Georgia, serif;
+      --font-mono: 'DM Mono', 'Courier New', monospace;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-mono);
+      font-weight: 300;
+      font-size: 14px;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0.35;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.4rem 4rem;
+      border-bottom: 1px solid transparent;
+      transition: border-color 0.3s, background 0.3s;
+    }
+    nav.scrolled {
+      background: rgba(12,12,11,0.92);
+      backdrop-filter: blur(12px);
+      border-color: var(--border);
+    }
+    .nav-logo {
+      font-family: var(--font-display);
+      font-size: 1.05rem;
+      font-style: italic;
+      color: var(--accent);
+    }
+    .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+    .nav-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 12px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--text); }
+
+    /* ── HERO ── */
+    #hero {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      align-items: center;
+      padding: 0 4rem;
+      gap: 4rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-divider {
+      position: absolute;
+      top: 0; bottom: 0; left: 50%;
+      width: 1px;
+      background: linear-gradient(to bottom, transparent, var(--border) 20%, var(--border) 80%, transparent);
+    }
+    .hero-label {
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      color: var(--accent);
+      text-transform: uppercase;
+      margin-bottom: 2rem;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.2s forwards;
+    }
+    .hero-title {
+      font-family: var(--font-display);
+      font-size: clamp(3.5rem, 7vw, 6.5rem);
+      font-weight: 900;
+      line-height: 1.0;
+      letter-spacing: -0.02em;
+      opacity: 0;
+      animation: fadeUp 0.9s 0.35s forwards;
+    }
+    .hero-title em {
+      display: block;
+      font-style: italic;
+      color: var(--accent);
+      font-weight: 400;
+    }
+    .hero-tagline {
+      margin-top: 2rem;
+      color: var(--muted);
+      max-width: 400px;
+      line-height: 1.8;
+      opacity: 0;
+      animation: fadeUp 0.9s 0.5s forwards;
+    }
+    .hero-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-top: 2.5rem;
+      padding: 0.85rem 2rem;
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      text-decoration: none;
+      font-size: 12px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      transition: background 0.2s, color 0.2s;
+      opacity: 0;
+      animation: fadeUp 0.9s 0.65s forwards;
+    }
+    .hero-cta:hover { background: var(--accent); color: var(--bg); }
+    .hero-cta svg { transition: transform 0.2s; }
+    .hero-cta:hover svg { transform: translateX(4px); }
+    .hero-right {
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+      opacity: 0;
+      animation: fadeIn 1s 0.8s forwards;
+    }
+    .hero-portrait-frame {
+      position: relative;
+      width: 260px;
+      margin: 0 auto;
+    }
+    .hero-portrait-frame::before {
+      content: '';
+      position: absolute;
+      inset: -10px;
+      border: 1px solid var(--accent);
+      opacity: 0.4;
+      pointer-events: none;
+    }
+    .hero-portrait-frame::after {
+      content: '';
+      position: absolute;
+      inset: -4px;
+      border: 1px solid var(--border);
+      pointer-events: none;
+    }
+    .hero-portrait-frame img {
+      width: 100%;
+      aspect-ratio: 3/4;
+      object-fit: cover;
+      object-position: center top;
+      display: block;
+      filter: grayscale(20%) contrast(1.05);
+    }
+    .portrait-placeholder {
+      width: 100%;
+      aspect-ratio: 3/4;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      color: var(--muted);
+    }
+    .portrait-placeholder svg { opacity: 0.35; }
+    .portrait-placeholder span {
+      font-size: 11px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      opacity: 0.5;
+    }
+    .hero-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+    }
+    .stat { background: var(--bg); padding: 1.2rem 1.4rem; transition: background 0.2s; }
+    .stat:hover { background: var(--accent-dim); }
+    .stat-value {
+      font-family: var(--font-display);
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--accent);
+      line-height: 1;
+    }
+    .stat-label { font-size: 11px; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; margin-top: 0.3rem; }
+
+    /* ── SECTIONS ── */
+    section { padding: 7rem 4rem; position: relative; }
+    .section-header { display: flex; align-items: baseline; gap: 1.5rem; margin-bottom: 4rem; }
+    .section-num { font-size: 11px; color: var(--accent); letter-spacing: 0.2em; padding-top: 0.4rem; }
+    .section-title {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 4vw, 3.2rem);
+      font-weight: 900;
+      line-height: 1.1;
+    }
+    .section-line { flex: 1; height: 1px; background: var(--border); align-self: center; }
+
+    /* ── ABOUT ── */
+    #about { background: var(--surface); }
+    .about-grid { display: grid; grid-template-columns: 1.2fr 1fr; gap: 6rem; align-items: start; }
+    .about-text p { color: var(--muted); margin-bottom: 1.2rem; line-height: 1.9; }
+    .about-text p span { color: var(--text); }
+    .skills-label { font-size: 11px; color: var(--accent); letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 1rem; }
+    .skills-list { display: flex; flex-direction: column; }
+    .skill-row { display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 0; border-bottom: 1px solid var(--border); }
+    .skill-name { font-size: 12px; color: var(--text); letter-spacing: 0.04em; }
+    .skill-bar { width: 110px; height: 2px; background: var(--border); position: relative; flex-shrink: 0; }
+    .skill-fill {
+      position: absolute; left: 0; top: 0; bottom: 0;
+      background: var(--accent); width: 0;
+      transition: width 1.2s cubic-bezier(0.4,0,0.2,1);
+    }
+
+    /* ── PROJECTS ── */
+    #projects { background: var(--bg); }
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+    }
+    .project-card {
+      background: var(--bg);
+      padding: 2.5rem;
+      position: relative;
+      overflow: hidden;
+      transition: background 0.3s;
+    }
+    .project-card::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0; height: 2px;
+      background: var(--accent);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.35s cubic-bezier(0.4,0,0.2,1);
+    }
+    .project-card:hover { background: var(--surface); }
+    .project-card:hover::after { transform: scaleX(1); }
+    .project-year { font-size: 11px; color: var(--accent); letter-spacing: 0.12em; margin-bottom: 1.1rem; }
+    .project-img {
+      width: 100%; aspect-ratio: 16/9; object-fit: cover; display: block;
+      margin-bottom: 1.1rem;
+      filter: grayscale(50%) contrast(1.1);
+      transition: filter 0.3s;
+    }
+    .project-card:hover .project-img { filter: grayscale(0%) contrast(1); }
+    .project-placeholder {
+      width: 100%; aspect-ratio: 16/9;
+      background: var(--border);
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 1.1rem;
+      transition: background 0.3s;
+    }
+    .project-card:hover .project-placeholder { background: #2e2c27; }
+    .placeholder-inner {
+      display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
+      color: var(--muted); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase;
+    }
+    .project-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 0.7rem; }
+    .tag {
+      font-size: 10px; padding: 0.2rem 0.5rem;
+      border: 1px solid var(--border); color: var(--muted);
+      letter-spacing: 0.08em; text-transform: uppercase;
+    }
+    .project-name { font-family: var(--font-display); font-size: 1.25rem; font-weight: 700; line-height: 1.3; margin-bottom: 0.6rem; }
+    .project-desc { font-size: 13px; color: var(--muted); line-height: 1.8; }
+    .project-arrow {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      margin-top: 1.3rem; font-size: 11px; color: var(--accent);
+      letter-spacing: 0.12em; text-transform: uppercase; text-decoration: none;
+      transition: gap 0.2s;
+    }
+    .project-arrow:hover { gap: 0.8rem; }
+
+    /* ── EXPERIENCE ── */
+    #experience { background: var(--surface); }
+    .timeline { border-left: 1px solid var(--border); margin-left: 1rem; }
+    .timeline-item { position: relative; padding: 0 0 3rem 3rem; }
+    .timeline-item:last-child { padding-bottom: 0; }
+    .timeline-item::before {
+      content: ''; position: absolute; left: -5px; top: 6px;
+      width: 9px; height: 9px; background: var(--accent); border-radius: 50%;
+    }
+    .timeline-date { font-size: 11px; color: var(--accent); letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 0.35rem; }
+    .timeline-role { font-family: var(--font-display); font-size: 1.25rem; font-weight: 700; margin-bottom: 0.15rem; }
+    .timeline-org { font-size: 12px; color: var(--muted); font-style: italic; margin-bottom: 0.75rem; }
+    .timeline-bullets { list-style: none; display: flex; flex-direction: column; gap: 0.4rem; max-width: 620px; }
+    .timeline-bullets li { font-size: 13px; color: var(--muted); line-height: 1.7; padding-left: 1.2rem; position: relative; }
+    .timeline-bullets li::before { content: '—'; position: absolute; left: 0; color: var(--accent); font-size: 11px; }
+
+    /* ── CONTACT ── */
+    #contact { background: var(--bg); text-align: center; padding: 9rem 4rem; }
+    .contact-headline {
+      font-family: var(--font-display);
+      font-size: clamp(3rem, 8vw, 7rem);
+      font-weight: 900;
+      line-height: 1.0;
+      letter-spacing: -0.03em;
+      margin-bottom: 1.5rem;
+    }
+    .contact-headline em { font-style: italic; color: var(--accent); }
+    #contact p { color: var(--muted); max-width: 420px; margin: 0 auto 3rem; line-height: 1.9; }
+    .contact-links { display: flex; justify-content: center; gap: 1.5rem; flex-wrap: wrap; }
+    .contact-link {
+      display: inline-flex; align-items: center; gap: 0.6rem;
+      padding: 0.85rem 1.8rem;
+      border: 1px solid var(--border);
+      color: var(--muted); text-decoration: none;
+      font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase;
+      transition: border-color 0.2s, color 0.2s, background 0.2s;
+    }
+    .contact-link:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-dim); }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 1.8rem 4rem;
+      display: flex; justify-content: space-between; align-items: center;
+      font-size: 11px; color: var(--muted); letter-spacing: 0.08em;
+    }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+    .reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.7s ease, transform 0.7s ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      nav { padding: 1.2rem 2rem; }
+      .nav-links { display: none; }
+      #hero { grid-template-columns: 1fr; padding: 7rem 2rem 3rem; }
+      .hero-divider { display: none; }
+      .hero-right { display: none; }
+      section { padding: 5rem 2rem; }
+      .about-grid { grid-template-columns: 1fr; gap: 3rem; }
+      .projects-grid { grid-template-columns: 1fr; }
+      footer { flex-direction: column; gap: 0.5rem; text-align: center; }
+    }
+    /* ── PASSIONS ── */
+    #passions { background: var(--bg); }
+    .passions-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+    }
+    .passion-card {
+      background: var(--bg);
+      padding: 2.5rem 2rem;
+      transition: background 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+    .passion-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: var(--accent);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.35s cubic-bezier(0.4,0,0.2,1);
+    }
+    .passion-card:hover { background: var(--surface); }
+    .passion-card:hover::before { transform: scaleX(1); }
+    .passion-icon {
+      width: 40px; height: 40px;
+      color: var(--accent);
+      margin-bottom: 1.2rem;
+      opacity: 0.85;
+    }
+    .passion-title {
+      font-family: var(--font-display);
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 0.6rem;
+    }
+    .passion-desc { font-size: 12px; color: var(--muted); line-height: 1.8; }
+
+    @media (max-width: 900px) {
+      .passions-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 500px) {
+      .passions-grid { grid-template-columns: 1fr; }
+    }
+  </style>
 </head>
 <body>
 
-    <div class="container">
-        <div class="content-section">
-            <h1>Christian Guerra</h1>
-            <p>I am a third-year Data Science major at UCSD, driven by a strong passion for machine learning, web development, and uncovering actionable insights from data...</p>
+<!-- NAV -->
+<nav id="navbar">
+  <div class="nav-logo">C. Guerra</div>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#experience">Experience</a></li>
+    <li><a href="#passions">Passions</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-divider"></div>
+  <div>
+    <p class="hero-label">01 — Portfolio</p>
+    <h1 class="hero-title">Christian<br><em>Guerra</em></h1>
+    <p class="hero-tagline">
+      Data Science at UC San Diego. I build ML pipelines, deploy cloud-based models, and create interactive tools that make complex systems interpretable and controllable.
+    </p>
+    <a href="#projects" class="hero-cta">
+      View My Work
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </a>
+  </div>
+  <div class="hero-right">
+    <div class="hero-portrait-frame">
+      <img
+        id="profile-img"
+        src="profile.jpg"
+        alt="Christian Guerra"
+        style="display:none;"
+        onload="this.style.display='block'; document.getElementById('portrait-ph').style.display='none';"
+        onerror="this.src='https://github.com/chguerra15.png'; this.style.display='block'; document.getElementById('portrait-ph').style.display='none';"
+      />
+      <div class="portrait-placeholder" id="portrait-ph">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
+          <circle cx="12" cy="8" r="4"/>
+          <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+        </svg>
+        <span>Profile Photo</span>
+      </div>
+    </div>
+    <div class="hero-stats">
+      <div class="stat">
+        <div class="stat-value">2</div>
+        <div class="stat-label">Internships</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value">4+</div>
+        <div class="stat-label">Projects</div>
+      </div>
+      <div class="stat" style="grid-column: span 2;">
+        <div class="stat-value">Class of 2026</div>
+        <div class="stat-label">UC San Diego</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="section-header reveal">
+    <span class="section-num">02</span>
+    <h2 class="section-title">About Me</h2>
+    <div class="section-line"></div>
+  </div>
+  <div class="about-grid">
+    <div class="about-text reveal">
+      <p>I'm a <span>Data Science major at UC San Diego</span> (graduating June 2026) with a Minor in Cognitive Science. My work lives at the intersection of machine learning, cloud infrastructure, and interpretability — building systems that don't just perform well, but can be understood and trusted.</p>
+      <p>I've deployed <span>deep learning models to production on AWS and GCP</span>, automated logistics pipelines with Python, and built Tableau dashboards for real-time operational decision-making. I care as much about how a model behaves as how accurate it is.</p>
+      <p>Currently researching <span>Concept Bottleneck LLMs</span> — extending interpretability frameworks to large language models so predictions can be inspected, audited, and steered at the concept level in real time.</p>
+    </div>
+    <div class="reveal">
+      <p class="skills-label">Core Skills</p>
+      <div class="skills-list" id="skills-container">
+        <div class="skill-row">
+          <span class="skill-name">Python · PyTorch · TensorFlow</span>
+          <div class="skill-bar"><div class="skill-fill" data-width="94%"></div></div>
         </div>
-        <div class="profile-section">
-            <img src="images/IMG_3582.jpg" alt="Christian Guerra's portrait photo" class="profile-pic">
+        <div class="skill-row">
+          <span class="skill-name">Machine Learning / Deep Learning</span>
+          <div class="skill-bar"><div class="skill-fill" data-width="90%"></div></div>
         </div>
+        <div class="skill-row">
+          <span class="skill-name">Data Visualization</span>
+          <div class="skill-bar"><div class="skill-fill" data-width="88%"></div></div>
+        </div>
+        <div class="skill-row">
+          <span class="skill-name">AWS · GCP · Docker</span>
+          <div class="skill-bar"><div class="skill-fill" data-width="80%"></div></div>
+        </div>
+        <div class="skill-row">
+          <span class="skill-name">React · Flask · FastAPI</span>
+          <div class="skill-bar"><div class="skill-fill" data-width="78%"></div></div>
+        </div>
+        <div class="skill-row">
+          <span class="skill-name">SQL · Java · C/C++</span>
+          <div class="skill-bar"><div class="skill-fill" data-width="82%"></div></div>
+        </div>
+        <div class="skill-row">
+          <span class="skill-name">Excel · Tableau · Pandas</span>
+          <div class="skill-bar"><div class="skill-fill" data-width="88%"></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <div class="section-header reveal">
+    <span class="section-num">03</span>
+    <h2 class="section-title">Selected Work</h2>
+    <div class="section-line"></div>
+  </div>
+  <div class="projects-grid">
+
+    <div class="project-card reveal">
+      <p class="project-year">Aug 2025 — Present · Capstone</p>
+      <div class="project-placeholder">
+        <div class="placeholder-inner">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h6M9 12h6M9 15h4"/></svg>
+          <span>Add screenshot here</span>
+        </div>
+      </div>
+      <div class="project-tags">
+        <span class="tag">Transformers</span><span class="tag">PyTorch</span><span class="tag">Interpretability</span>
+      </div>
+      <h3 class="project-name">Concept Bottleneck LLMs</h3>
+      <p class="project-desc">Reproduced and extended the CB-LLM framework to evaluate interpretability, faithfulness, and scalability in text classification. Implemented concept bottleneck layers and developed an interactive intervention console enabling real-time neuron-level control over model predictions. Evaluated across SST-2, Yelp, AG News, and DBpedia — achieving 96–99% accuracy while maintaining steerability scores up to 0.95.</p>
+      <a class="project-arrow" href="https://chguerra15.github.io/capstone-site/" target="_blank" rel="noopener">
+        View Project <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
     </div>
 
-    <h2>Latest Projects</h2>
-    <div class="projects">
-        <article>
-            <img src="images/electricity.jpg" alt="Power Outages Analysis">
-            <h2>Power Outages Analysis</h2>
-            <p1>2024</p1>
-            <p>Analyzed patterns and causes of major power outages across the U.S. Developed visualizations and predictive models to improve outage response planning.</p>
-        </article>
-        <article>
-            <img src="images/dna.jpg.webp" alt="DNA Transcription and Translation Tool">
-            <h2>DNA Transcription and Translation Tool</h2>
-            <p1>2024</p1>
-            <p>Created a Java tool to transcribe DNA sequences into mRNA and translate them into proteins. Enhanced functionality for biologists and educators with an easy-to-use interface.</p>
-        </article>
-        <article>
-            <img src="images/dinosaur.jpg.webp" alt="Dinosaur Species Classification Model">
-            <h2>Dinosaur Species Classification Model</h2>
-            <p1>2023</p1>
-            <p>Implemented a machine learning model with 85% accuracy during the UCSD Hackathon. Performed data preprocessing, feature engineering, and model optimization.</p>
-        </article>
+    <div class="project-card reveal">
+      <p class="project-year">Mar 2025 — Jun 2025</p>
+      <div class="project-placeholder">
+        <div class="placeholder-inner">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h6M9 12h6M9 15h4"/></svg>
+          <span>Add screenshot here</span>
+        </div>
+      </div>
+      <div class="project-tags">
+        <span class="tag">JavaScript</span><span class="tag">D3.js</span><span class="tag">CNN</span><span class="tag">Python</span>
+      </div>
+      <h3 class="project-name">SugarLens</h3>
+      <p class="project-desc">Image-based dietary analysis system that classifies meal photos and estimates sugar content via a CNN pipeline. Contributed to preprocessing, data augmentation, and model training. Built interactive D3.js visualizations for nutritional breakdowns that make results immediately understandable.</p>
+      <a class="project-arrow" href="#" target="_blank" rel="noopener">
+        View Project <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
     </div>
 
-    <section id="profile-stats">
-        <h2>GitHub Profile Stats</h2>
-        <div class="github-stat-container">
-            <div class="github-stat"><dt>Followers</dt><dd>1</dd></div>
-            <div class="github-stat"><dt>Following</dt><dd>1</dd></div>
-            <div class="github-stat"><dt>Public Repos</dt><dd>10</dd></div>
-            <div class="github-stat"><dt>Public Gists</dt><dd>0</dd></div>
-        </div>
-    </section>
+    <div class="project-card reveal">
+      <p class="project-year">Dec 2024</p>
+      <img class="project-img" src="https://chguerra15.github.io/images/electricity.jpg" alt="Power Outages Analysis" />
+      <div class="project-tags">
+        <span class="tag">Python</span><span class="tag">Pandas</span><span class="tag">Seaborn</span>
+      </div>
+      <h3 class="project-name">Analyzing Power Outages</h3>
+      <p class="project-desc">End-to-end analysis of U.S. power outage data — identifying patterns in duration, causes, regional effects, and weather correlations. Built predictive models and extracted actionable insights on infrastructure reliability and environmental impact.</p>
+      <a class="project-arrow" href="https://chguerra15.github.io/power-outages/" target="_blank" rel="noopener">
+        View Project <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+    </div>
 
-    <script type="module" src="global.js"></script>
-    <script src="index.js" type="module" defer></script>
+  </div>
+</section>
 
+<!-- EXPERIENCE -->
+<section id="experience">
+  <div class="section-header reveal">
+    <span class="section-num">04</span>
+    <h2 class="section-title">Experience</h2>
+    <div class="section-line"></div>
+  </div>
+  <div class="timeline">
+
+    <div class="timeline-item reveal">
+      <p class="timeline-date">Jan 2025 – Jun 2025</p>
+      <h3 class="timeline-role">Machine Learning Engineering Intern</h3>
+      <p class="timeline-org">Mercury Alert AI &middot; San Diego, CA</p>
+      <ul class="timeline-bullets">
+        <li>Designed and deployed ML models for predictive alerting, improving anomaly detection precision and reducing false positives.</li>
+        <li>Optimized deep learning architectures in PyTorch and TensorFlow through architecture tuning and batching strategies, cutting training time by 20–30%.</li>
+        <li>Integrated ML pipelines into cloud-based production workflows on AWS and GCP in collaboration with engineering and product teams.</li>
+      </ul>
+    </div>
+
+    <div class="timeline-item reveal">
+      <p class="timeline-date">Feb 2024 – Dec 2024</p>
+      <h3 class="timeline-role">Data Analyst Intern</h3>
+      <p class="timeline-org">Puebla Logistics &middot; Ventura, CA</p>
+      <ul class="timeline-bullets">
+        <li>Developed predictive models to forecast shipment delays and reduce logistics inefficiencies.</li>
+        <li>Automated data processing workflows using Python and Pandas to eliminate manual entry errors.</li>
+        <li>Built Tableau dashboards for real-time shipment trend monitoring to support operational decision-making.</li>
+      </ul>
+    </div>
+
+<div class="timeline-item reveal">
+      <p class="timeline-date">2022 — Jun 2026</p>
+      <h3 class="timeline-role">B.S. Data Science &middot; Minor in Cognitive Science</h3>
+      <p class="timeline-org">University of California San Diego &middot; La Jolla, CA</p>
+      <ul class="timeline-bullets">
+        <li>Coursework: Data Structures &amp; Algorithms, Artificial Intelligence, Machine Learning, Linux.</li>
+      </ul>
+    </div>
+
+  </div>
+</section>
+
+<!-- PASSIONS -->
+<section id="passions">
+  <div class="section-header reveal">
+    <span class="section-num">05</span>
+    <h2 class="section-title">What I'm Into</h2>
+    <div class="section-line"></div>
+  </div>
+  <div class="passions-grid">
+
+    <div class="passion-card reveal">
+      <svg class="passion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
+        <path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/>
+      </svg>
+      <h3 class="passion-title">AI &amp; Interpretability</h3>
+      <p class="passion-desc">Fascinated by the gap between what models learn and what humans can understand. I'm drawn to research that makes AI systems transparent, steerable, and trustworthy — not just accurate.</p>
+    </div>
+
+    <div class="passion-card reveal">
+      <svg class="passion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
+        <rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/>
+        <path d="M7 8h4M7 11h6"/>
+      </svg>
+      <h3 class="passion-title">Data Storytelling</h3>
+      <p class="passion-desc">Numbers don't speak for themselves — I love turning messy datasets into clear, visual narratives that actually change how people think about a problem. Good analysis should be felt, not just read.</p>
+    </div>
+
+    <div class="passion-card reveal">
+      <svg class="passion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
+        <circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+      </svg>
+      <h3 class="passion-title">Building for Impact</h3>
+      <p class="passion-desc">Whether it's a logistics dashboard that saves hours of manual work or a research tool that lets scientists probe model internals — I care about shipping things that actually get used and solve real problems.</p>
+    </div>
+
+    <div class="passion-card reveal">
+      <svg class="passion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
+        <path d="M18 3a3 3 0 0 0-3 3v12a3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3H6a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3V6a3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3h12a3 3 0 0 0 3-3 3 3 0 0 0-3-3z"/>
+      </svg>
+      <h3 class="passion-title">Cognitive Science</h3>
+      <p class="passion-desc">My minor isn't an accident. I'm genuinely curious about how humans think and learn — and how those patterns can inform better machine learning models, user experiences, and decision-support systems.</p>
+    </div>
+
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <h2 class="contact-headline reveal">Let's <em>work</em><br>together.</h2>
+  <p class="reveal">Open to research roles, internships, and collaborations. If you have a project in mind, let's talk.</p>
+  <div class="contact-links reveal">
+    <a class="contact-link" href="mailto:chguerra@ucsd.edu">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 7l-10 7L2 7"/></svg>
+      chguerra@ucsd.edu
+    </a>
+    <a class="contact-link" href="https://github.com/chguerra15" target="_blank" rel="noopener">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+      GitHub
+    </a>
+    <a class="contact-link" href="https://www.linkedin.com/in/chguerra/" target="_blank" rel="noopener">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+      LinkedIn
+    </a>
+  </div>
+</section>
+
+<footer>
+  <span>&copy; 2025 Christian Guerra</span>
+  <span>Data Science &middot; UCSD &middot; San Diego, CA</span>
+</footer>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+  // Sticky nav
+  const navbar = document.getElementById('navbar');
+  window.addEventListener('scroll', function() {
+    navbar.classList.toggle('scrolled', window.scrollY > 60);
+  });
+
+  // Scroll reveal
+  var revealObserver = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry, i) {
+      if (entry.isIntersecting) {
+        setTimeout(function() { entry.target.classList.add('visible'); }, i * 80);
+        revealObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12 });
+  document.querySelectorAll('.reveal').forEach(function(el) { revealObserver.observe(el); });
+
+  // Skill bars
+  var skillObserver = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        entry.target.querySelectorAll('.skill-fill').forEach(function(fill) {
+          fill.style.width = fill.getAttribute('data-width');
+        });
+        skillObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.3 });
+  var sc = document.getElementById('skills-container');
+  if (sc) { skillObserver.observe(sc); }
+</script>
 </body>
 </html>
