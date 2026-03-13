@@ -279,18 +279,6 @@
       transition: filter 0.3s;
     }
     .project-card:hover .project-img { filter: grayscale(0%) contrast(1); }
-    .project-placeholder {
-      width: 100%; aspect-ratio: 16/9;
-      background: var(--border);
-      display: flex; align-items: center; justify-content: center;
-      margin-bottom: 1.1rem;
-      transition: background 0.3s;
-    }
-    .project-card:hover .project-placeholder { background: #2e2c27; }
-    .placeholder-inner {
-      display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
-      color: var(--muted); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase;
-    }
     .project-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 0.7rem; }
     .tag {
       font-size: 10px; padding: 0.2rem 0.5rem;
@@ -551,12 +539,7 @@
 
     <div class="project-card reveal">
       <p class="project-year">Aug 2025 — Present · Capstone</p>
-      <div class="project-placeholder">
-        <div class="placeholder-inner">
-          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h6M9 12h6M9 15h4"/></svg>
-          <span>Add screenshot here</span>
-        </div>
-      </div>
+      <img class="project-img" src="project1.png" alt="Concept Bottleneck LLMs" />
       <div class="project-tags">
         <span class="tag">Transformers</span><span class="tag">PyTorch</span><span class="tag">Interpretability</span>
       </div>
@@ -569,12 +552,7 @@
 
     <div class="project-card reveal">
       <p class="project-year">Mar 2025 — Jun 2025</p>
-      <div class="project-placeholder">
-        <div class="placeholder-inner">
-          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h6M9 12h6M9 15h4"/></svg>
-          <span>Add screenshot here</span>
-        </div>
-      </div>
+      <img class="project-img" src="project2.png" alt="SugarLens" />
       <div class="project-tags">
         <span class="tag">JavaScript</span><span class="tag">D3.js</span><span class="tag">CNN</span><span class="tag">Python</span>
       </div>
@@ -587,7 +565,7 @@
 
     <div class="project-card reveal">
       <p class="project-year">Dec 2024</p>
-      <img class="project-img" src="https://chguerra15.github.io/images/electricity.jpg" alt="Power Outages Analysis" />
+      <img class="project-img" src="project3.png" alt="Power Outages Analysis" />
       <div class="project-tags">
         <span class="tag">Python</span><span class="tag">Pandas</span><span class="tag">Seaborn</span>
       </div>
@@ -632,7 +610,7 @@
       </ul>
     </div>
 
-<div class="timeline-item reveal">
+    <div class="timeline-item reveal">
       <p class="timeline-date">2022 — Jun 2026</p>
       <h3 class="timeline-role">B.S. Data Science &middot; Minor in Cognitive Science</h3>
       <p class="timeline-org">University of California San Diego &middot; La Jolla, CA</p>
@@ -714,7 +692,7 @@
   <span>Data Science &middot; UCSD &middot; San Diego, CA</span>
 </footer>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+<script>
   // Sticky nav
   const navbar = document.getElementById('navbar');
   window.addEventListener('scroll', function() {
